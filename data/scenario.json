@@ -1,0 +1,105 @@
+{
+  "version": "0.1",
+  "world": "mars_sandbox",
+  "frame": "LOCAL_ENU_SYNTHETIC",
+  "terrain": {
+    "source": "synthetic",
+    "validated_nasa_data": false,
+    "range_m": [
+      -45,
+      45
+    ],
+    "step_m": 3,
+    "gravity_m_s2": 3.71
+  },
+  "agents": [
+    {
+      "id": "human_1",
+      "kind": "human",
+      "model": "astronaut",
+      "pose": [
+        -9,
+        -9,
+        0.266,
+        0,
+        0,
+        0
+      ],
+      "topic": "/model/human_1/cmd_vel"
+    },
+    {
+      "id": "human_2",
+      "kind": "human",
+      "model": "astronaut",
+      "pose": [
+        -6,
+        -12,
+        0.135,
+        0,
+        0,
+        0
+      ],
+      "topic": "/model/human_2/cmd_vel"
+    },
+    {
+      "id": "rover_1",
+      "kind": "rover",
+      "model": "scout_rover",
+      "pose": [
+        -15,
+        -6,
+        0.409,
+        0,
+        0,
+        0
+      ],
+      "topic": "/model/rover_1/cmd_vel"
+    },
+    {
+      "id": "rover_2",
+      "kind": "rover",
+      "model": "scout_rover",
+      "pose": [
+        -12,
+        -15,
+        0.24,
+        0,
+        0,
+        0
+      ],
+      "topic": "/model/rover_2/cmd_vel"
+    },
+    {
+      "id": "drone_1",
+      "kind": "drone",
+      "model": "scout_drone",
+      "pose": [
+        -6,
+        -3,
+        3.322,
+        0,
+        0,
+        0
+      ],
+      "topic": "/model/drone_1/cmd_vel"
+    },
+    {
+      "id": "drone_2",
+      "kind": "drone",
+      "model": "scout_drone",
+      "pose": [
+        -3,
+        -6,
+        4.097,
+        0,
+        0,
+        0
+      ],
+      "topic": "/model/drone_2/cmd_vel"
+    }
+  ],
+  "science_sites": [
+    "science_a",
+    "science_b"
+  ]
+}
