@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "policy": "information_hungarian",
+  "seed": 7,
+  "engine": "2.5D mission-level simulation; NOT a Gazebo dynamics run",
+  "communication": "global, instantaneous, lossless",
+  "success": true,
+  "duration_s": 1930.0,
+  "initial_rmse_m": 1.5009193339684377,
+  "final_rmse_m": 0.5255665731058492,
+  "observed_fraction": 1.0,
+  "conditional_sigma_initial_m": 3.0,
+  "conditional_sigma_final_mean_m": 0.5331970214843749,
+  "discovered_sites": 4,
+  "injected_sites_total": 4,
+  "inspections_completed": 4,
+  "samples_completed": 4,
+  "ground_steps_in_unobserved_cells": 0,
+  "actual_slope_max_deg_on_sampled_positions": {
+    "human": 10.256484031677246,
+    "rover": 12.676629066467285
+  },
+  "agents": {
+    "human_1": {
+      "kind": "human",
+      "distance_m": 861.189,
+      "tasks_completed": [
+        "sample:S2",
+        "sample:S3",
+        "return:human_1"
+      ],
+      "returned": true
+    },
+    "human_2": {
+      "kind": "human",
+      "distance_m": 650.4442,
+      "tasks_completed": [
+        "sample:S1",
+        "sample:S4",
+        "return:human_2"
+      ],
+      "returned": true
+    },
+    "rover_1": {
+      "kind": "rover",
+      "distance_m": 828.2669,
+      "tasks_completed": [
+        "inspect:S3",
+        "return:rover_1"
+      ],
+      "returned": true
+    },
+    "rover_2": {
+      "kind": "rover",
+      "distance_m": 968.4407,
+      "tasks_completed": [
+        "inspect:S2",
+        "inspect:S1",
+        "inspect:S4",
+        "return:rover_2"
+      ],
+      "returned": true
+    },
+    "drone_1": {
+      "kind": "drone",
+      "distance_m": 2474.2875,
+      "tasks_completed": [
+        "survey:3:0",
+        "survey:2:1",
+        "survey:1:0",
+        "survey:0:1",
+        "survey:1:2",
+        "survey:3:2",
+        "survey:5:4",
+        "survey:5:5",
+        "survey:5:3",
+        "survey:4:2",
+        "survey:4:1",
+        "survey:3:1",
+        "survey:0:0",
+        "survey:1:3",
+        "return:drone_1"
+      ],
+      "returned": true
+    },
+    "drone_2": {
+      "kind": "drone",
+      "distance_m": 2796.2586,
+      "tasks_completed": [
+        "survey:5:2",
+        "survey:4:3",
+        "survey:3:4",
+        "survey:2:3",
+        "survey:1:4",
+        "survey:0:3",
+        "survey:0:5",
+        "survey:2:5",
+        "survey:4:5",
+        "survey:4:4",
+        "survey:5:0",
+        "survey:4:0",
+        "survey:2:0",
+        "survey:0:2",
+        "survey:2:4",
+        "return:drone_2"
+      ],
+      "returned": true
+    }
+  },
+  "unfinished_tasks": [],
+  "runtime_wall_s": 4.268266256000004,
+  "terrain_sha256": "18d20b39a680d93addc3c3151bb3f19a5f41fc8f9a170396d4094694bbd76d6b",
+  "mission_source_sha256": "38da1daf0a8a899dd49390b68536b5267dedac4705f1a29b9b3e909e4c2cd9db",
+  "map_source_fraction": {
+    "orbital_only": 0.0,
+    "drone": 0.86663818359375,
+    "rover": 0.0650634765625,
+    "human": 0.0528564453125,
+    "initial_base_survey": 0.01544189453125
+  },
+  "versions": {
+    "python": "3.11.18",
+    "numpy": "2.2.6"
+  },
+  "limitations": [
+    "Sensor readings are simulated height observations of a held-out orbital DEM, not photogrammetry.",
+    "Injected targets and sampling outcomes are fictional and explicitly labelled.",
+    "Independent per-cell belief approximation; sigma is conditional simulation uncertainty, not NASA accuracy.",
+    "No rotor dynamics, human biomechanics, energy/EVA budget, soil traction or inter-agent collision checking.",
+    "Kinematic human/rover speed limits are hypothetical, not spacecraft or certified EVA specifications.",
+    "Assignment is Hungarian over current feasible tasks with an information term; not global mission optimality or full DisCoverage."
+  ]
+}

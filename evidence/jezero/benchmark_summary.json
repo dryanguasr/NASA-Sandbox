@@ -1,0 +1,79 @@
+{
+  "seeds": [
+    7,
+    11,
+    19
+  ],
+  "terrain_sha256": "18d20b39a680d93addc3c3151bb3f19a5f41fc8f9a170396d4094694bbd76d6b",
+  "scope": "One fixed crop and fixed target layout; seeds vary only sensor noise.",
+  "policies": {
+    "information_hungarian": {
+      "successes": 3,
+      "runs": 3,
+      "duration_s": {
+        "mean": 1930.0,
+        "min": 1930.0,
+        "max": 1930.0
+      },
+      "final_rmse_m": {
+        "mean": 0.527840799787116,
+        "min": 0.5255665731058492,
+        "max": 0.5295566116249207
+      },
+      "drone_distance_m": {
+        "mean": 5270.5461,
+        "min": 5270.5461,
+        "max": 5270.5461
+      },
+      "t50_s": {
+        "mean": 160.0,
+        "min": 160.0,
+        "max": 160.0
+      },
+      "t80_s": {
+        "mean": 320.0,
+        "min": 320.0,
+        "max": 320.0
+      },
+      "t95_s": {
+        "mean": 500.0,
+        "min": 500.0,
+        "max": 500.0
+      }
+    },
+    "nearest_greedy": {
+      "successes": 3,
+      "runs": 3,
+      "duration_s": {
+        "mean": 1660.0,
+        "min": 1660.0,
+        "max": 1660.0
+      },
+      "final_rmse_m": {
+        "mean": 0.5292871101673486,
+        "min": 0.5280009864523667,
+        "max": 0.5304227749755832
+      },
+      "drone_distance_m": {
+        "mean": 4364.061900000001,
+        "min": 4364.061900000001,
+        "max": 4364.061900000001
+      },
+      "t50_s": {
+        "mean": 260.0,
+        "min": 260.0,
+        "max": 260.0
+      },
+      "t80_s": {
+        "mean": 440.0,
+        "min": 440.0,
+        "max": 440.0
+      },
+      "t95_s": {
+        "mean": 540.0,
+        "min": 540.0,
+        "max": 540.0
+      }
+    }
+  }
+}
