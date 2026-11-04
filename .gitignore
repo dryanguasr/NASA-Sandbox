@@ -8,3 +8,13 @@ core
 core.*
 evidence/*.mp4
 !evidence/piloto_marciano.mp4
+
+# Reproducible Jezero outputs; source crop and compact reference results are tracked.
+.venv-jezero/
+generated/
+data/jezero/*.tif
+evidence/jezero/*frames.npz
+evidence/jezero/belief_final.npz
+evidence/jezero/trajectory.jsonl
+evidence/jezero/scenario_used.json
+evidence/jezero_baseline/
