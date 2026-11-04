@@ -1,0 +1,32 @@
+name: Jezero real-data import
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, 'pilot/jezero-mission']
+    paths: ['pilots/jezero/import_data.py', 'pilots/jezero/requirements.txt', '.github/workflows/jezero-data.yml']
+permissions:
+  contents: read
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r pilots/jezero/requirements.txt
+      - run: python pilots/jezero/import_data.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jezero-import-and-base
+          retention-days: 30
+          path: |
+            data/jezero/
+            data/scenario.json
+            models/
+            scripts/
+            worlds/
+            README.md
+            AGENTS.md
+            docs/
