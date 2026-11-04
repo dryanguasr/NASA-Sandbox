@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Offline checks. SDF parsing is not a Gazebo dynamics test."""
 import json
+import math
 from pathlib import Path
 import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,6 +38,16 @@ def validate():
     grid=(ROOT/"data/terrain_grid.csv").read_text()
     assert sum(line.startswith("v ") for line in mesh.splitlines()) == 961
     assert sum(line.startswith("f ") for line in mesh.splitlines()) == 1800
+    normals = [list(map(float, line.split()[1:]))
+               for line in mesh.splitlines() if line.startswith("vn ")]
+    assert len(normals) == 1800, "DART terrain collision requires OBJ normals"
+    assert all(len(n) == 3 and n[2] > 0 and
+               abs(math.sqrt(sum(v*v for v in n))-1) < 1e-6 for n in normals)
+    for line in mesh.splitlines():
+        if line.startswith("f "):
+            for corner in line.split()[1:]:
+                vertex, normal = map(int, corner.split("//"))
+                assert 1 <= vertex <= 961 and 1 <= normal <= len(normals)
     assert len(grid.splitlines()) == 962
     rover=ET.parse(ROOT/"models/scout_rover/model.sdf").getroot()
     drive=next(p for p in rover.findall(".//plugin")

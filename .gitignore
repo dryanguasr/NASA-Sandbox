@@ -4,3 +4,7 @@ __pycache__/
 build/
 install/
 log/
+core
+core.*
+evidence/*.mp4
+!evidence/piloto_marciano.mp4

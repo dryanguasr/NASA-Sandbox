@@ -1,0 +1,39 @@
+1
+00:00:00,000 --> 00:00:05,000
+Vista general | Terreno sintetico de 90 x 90 m
+
+2
+00:00:05,000 --> 00:00:07,304
+Dos astronautas, dos rovers y dos drones
+
+3
+00:00:07,304 --> 00:00:10,360
+Control individual: human_1
+
+4
+00:00:10,360 --> 00:00:13,348
+Control individual: human_2
+
+5
+00:00:13,348 --> 00:00:16,396
+Control individual: rover_1
+
+6
+00:00:16,396 --> 00:00:19,364
+Control individual: rover_2
+
+7
+00:00:19,364 --> 00:00:22,360
+Control individual: drone_1
+
+8
+00:00:22,360 --> 00:00:25,356
+Control individual: drone_2
+
+9
+00:00:25,356 --> 00:00:37,344
+Movimiento simultaneo de los seis agentes
+
+10
+00:00:37,344 --> 00:00:40,300
+Parada de los seis agentes verificada con poses

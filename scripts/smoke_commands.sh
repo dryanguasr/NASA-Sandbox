@@ -8,6 +8,15 @@ stop_all() {
   done
 }
 trap stop_all EXIT
+# Verify each controller independently before the combined phase.
+for id in human_1 human_2 rover_1 rover_2 drone_1 drone_2; do
+  echo "Individual control: $id"
+  send "$id" 'linear: {x: 0.08}'
+  sleep 2
+  send "$id" 'linear: {x: 0, y: 0, z: 0}, angular: {z: 0}'
+  sleep 1
+done
+echo 'Combined control'
 send human_1 'linear: {x: 0.05}'
 send human_2 'linear: {y: 0.05}'
 send rover_1 'linear: {x: 0.20}, angular: {z: 0.05}'

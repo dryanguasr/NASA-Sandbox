@@ -80,6 +80,30 @@ gz topic -t /model/drone_1/cmd_vel -m gz.msgs.Twist -p 'linear: {z: 0.15}'
 **Detén cada robot** con `linear: {x: 0, y: 0, z: 0}, angular: {z: 0}`:
 los controladores pueden mantener la última orden recibida.
 
+## Piloto reproducible con video (P0–P2)
+
+En Ubuntu 24.04 con Harmonic, `python3-gz-transport13`,
+`python3-gz-msgs10` y `ffmpeg` instalados:
+
+```bash
+python3 scripts/record_pilot.py
+```
+
+El script verifica el terreno, genera `worlds/mars_pilot_observation.sdf`
+con dos cámaras externas, arranca Gazebo sin GUI y graba imágenes reales
+en `evidence/overview.mp4` y `evidence/agents.mp4`. Comprueba desplazamiento
+individual usando poses del mundo, recibe las seis odometrías, ejecuta
+movimiento simultáneo y comprueba la parada. Los comandos, trayectorias,
+resultados y logs quedan en `evidence/`. Usa renderizado software para WSL;
+el video tiene 10 fotogramas por segundo de simulación y no mide rendimiento
+en tiempo real. El mundo canónico permanece separado del mundo de grabación.
+Para ensamblar el video con etiquetas: `python3 scripts/edit_pilot_video.py`.
+El resultado de la ejecución está en [docs/pilot_results.md](docs/pilot_results.md).
+
+[Ver o descargar el video del piloto (40 s, 720p)](evidence/piloto_marciano.mp4).
+
+[![Vista del piloto](evidence/video-preview.png)](evidence/piloto_marciano.mp4)
+
 ## ROS 2 opcional
 
 Con Jazzy cargado y Gazebo activo:

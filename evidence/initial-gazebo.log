@@ -1,0 +1,88 @@
+[1;32m[Msg] [0m[1;32mGazebo Sim Server v[0m[1;32m8.14.0[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mLoading SDF world file[[0m[1;32m/mnt/c/Users/User/Documents/ChatGPT/NASA Sandbox 2/NASA-Sandbox/worlds/mars_sandbox.sdf[0m[1;32m].[0m
+[1;32m[Msg] [0m[1;32mServing entity system service on [[0m[1;32m/[0m[1;32mentity/system/add[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mCreate[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/create_multiple[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mCreate[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/create_multiple/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mRemove[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/remove[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mRemove[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/remove/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mPose[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/set_pose[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mPose[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/set_pose/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mPose[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/set_pose_vector[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mPose[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/set_pose_vector/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mLight configuration[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/light_config[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mLight configuration[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/light_config/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mPhysics[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/set_physics[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mPhysics[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/set_physics/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mSphericalCoordinates[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/set_spherical_coordinates[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mSphericalCoordinates[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/set_spherical_coordinates/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mEnable collision[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/enable_collision[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mEnable collision[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/enable_collision/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mDisable collision[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/disable_collision[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mDisable collision[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/disable_collision/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mMaterial[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/visual_config[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mMaterial[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/visual_config/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mMaterial[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/wheel_slip[0m[1;32m] (async)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mMaterial[0m[1;32m service on [[0m[1;32m/world/mars_sandbox/wheel_slip/blocking[0m[1;32m] (blocking)[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mVelocityControl subscribing to twist messages on [[0m[1;32m/model/human_1/cmd_vel[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing odometry on [[0m[1;32m/model/human_1/odometry[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing odometry with covariance on [[0m[1;32m/model/human_1/odometry_with_covariance[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing Pose_V (TF) on [[0m[1;32m/model/human_1/pose[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mVelocityControl subscribing to twist messages on [[0m[1;32m/model/human_2/cmd_vel[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing odometry on [[0m[1;32m/model/human_2/odometry[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing odometry with covariance on [[0m[1;32m/model/human_2/odometry_with_covariance[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing Pose_V (TF) on [[0m[1;32m/model/human_2/pose[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mDiffDrive subscribing to twist messages on [[0m[1;32m/model/rover_1/cmd_vel[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mDiffDrive subscribing to twist messages on [[0m[1;32m/model/rover_2/cmd_vel[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mVelocityControl subscribing to twist messages on [[0m[1;32m/model/drone_1/cmd_vel[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing odometry on [[0m[1;32m/model/drone_1/odometry[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing odometry with covariance on [[0m[1;32m/model/drone_1/odometry_with_covariance[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing Pose_V (TF) on [[0m[1;32m/model/drone_1/pose[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mVelocityControl subscribing to twist messages on [[0m[1;32m/model/drone_2/cmd_vel[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing odometry on [[0m[1;32m/model/drone_2/odometry[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing odometry with covariance on [[0m[1;32m/model/drone_2/odometry_with_covariance[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mOdometryPublisher publishing Pose_V (TF) on [[0m[1;32m/model/drone_2/pose[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mLoaded level [[0m[1;32mdefault[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mServing world controls on [[0m[1;32m/world/mars_sandbox[0m[1;32m/control], [[0m[1;32m/world/mars_sandbox[0m[1;32m/control/state] and [[0m[1;32m/world/mars_sandbox[0m[1;32m/playback/control][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mServing GUI information on [[0m[1;32m/world/mars_sandbox[0m[1;32m/[0m[1;32mgui/info[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mWorld [[0m[1;32mmars_sandbox[0m[1;32m] initialized with [[0m[1;32mmars[0m[1;32m] physics profile.[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mServing world SDF generation service on [[0m[1;32m/world/mars_sandbox[0m[1;32m/[0m[1;32mgenerate_world_sdf[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mServing world names on [[0m[1;32m/gazebo/worlds[0m[1;32m][0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mResource path add service on [[0m[1;32m/gazebo/resource_paths/add[0m[1;32m].[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mResource path get service on [[0m[1;32m/gazebo/resource_paths/get[0m[1;32m].[0m[1;32m[0m
+[1;32m[Msg] [0m[1;32mResource path res[1;33m[Wrn] [OBJLoader.cc:202] [0m[1;33mMissing material for shape[[0m[1;33mmartian_test_terrain[0m[1;33m] [0m[1;33min OBJ file[[0m[1;33m/mnt/c/Users/User/Documents/ChatGPT/NASA Sandbox 2/NASA-Sandbox/models/mars_terrain/meshes/terrain.obj[0m[1;33m][0m[1;33m[0m
+[1;31m[Err] [CustomMeshShape.cc:144] [0m[1;31m[dartsim::CustomMeshShape] One of the submeshes [[0m[1;31m0[0m[1;31m:[0m[1;31mmartian_test_terrain[0m[1;31m] in the input mesh [[0m[1;31m/mnt/c/Users/User/Documents/ChatGPT/NASA Sandbox 2/NASA-Sandbox/models/mars_terrain/meshes[0m[1;31m] does not have a normal count [[0m[1;31m0[0m[1;31m] that matches its vertex [0m[1;31mcount [[0m[1;31m5400[0m[1;31m]. This submesh will be [0m[1;31mignored![0m
+Stack trace (most recent call last):
+#31   Object "/lib/x86_64-linux-gnu/libruby-3.2.so.3.2", at 0x7189a70b4e2b, in 
+#30   Object "/lib/x86_64-linux-gnu/libruby-3.2.so.3.2", at 0x7189a7257b49, in rb_vm_exec
+#29   Object "/lib/x86_64-linux-gnu/libruby-3.2.so.3.2", at 0x7189a725462b, in 
+#28   Object "/lib/x86_64-linux-gnu/libruby-3.2.so.3.2", at 0x7189a725013e, in 
+#27   Object "/lib/x86_64-linux-gnu/libruby-3.2.so.3.2", at 0x7189a724d92f, in 
+#26   Object "/usr/lib/x86_64-linux-gnu/ruby/3.2.0/fiddle.so", at 0x7189a6e27b13, in 
+#25   Object "/lib/x86_64-linux-gnu/libruby-3.2.so.3.2", at 0x7189a721637b, in rb_nogvl
+#24   Object "/usr/lib/x86_64-linux-gnu/ruby/3.2.0/fiddle.so", at 0x7189a6e2743b, in 
+#23   Object "/lib/x86_64-linux-gnu/libffi.so.8", at 0x7189a6eb90bd, in ffi_call
+#22   Object "/lib/x86_64-linux-gnu/libffi.so.8", at 0x7189a6eb63ee, in 
+#21   Object "/lib/x86_64-linux-gnu/libffi.so.8", at 0x7189a6eb9b15, in 
+#20   Object "/usr/lib/x86_64-linux-gnu/libgz-sim8-gz.so.8.14.0", at 0x7189a23d53ec, in runServer
+#19   Object "/lib/x86_64-linux-gnu/libgz-sim8.so.8", at 0x7189a115934c, in 
+#18   Object "/lib/x86_64-linux-gnu/libgz-sim8.so.8", at 0x7189a116414e, in gz::sim::v8::SimulationRunner::Run(unsigned long)
+#17   Object "/lib/x86_64-linux-gnu/libgz-sim8.so.8", at 0x7189a116bb65, in gz::sim::v8::SimulationRunner::Step(gz::sim::v8::UpdateInfo const&)
+#16   Object "/lib/x86_64-linux-gnu/libgz-sim8.so.8", at 0x7189a116308c, in gz::sim::v8::SimulationRunner::UpdateSystems()
+#15   Object "/usr/lib/x86_64-linux-gnu/gz-sim-8/plugins/libgz-sim-physics-system.so", at 0x718995b17b7f, in gz::sim::v8::systems::Physics::Update(gz::sim::v8::UpdateInfo const&, gz::sim::v8::EntityComponentManager&)
+#14   Object "/usr/lib/x86_64-linux-gnu/gz-sim-8/plugins/libgz-sim-physics-system.so", at 0x718995b0c845, in gz::sim::v8::systems::PhysicsPrivate::Step(std::chrono::duration<long, std::ratio<1l, 1000000000l> > const&)
+#13   Object "/usr/lib/x86_64-linux-gnu/gz-physics-7/engine-plugins/libgz-physics-dartsim-plugin.so", at 0x718984436d95, in gz::physics::dartsim::SimulationFeatures::WorldForwardStep(gz::physics::Identity const&, gz::physics::SpecifyData<gz::physics::RequireData<gz::physics::WorldPoses>, gz::physics::ExpectData<gz::physics::ChangedWorldPoses, gz::physics::Contacts, gz::physics::JointPositions> >&, gz::physics::CompositeData&, gz::physics::ExpectData<gz::physics::ApplyExternalForceTorques, gz::physics::ApplyGeneralizedForces, gz::physics::VelocityControlCommands, gz::physics::ServoControlCommands, std::chrono::duration<long, std::ratio<1l, 1000000000l> > > const&)
+#12   Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fda966c, in dart::simulation::World::step(bool)
+#11   Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fd8f3d5, in dart::constraint::ConstraintSolver::solve()
+#10   Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fd8d970, in dart::constraint::ConstraintSolver::updateConstraints()
+#9    Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fd60054, in dart::collision::CollisionGroup::collide(dart::collision::CollisionOption const&, dart::collision::CollisionResult*)
+#8    Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fd5ffcb, in dart::collision::CollisionGroup::update()
+#7    Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fd5f443, in dart::collision::CollisionGroup::updateSkeletonSource(std::pair<dart::dynamics::MetaSkeleton const* const, dart::collision::CollisionGroup::CollisionSource<std::weak_ptr<dart::dynamics::MetaSkeleton const>, dart::dynamics::BodyNode> >&)
+#6    Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fd5e9c1, in dart::collision::CollisionGroup::addShapeFrameImpl(dart::dynamics::ShapeFrame const*, void const*)
+#5    Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fd5ac0f, in dart::collision::CollisionDetector::claimCollisionObject(dart::dynamics::ShapeFrame const*)
+#4    Object "/lib/x86_64-linux-gnu/libdart.so.6.13", at 0x71897fd5ad18, in dart::collision::CollisionDetector::ManagerForUnsharableCollisionObjects::claimCollisionObject(dart::dynamics::ShapeFrame const*)
+#3    Object "/lib/x86_64-linux-gnu/libdart-collision-ode.so.6.13", at 0x718984964802, in dart::collision::OdeCollisionDetector::createCollisionObject(dart::dynamics::ShapeFrame const*)
+#2    Object "/lib/x86_64-linux-gnu/libdart-collision-ode.so.6.13", at 0x718984973767, in dart::collision::OdeCollisionObject::OdeCollisionObject(dart::collision::OdeCollisionDetector*, dart::dynamics::ShapeFrame const*)
+#1    Object "/lib/x86_64-linux-gnu/libdart-collision-ode.so.6.13", at 0x718984972f62, in dart::collision::detail::OdeMesh::OdeMesh(dart::collision::OdeCollisionObject const*, aiScene const*, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)
+#0    Object "/lib/x86_64-linux-gnu/libdart-collision-ode.so.6.13", at 0x718984972b47, in dart::collision::detail::OdeMesh::fillArrays(aiScene const*, Eigen::Matrix<double, 3, 1, 0, 3, 1> const&)
+Segmentation fault (Address not mapped to object [0x4])
+timeout: the monitored command dumped core

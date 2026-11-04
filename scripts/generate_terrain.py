@@ -2,6 +2,7 @@
 """Deterministic synthetic terrain OBJ + height grid; no NASA data."""
 from pathlib import Path
 import argparse
+import math
 
 ROOT = Path(__file__).resolve().parents[1]
 MESH = ROOT / "models/mars_terrain/meshes/terrain.obj"
@@ -38,12 +39,24 @@ def generate():
             z = m(height_mm(x,y))
             mesh.append(f"v {x} {y} {z}\n")
             grid.append(f"{x},{y},{z}\n")
+    vertices = [(x, y, height_mm(x,y)/1000)
+                for x in range(MIN, MAX+1, STEP)
+                for y in range(MIN, MAX+1, STEP)]
+    normal_index = 0
     for ix in range(N-1):
         for iy in range(N-1):
             a = ix*N+iy+1
             b,c,d = a+N, a+1, a+N+1
-            mesh.append(f"f {a} {b} {c}\n")
-            mesh.append(f"f {b} {d} {c}\n")
+            for face in ((a,b,c), (b,d,c)):
+                p,q,r = (vertices[i-1] for i in face)
+                u,v = ([q[i]-p[i] for i in range(3)],
+                       [r[i]-p[i] for i in range(3)])
+                n = (u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2],
+                     u[0]*v[1]-u[1]*v[0])
+                length = math.sqrt(sum(t*t for t in n))
+                mesh.append("vn " + " ".join(f"{t/length:.9f}" for t in n) + "\n")
+                normal_index += 1
+                mesh.append("f " + " ".join(f"{i}//{normal_index}" for i in face) + "\n")
     return {MESH: "".join(mesh), GRID: "".join(grid)}
 
 
