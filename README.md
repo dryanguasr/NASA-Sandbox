@@ -1,132 +1,79 @@
-# NASA-Sandbox — laboratorio marciano multiagente
+# NASA-Sandbox — exploración marciana heterogénea
 
-Base experimental en **Gazebo Harmonic + ROS 2 Jazzy** para los pilotos de
-NASA Space Apps: **2 astronautas, 2 rovers y 2 drones** en un mundo compartido.
+Laboratorio con **2 humanos, 2 drones y 2 rovers**. Hay dos pilotos independientes; no confundir la fidelidad ni el estado de ejecución de cada uno.
 
-**Importante:** el terreno es sintético, NO es un DEM de NASA. Los astronautas
-y drones son *proxies* con control de velocidad, sin biomecánica ni
-aerodinámica marciana; los rovers son modelos genéricos de cuatro ruedas con
-tracción diferencial. La estructura se entrega para pruebas posteriores
-y **no afirma que Gazebo haya sido ejecutado ni que la dinámica esté validada**.
+| Piloto | Terreno | Ejecución comprobada | Límites principales |
+|---|---|---|---|
+| Base / piloto 0 | Sintético, 90 × 90 m | Gazebo Harmonic: carga, sensores, movimientos y parada; video y logs | Humanos y drones cinemáticos; sin biomecánica ni aerodinámica |
+| **Jezero / misión** | **USGS/MRO real, 512 × 512 m, CTX + HiRISE** | **Simulación de misión 2.5D, 16 pruebas, seis comparaciones y visor comprobado en navegador** | Sensores ideales simulados; exportación Gazebo de reproducción cinemática aún pendiente de ejecución |
 
-## Contenido
+## Empezar por el piloto Jezero
 
-| Tipo | Entidades | Control |
-| --- | --- | --- |
-| Humanos | `human_1`, `human_2` | `VelocityControl`, movimiento abstracto |
-| Rovers | `rover_1`, `rover_2` | `DiffDrive`, cámara RGB |
-| Drones | `drone_1`, `drone_2` | `VelocityControl` 3D, cámara RGB |
-| Escenario | `mars_terrain`, `habitat`, `science_a/b` | Terreno y marcadores |
+[Guía técnica](pilots/jezero/README.md) · [Reporte de resultados](evidence/jezero/report.md) · [Instrucciones para Codex](docs/jezero_pilot_codex.md).
 
-El mundo usa gravedad de Marte (`0 0 -3.71` m/s²), retícula de
-**31 × 31 alturas a cada 3 m**, cráteres y crestas ficticias, coordenadas
-locales `[-45,45]` m. Los datos y posiciones están en
-[`data/scenario.json`](data/scenario.json).
+```bash
+python3 -m venv .venv-jezero
+source .venv-jezero/bin/activate
+python -m pip install -r pilots/jezero/requirements.txt
+python pilots/jezero/run_all.py
+```
 
-## Dependencias
+Abrir `evidence/jezero/viewer.html` en un navegador. El visor es autónomo: no necesita servidor ni conexión. Desde GitHub se debe descargar el archivo HTML para abrirlo localmente.
 
-Ubuntu 24.04, **Gazebo Harmonic** (`gz sim`). Opcional:
-**ROS 2 Jazzy** y `ros_gz_bridge`. Python 3.11+ para pruebas offline.
-[Guía oficial de Gazebo Harmonic](https://gazebosim.org/docs/harmonic/).
+El recorte real y sus metadatos se conservan en `data/jezero/`. Si faltan, el importador solicita ventanas de los mosaicos originales; **no los reemplaza por terreno sintético**. Para repetir la importación: `python pilots/jezero/run_all.py --refresh-data`.
 
-## Validaciones estáticas
+La misión comienza con el mapa CTX aproximado. Los drones revelan progresivamente información del DEM de referencia HiRISE y descubren objetivos **ficticios** del escenario. Eso genera inspecciones de rovers y después muestreos humanos. El asignador húngaro y A* usan únicamente el mapa estimado y las tareas descubiertas. La comunicación es global, instantánea y sin pérdidas.
+
+La política informativa se compara con una estrategia de proximidad. En este escenario logra cobertura temprana más rápida, pero tarda más en completar la misión. No se afirma optimalidad global ni reproducción completa de Heterogeneous DisCoverage.
+
+**Datos reales no significa sensores reales:** las observaciones son alturas simuladas bajo una huella ideal, no reconstrucción fotogramétrica. CTX y HiRISE pertenecen ambos a MRO; todavía no se incorporan varias misiones. Los detalles, licencias/fuentes y límites están documentados en la guía y los metadatos.
+
+### Exportación Gazebo del piloto Jezero
+
+`run_all.py` genera `generated/jezero/jezero_mission.sdf`, su malla de terreno y seis agentes. La variante usa agentes estáticos desplazados por poses; es una **reproducción visual de la misión**, no control cerrado ni validación dinámica.
+
+Terminal 1:
+
+```bash
+export GZ_PARTITION=jezero_mission
+export GZ_SIM_RESOURCE_PATH="$PWD/generated/jezero/models:${GZ_SIM_RESOURCE_PATH:-}"
+gz sim -r generated/jezero/jezero_mission.sdf
+```
+
+Terminal 2:
+
+```bash
+export GZ_PARTITION=jezero_mission
+/usr/bin/python3 pilots/jezero/replay_gazebo.py --speed 40
+```
+
+Requiere Gazebo Harmonic y bindings `python3-gz-transport13`, `python3-gz-msgs10`. Esta reproducción no se considera ejecutada hasta registrar evidencia local.
+
+## Conservar el piloto 0 como regresión
+
+El mundo canónico `worlds/mars_sandbox.sdf`, sus modelos y datos sintéticos permanecen separados del nuevo piloto.
 
 ```bash
 python3 scripts/generate_terrain.py --check
 python3 scripts/validate_scene.py
-```
-
-Los dos recursos de terreno generados, `terrain.obj` y
-`terrain_grid.csv`, se incluyen en el repositorio. Para regenerarlos tras
-cambiar el algoritmo:
-
-```bash
-python3 scripts/generate_terrain.py
-```
-
-## Arrancar Gazebo
-
-En la raíz del repositorio:
-
-```bash
 bash scripts/run_gazebo.sh
-```
-
-El lanzador configura `GZ_SIM_RESOURCE_PATH` y abre
-[`worlds/mars_sandbox.sdf`](worlds/mars_sandbox.sdf) sin descargar
-modelos externos. Para correr el servidor sin GUI:
-
-```bash
-bash scripts/run_gazebo.sh -s
-```
-
-Después del arranque, en otra terminal:
-
-```bash
+# En otra terminal:
 bash scripts/smoke_commands.sh
 ```
 
-Este script envía órdenes breves a las seis entidades y comandos de parada.
-La demo aún requiere ejecución y auditoría; las velocidades cinemáticas
-no constituyen un controlador de vuelo.
-
-Comandos manuales:
-
-```bash
-gz topic -t /model/rover_1/cmd_vel -m gz.msgs.Twist -p 'linear: {x: 0.2}, angular: {z: 0.1}'
-gz topic -t /model/drone_1/cmd_vel -m gz.msgs.Twist -p 'linear: {z: 0.15}'
-```
-
-**Detén cada robot** con `linear: {x: 0, y: 0, z: 0}, angular: {z: 0}`:
-los controladores pueden mantener la última orden recibida.
-
-## Piloto reproducible con video (P0–P2)
-
-En Ubuntu 24.04 con Harmonic, `python3-gz-transport13`,
-`python3-gz-msgs10` y `ffmpeg` instalados:
+Para captura reproducible, detener otros servidores del piloto y ejecutar:
 
 ```bash
 python3 scripts/record_pilot.py
+python3 scripts/edit_pilot_video.py
 ```
 
-El script verifica el terreno, genera `worlds/mars_pilot_observation.sdf`
-con dos cámaras externas, arranca Gazebo sin GUI y graba imágenes reales
-en `evidence/overview.mp4` y `evidence/agents.mp4`. Comprueba desplazamiento
-individual usando poses del mundo, recibe las seis odometrías, ejecuta
-movimiento simultáneo y comprueba la parada. Los comandos, trayectorias,
-resultados y logs quedan en `evidence/`. Usa renderizado software para WSL;
-el video tiene 10 fotogramas por segundo de simulación y no mide rendimiento
-en tiempo real. El mundo canónico permanece separado del mundo de grabación.
-Para ensamblar el video con etiquetas: `python3 scripts/edit_pilot_video.py`.
-El resultado de la ejecución está en [docs/pilot_results.md](docs/pilot_results.md).
+[Resultado de la ejecución real](docs/pilot_results.md) · [Video del piloto 0](evidence/piloto_marciano.mp4).
 
-[Ver o descargar el video del piloto (40 s, 720p)](evidence/piloto_marciano.mp4).
+Con ROS 2 Jazzy disponible, `bash scripts/run_ros_bridge.sh` carga el puente de `/clock`, seis `cmd_vel` y seis `odom`. Los tópicos de cámaras deben verificarse antes de incorporarlos al puente. Los comandos de velocidad pueden mantenerse hasta recibir una orden de cero.
 
-[![Vista del piloto](evidence/video-preview.png)](evidence/piloto_marciano.mp4)
+## Evidencia y desarrollo
 
-## ROS 2 opcional
+GitHub Actions ejecuta la validación del escenario original y el flujo completo del piloto Jezero. Los resultados principales están en Git y los artefactos de cada ejecución conservan mapas, trayectorias, estados del estimador y exportación 3D durante 30 días. Leer `AGENTS.md` antes de modificar el proyecto.
 
-Con Jazzy cargado y Gazebo activo:
-
-```bash
-bash scripts/run_ros_bridge.sh
-```
-
-[`config/ros_gz_bridge.yaml`](config/ros_gz_bridge.yaml) proporciona
-`/clock`, seis `cmd_vel` y seis `odom`. Los tópicos de cámaras deben
-inspeccionarse con `gz topic -l` antes de incorporarlos al puente.
-
-## Para Codex
-
-Leer [`AGENTS.md`](AGENTS.md), el
-[plan de pilotos](docs/next_pilots.md) y
-[procedencia de los datos](docs/data_provenance.md).
-Este repositorio es un laboratorio de preparación técnica, independiente de
-la entrega competitiva. Verificar reglas de reutilización/atribución del
-evento antes de copiar material al proyecto oficial.
-
-## Nuevo piloto: Jezero con datos orbitales reales
-
-[Guía del piloto](pilots/jezero/README.md) · [Resultados ejecutados](evidence/jezero/report.md) · [Continuación con Codex](docs/jezero_pilot_codex.md).
-
-Incluye importación reproducible CTX/HiRISE, mapa inicialmente parcial, mapeo simulado, tareas emergentes y asignación automática entre los seis agentes, sin restricciones de comunicación. Ejecutar `python pilots/jezero/run_all.py` después de instalar sus requisitos. El mundo original sigue siendo sintético; el nuevo escenario es independiente. La misión se evalúa en 2.5D; la exportación Gazebo es una reproducción cinemática, no una ejecución física de control cerrado.
+Este es un laboratorio de preparación independiente del entregable competitivo. Revisar las reglas del evento sobre trabajo previo, reutilización y atribución antes de incorporar material a la competencia.
