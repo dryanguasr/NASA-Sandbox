@@ -1,0 +1,53 @@
+name: Jezero mission pilot
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, 'pilot/jezero-mission']
+    paths: ['pilots/jezero/**', '.github/workflows/jezero-pilot.yml']
+permissions:
+  contents: write
+concurrency:
+  group: jezero-pilot-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  pilot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r pilots/jezero/requirements.txt
+      - run: python scripts/generate_terrain.py --check && python scripts/validate_scene.py
+      - run: python pilots/jezero/run_all.py
+      - run: python -m pip install playwright==1.52.0
+      - run: command -v google-chrome || python -m playwright install --with-deps chromium
+      - run: python pilots/jezero/check_viewer.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jezero-pilot-evidence
+          retention-days: 30
+          path: |
+            pilots/jezero/
+            data/jezero/
+            evidence/jezero/
+            evidence/jezero_baseline/
+            generated/jezero/
+            models/
+            docs/jezero_pilot_codex.md
+      - name: Preserve the real crop and measured reference run on the development branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/pilot/jezero-mission'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f data/jezero/terrain.npz data/jezero/metadata.json
+          git add -f evidence/jezero/summary.json evidence/jezero/report.md evidence/jezero/viewer.html
+          git add -f evidence/jezero/metrics.csv evidence/jezero/events.jsonl evidence/jezero/tasks.json
+          git add -f evidence/jezero/benchmark.csv evidence/jezero/benchmark_summary.json
+          git add -f evidence/jezero/browser_check.json evidence/jezero/viewer_screenshot.png
+          git add -f evidence/jezero/mission_map.png evidence/jezero/coverage.png evidence/jezero/rmse.png
+          git diff --cached --quiet || git commit -m "test: preserve real Jezero crop and executed mission evidence [skip ci]"
+          git push origin HEAD:pilot/jezero-mission

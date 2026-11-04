@@ -20,3 +20,9 @@ El mundo canónico `worlds/mars_sandbox.sdf` debe tener exactamente:
 - Conservar licencia y atribución antes de importar geometría NASA.
 - No reportar como realizado un piloto únicamente porque sus XML se
   puedan parsear; capturar evidencia de ejecución real.
+
+## Piloto Jezero con datos reales
+
+Leer `pilots/jezero/README.md` y `docs/jezero_pilot_codex.md`. La regla `LOCAL_ENU_SYNTHETIC` anterior aplica al mundo canónico, no al nuevo recorte georreferenciado. El terreno real debe tener metadatos y SHA-256; nunca sustituirlo silenciosamente por relieve sintético.
+
+El planificador solo lee el mapa estimado y tareas descubiertas. La referencia HiRISE pertenece al simulador/sensor/evaluador. Comunicación global instantánea por decisión del usuario. Conservar las etiquetas de misión 2.5D, sensor ideal y reproducción cinemática en Gazebo; distinguirlas de sensores o dinámica efectivamente ejecutados.

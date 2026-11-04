@@ -1,0 +1,29 @@
+{
+  "name": "Jezero: reconnaissance, inspection and sampling",
+  "description": "Hypothetical mission on actual MRO topography. Science targets are injected, not detections in NASA imagery.",
+  "seed": 7,
+  "dt_s": 5,
+  "max_time_s": 3600,
+  "snapshot_interval_s": 20,
+  "initial_sigma_m": 3.0,
+  "ground_sigma_gate_m": 1.0,
+  "survey_grid_n": 6,
+  "survey_dwell_s": 10,
+  "information_bonus_s": 90,
+  "initial_base_survey_radius_m": 36,
+  "global_instant_communication": true,
+  "agents": [
+    {"id": "human_1", "kind": "human", "start_xy_m": [-178, -178], "speed_m_s": 0.9, "sensor_radius_m": 8, "sensor_sigma_m": 0.25, "max_slope_deg": 22, "service_s": 50},
+    {"id": "human_2", "kind": "human", "start_xy_m": [-170, -178], "speed_m_s": 0.8, "sensor_radius_m": 8, "sensor_sigma_m": 0.25, "max_slope_deg": 22, "service_s": 40},
+    {"id": "rover_1", "kind": "rover", "start_xy_m": [-186, -170], "speed_m_s": 0.65, "sensor_radius_m": 12, "sensor_sigma_m": 0.35, "max_slope_deg": 18, "service_s": 30},
+    {"id": "rover_2", "kind": "rover", "start_xy_m": [-178, -162], "speed_m_s": 0.75, "sensor_radius_m": 12, "sensor_sigma_m": 0.35, "max_slope_deg": 18, "service_s": 35},
+    {"id": "drone_1", "kind": "drone", "start_xy_m": [-170, -162], "speed_m_s": 4.0, "sensor_radius_m": 64, "sensor_sigma_m": 0.55, "max_slope_deg": 90, "service_s": 10},
+    {"id": "drone_2", "kind": "drone", "start_xy_m": [-162, -170], "speed_m_s": 4.5, "sensor_radius_m": 66, "sensor_sigma_m": 0.60, "max_slope_deg": 90, "service_s": 10}
+  ],
+  "injected_sites": [
+    {"id": "S1", "xy_m": [-82, -62]},
+    {"id": "S2", "xy_m": [90, -82]},
+    {"id": "S3", "xy_m": [90, 90]},
+    {"id": "S4", "xy_m": [-62, 102]}
+  ]
+}

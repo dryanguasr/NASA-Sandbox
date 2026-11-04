@@ -124,3 +124,9 @@ Leer [`AGENTS.md`](AGENTS.md), el
 Este repositorio es un laboratorio de preparación técnica, independiente de
 la entrega competitiva. Verificar reglas de reutilización/atribución del
 evento antes de copiar material al proyecto oficial.
+
+## Nuevo piloto: Jezero con datos orbitales reales
+
+[Guía del piloto](pilots/jezero/README.md) · [Resultados ejecutados](evidence/jezero/report.md) · [Continuación con Codex](docs/jezero_pilot_codex.md).
+
+Incluye importación reproducible CTX/HiRISE, mapa inicialmente parcial, mapeo simulado, tareas emergentes y asignación automática entre los seis agentes, sin restricciones de comunicación. Ejecutar `python pilots/jezero/run_all.py` después de instalar sus requisitos. El mundo original sigue siendo sintético; el nuevo escenario es independiente. La misión se evalúa en 2.5D; la exportación Gazebo es una reproducción cinemática, no una ejecución física de control cerrado.
