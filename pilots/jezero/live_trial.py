@@ -21,9 +21,10 @@ from gz.transport13 import Node
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from live_mission import Mission, project
+from live_mission import ExtensionMission, Mission, project
 from live_world import BASE, BLOCK_XY, FOV, LAYOUTS, build, control_topic, prepare
 from mission import load_data
+from extension_cases import FOV_GROUND, TIMED_APPEARANCE_S, inside_wall, sites_for
 
 ROOT_TOPIC = '/world/jezero_live'
 CTRL_DT = .10
@@ -77,7 +78,7 @@ class Worker:
 
 
 class LiveIO:
-    def __init__(self, homes, video, seed):
+    def __init__(self, homes, video, seed, ground_sensors=False):
         self.node = Node()
         self.homes = homes
         self.now = 0.
@@ -102,7 +103,7 @@ class LiveIO:
             if name.startswith('rover'):
                 self.subscribe(Odometry,f'/model/{name}/odometry',self.wheel,name)
                 self.subscribe(IMU,f'/live/{name}/imu',self.imu,name)
-            if name.startswith('drone'):
+            if name.startswith('drone') or ground_sensors:
                 for key in ('depth_camera','camera'):
                     self.subscribe(GzImage,f'/live/{name}/{key}',self.image,(name,key))
             if video:
@@ -194,9 +195,21 @@ class LiveIO:
             if abs(t-pt)>.12:
                 continue
             previous[name] = t
-            yield name,project(np.frombuffer(data,'<f4').reshape(h,w),
-                               np.frombuffer(rgb[4],np.uint8).reshape(h,w,3),
-                               pose[:2],pose[2]-.25,mission.grid,FOV,t,noise)
+            x,y,z,yaw = pose
+            ground = not name.startswith('drone')
+            if ground:
+                offset, height = (.67,1.35) if name.startswith('rover') else (.35,1.62)
+                xy = (x+offset*math.cos(yaw),y+offset*math.sin(yaw))
+                camera_z = z+height
+            else:
+                xy,camera_z = (x,y),z-.25
+            packet = project(np.frombuffer(data,'<f4').reshape(h,w),
+                             np.frombuffer(rgb[4],np.uint8).reshape(h,w,3),
+                             xy,camera_z,mission.grid,FOV_GROUND if ground else FOV,t,noise,
+                             ground_yaw=yaw if ground else None)
+            packet.source,packet.pose = name,pose
+            yield name,packet
+
 
 
 def human_motion(dx,dy,yaw,speed):
@@ -301,16 +314,27 @@ class Video:
             raise RuntimeError('ffmpeg failed')
 
 
+def spawn_fixture(path):
+    request = f'sdf_filename: "{path.as_posix()}"'
+    result = subprocess.run(['gz','service','-s',ROOT_TOPIC+'/create/blocking',
+                             '--reqtype','gz.msgs.EntityFactory','--reptype','gz.msgs.Boolean',
+                             '--timeout','5000','--req',request],capture_output=True,text=True,timeout=8)
+    if result.returncode or 'data: true' not in result.stdout:
+        raise RuntimeError(f'Fixture insertion failed: {result.stdout}{result.stderr}')
+
+
 def trial(args):
     out = Path(args.out).resolve()
     out.mkdir(parents=True,exist_ok=True)
     data = prepare(args.zone)
     ref,prior,_,meta = load_data(data)
-    world,homes,altitude = build(data,out,args.pilot,args.layout,args.video,args.rate)
+    world,homes,altitude = build(data,out,args.pilot,args.layout,args.video,args.rate,args.scenario)
+    targets = ({site.name:site.xy for site in sites_for(args.pilot)} if args.pilot>=5 else
+               {f'S{i}':xy for i,xy in enumerate(LAYOUTS[args.layout],1)})
     os.environ['GZ_PARTITION'] = f'jezero_live_{os.getpid()}'
     env = dict(os.environ,GZ_SIM_RESOURCE_PATH=str(out/'models'),LIBGL_ALWAYS_SOFTWARE='1',
                LP_NUM_THREADS='3',OMP_NUM_THREADS='1')
-    io = LiveIO(homes,args.video,args.seed)
+    io = LiveIO(homes,args.video,args.seed,ground_sensors=args.pilot==6)
     workers = {name:Worker() for name in homes}
     t = 0.
     origin_clock = 0.
@@ -324,7 +348,7 @@ def trial(args):
             actual = io.poses[name][1][:2]
             payload['observed_xy_m'] = actual
             if args.pilot!=1 and task.startswith(('inspect:S','sample:S')):
-                target = LAYOUTS[args.layout][int(task[-1])-1]
+                target = targets[task.split(':')[1]]
                 completed_visits[task] = math.dist(actual,target)
         if 'sensor_stamp_s' in payload:
             payload['sensor_stamp_s'] -= origin_clock
@@ -333,13 +357,15 @@ def trial(args):
         event_file.write(json.dumps({'t_s':round(t,3),'event':kind,**payload})+'\n')
         event_file.flush()
     origin = meta['origin_z_m']
-    mission = Mission(prior-origin,homes,args.pilot,args.policy,args.link,args.seed,emit)
+    mission_type = ExtensionMission if args.pilot>=5 else Mission
+    mission = mission_type(prior-origin,homes,args.pilot,args.policy,args.link,args.seed,emit)
     initial_rmse = float(np.sqrt(np.mean((prior-ref)**2)))
     noise = np.random.default_rng(args.seed).normal(0,.10,prior.shape)
     command = ['gz','sim','-s','-r','--headless-rendering','-v','2',str(world)]
     report = dict(vars(args),command=command,terrain_sha256=meta['terrain_sha256'],
                   gazebo=subprocess.check_output(['gz','sim','--versions'],text=True).strip())
-    video = Video(out,f'P{args.pilot} {args.policy} {args.link}') if args.video else None
+    label = f'P{args.pilot} {args.scenario or args.policy} {args.link}'
+    video = Video(out,label) if args.video else None
     previous_frames = {}
     distances = {name:0. for name in homes}
     previous = {}
@@ -352,6 +378,9 @@ def trial(args):
     path_errors = []
     visits = {}
     odom_loss_start = odom_loss_end = None
+    wall_entries = set()
+    east_ground_agents = set()
+    late_spawned = False
     status = 'failed'
     error = None
     progress = {}
@@ -361,7 +390,7 @@ def trial(args):
         server = subprocess.Popen(command,env=env,stdout=log,stderr=subprocess.STDOUT,
                                   start_new_session=True)
         try:
-            deadline = time.monotonic()+40
+            deadline = time.monotonic()+(90 if args.pilot==6 else 40)
             required = [name for name in homes if name.startswith('drone')]
             while not (all(name in io.poses and io.navigation(name) is not None for name in homes) and
                        all((name,'depth_camera') in io.images and (name,'camera') in io.images for name in required)):
@@ -377,6 +406,7 @@ def trial(args):
                 time.sleep(.04)
             emit('control_topics_ready',topics={name:control_topic(name) for name in homes})
             start = origin_clock = io.now
+            deadline = time.monotonic()+60
             for name in homes:
                 if args.smoke or name in required:
                     begin = io.poses[name][1][:2]
@@ -392,6 +422,13 @@ def trial(args):
                     if distance<=.025:
                         raise RuntimeError(f'{name} did not respond to its individual command')
             start = origin_clock = io.now
+            if args.pilot>=5:
+                for site in targets:
+                    if not (args.scenario=='emergent' and site=='S3'):
+                        emit('site_appeared',site=site,simulation_fixture=True)
+            if args.scenario=='oracle':
+                for site,xy in targets.items():
+                    mission.reveal(site,xy,0.,'oracle',origin_clock)
             next_control = start
             deadline = time.monotonic()+max(120,args.max_time*2)
             while not mission.completed:
@@ -411,6 +448,11 @@ def trial(args):
                         odom_loss_start = io.poses['rover_1'][1][:2]
                     if 18<=t<19:
                         odom_loss_end = io.poses['rover_1'][1][:2]
+                if args.scenario=='emergent' and not late_spawned and t>=TIMED_APPEARANCE_S:
+                    spawn_fixture(out/'late_site.sdf')
+                    late_spawned = True
+                    t = io.now-start
+                    emit('site_appeared',site='S3',simulation_fixture=True)
                 if t-last_status>=1:
                     last_status = t
                     for name,worker in workers.items():
@@ -430,12 +472,7 @@ def trial(args):
                     initial_path = mission.leases['rover_1'].path
                     if not any(math.dist(p,BLOCK_XY)<3 for p in initial_path):
                         raise RuntimeError('Initial route does not cross obstacle fixture')
-                    request = f'sdf_filename: "{(out/"obstacle.sdf").as_posix()}"'
-                    result = subprocess.run(['gz','service','-s',ROOT_TOPIC+'/create/blocking',
-                                 '--reqtype','gz.msgs.EntityFactory','--reptype','gz.msgs.Boolean',
-                                 '--timeout','5000','--req',request],capture_output=True,text=True,timeout=8)
-                    if result.returncode or 'data: true' not in result.stdout:
-                        raise RuntimeError('Obstacle insertion failed: '+result.stdout+result.stderr)
+                    spawn_fixture(out/'obstacle.sdf')
                     inserted = True
                     emit('obstacle_inserted',xy=BLOCK_XY)
                 for sender,receiver,msg in mission.channel.receive(t):
@@ -446,6 +483,12 @@ def trial(args):
                 for name,worker in workers.items():
                     publish_control(io,name,worker,mission,altitude,t)
                     actual = io.poses[name][1]
+                    if args.pilot==5 and name not in required:
+                        if actual[0]>4:
+                            east_ground_agents.add(name)
+                        if inside_wall(*actual[:2],args.scenario,margin=.35) and name not in wall_entries:
+                            wall_entries.add(name)
+                            emit('ground_barrier_entry',agent=name,xy=actual[:2])
                     if name in required and io.horizontal_commands.get(name,0.)>=.25:
                         since,anchor = progress.setdefault(name,(t,actual[:2]))
                         if math.dist(anchor,actual[:2])>=.12:
@@ -542,13 +585,21 @@ def trial(args):
                   min_obstacle_center_clearance_m=min_distance if math.isfinite(min_distance) else None,
                   wheel_odometry_vs_pose_rmse_m=float(np.sqrt(np.mean(np.square(track_errors)))) if track_errors else None,
                   human_heading_error_p95_deg=float(np.percentile(human_heading_errors,95)) if human_heading_errors else None,
-                  human_heading_samples=len(human_heading_errors),video_frames=video.frames if video else 0)
+                  human_heading_samples=len(human_heading_errors),video_frames=video.frames if video else 0,
+                  wall_entry_agents=sorted(wall_entries),east_ground_agents=sorted(east_ground_agents),
+                  inaccessible=[k for k,v in mission.tasks.items() if v.state=='inaccessible'])
     if status=='complete':
         if args.pilot==1:
             accepted = report['rover_goal_error_m']<=2 and (
                 not args.obstacle or (mission.blocked.any() and io.obstacle_contacts==0 and min_distance>=.9))
             if args.drop_odom:
                 accepted = accepted and report['odometry_outage_drift_m'] is not None and report['odometry_outage_drift_m']<.2
+        elif args.pilot==5:
+            accepted = report['returns']==6 and max(returns.values())<=2 and not wall_entries
+            if args.scenario=='sealed':
+                accepted = accepted and not east_ground_agents and report['inaccessible']==['inspect:S1']
+            else:
+                accepted = accepted and len(completed_visits)==2 and max(completed_visits.values())<=2
         else:
             accepted = report['returns']==6 and max(returns.values())<=2 and (
                 len(completed_visits)==8 and max(completed_visits.values())<=2)
@@ -561,7 +612,8 @@ def trial(args):
 
 if __name__=='__main__':
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--pilot',type=int,choices=[1,2,3,4],required=True)
+    p.add_argument('--pilot',type=int,choices=[1,2,3,4,5,6],required=True)
+    p.add_argument('--scenario',choices=['bypass','sealed','hidden','emergent','oracle'])
     p.add_argument('--zone',choices=['center','east','west'],default='center')
     p.add_argument('--layout',type=int,choices=[0,1],default=0)
     p.add_argument('--seed',type=int,default=7)
@@ -574,4 +626,8 @@ if __name__=='__main__':
     p.add_argument('--max-time',type=float,default=1200.)
     p.add_argument('--rate',type=float,default=7.)
     p.add_argument('--out',default=str(BASE/'trial'))
-    raise SystemExit(trial(p.parse_args()))
+    args = p.parse_args()
+    scenarios = {5:('bypass','sealed'),6:('hidden','emergent','oracle')}
+    if args.scenario not in scenarios.get(args.pilot,(None,)):
+        p.error('Pilot 5 needs bypass/sealed; pilot 6 needs hidden/emergent/oracle')
+    raise SystemExit(trial(args))

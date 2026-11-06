@@ -1,12 +1,13 @@
 """Observation, planning and task exchange for the live Gazebo experiments."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import heapq
 import math
 
 import numpy as np
 from scipy.ndimage import binary_dilation
 
-from mission import Agent, Belief, Grid, Task, assign, astar
+from mission import Agent, Belief, Grid, Task, assign, astar, slopes
+from extension_cases import GROUND_SCOUT
 
 LEASE_S = 14.
 RESEND_S = 2.
@@ -20,45 +21,56 @@ class Observation:
     heights: np.ndarray
     occupied: np.ndarray
     sites: dict
+    source: str = ""
+    pose: tuple = ()
+    confidence: dict = field(default_factory=dict)
 
 
-def project(depth, rgb, xy, camera_z, grid, fov, stamp, noise):
+def project(depth, rgb, xy, camera_z, grid, fov, stamp, noise, *, ground_yaw=None):
     """Project actual depth pixels in a nadir camera at world yaw zero."""
     height,width = depth.shape
     v,u = np.indices(depth.shape)
     focal = width/(2*math.tan(fov/2))
-    good = np.isfinite(depth) & (depth>.1) & (depth<75)
+    good = np.isfinite(depth) & (depth>.1) & (depth<(75 if ground_yaw is None else 5.5))
     d = depth[good]
-    x = xy[0]-(v[good]-(height-1)/2)*d/focal
-    y = xy[1]-(u[good]-(width-1)/2)*d/focal
-    z = camera_z-d
+    lateral = -(u[good]-(width-1)/2)*d/focal
+    down = (v[good]-(height-1)/2)*d/focal
+    if ground_yaw is None:
+        x,y,z = xy[0]-down,xy[1]+lateral,camera_z-d
+    else:
+        forward = math.cos(.12)*d-math.sin(.12)*down
+        x = xy[0]+math.cos(ground_yaw)*forward-math.sin(ground_yaw)*lateral
+        y = xy[1]+math.sin(ground_yaw)*forward+math.cos(ground_yaw)*lateral
+        z = camera_z-math.sin(.12)*d-math.cos(.12)*down
     color = rgb[good]
     row = np.floor((grid.half-y)/grid.cell).astype(int)
     col = np.floor((x+grid.half)/grid.cell).astype(int)
     valid = (row>=0)&(row<grid.n)&(col>=0)&(col<grid.n)
     row,col,x,y,z,color = (a[valid] for a in (row,col,x,y,z,color))
-    signature = color>145
-    saturated = np.all((color<95)|(color>145),axis=1)
+    high,low = (145,95) if ground_yaw is None else (200,45)
+    signature = color>high
+    saturated = np.all((color<low)|(color>high),axis=1)
     red = np.all(signature==(1,0,0),axis=1)&saturated
     occupied = np.zeros((grid.n,grid.n),bool)
     occupied[row[red],col[red]] = True
-    sites = {}
+    sites,confidence = {},{}
     tagged = red.copy()
     for sid,wanted in COLORS.items():
         hits = np.all(signature==wanted,axis=1)&saturated
         tagged |= hits
-        if hits.sum()>=2:
+        if hits.sum()>=(2 if ground_yaw is None else 12):
             point = [float(np.median(x[hits])),float(np.median(y[hits]))]
             sites[sid] = grid.xy(grid.rc(point)).tolist()
+            confidence[sid] = min(1.,float(hits.sum())/12.)
     terrain = ~tagged
     counts = np.zeros(occupied.shape,int)
     totals = np.zeros(occupied.shape)
     np.add.at(counts,(row[terrain],col[terrain]),1)
     np.add.at(totals,(row[terrain],col[terrain]),z[terrain])
-    mask = counts>=2
+    mask = (counts>=2) & (ground_yaw is None)
     values = np.full(occupied.shape,np.nan)
     values[mask] = totals[mask]/counts[mask]+noise[mask]
-    return Observation(stamp,mask,values,occupied,sites)
+    return Observation(stamp,mask,values,occupied,sites,confidence=confidence)
 
 
 class Channel:
@@ -156,11 +168,22 @@ class Mission:
         if self.pilot==1:
             return
         for site,xy in packet.sites.items():
-            if site not in self.seen:
-                self.seen[site] = xy
-                task = 'inspect:'+site
-                self.tasks[task] = Task(task,'inspect',xy,now,site=site)
-                self.emit('site_detected',site=site,xy=xy,sensor_stamp_s=packet.stamp)
+            self.reveal(site,xy,now,packet.source,packet.stamp,packet.pose,packet.confidence.get(site))
+
+    def reveal(self,site,xy,now,source,sensor_stamp,pose=(),confidence=None):
+        if site in self.seen:
+            return
+        self.seen[site] = xy
+        task = 'inspect:'+site
+        self.tasks[task] = Task(task,'inspect',xy,now,site=site)
+        self.emit('site_detected',site=site,xy=xy,sensor_stamp_s=sensor_stamp,
+                  observer=source,observer_pose=pose,confidence=confidence)
+
+    def ready_to_return(self):
+        return len(self.seen)==4 and all(t.state=='done' for t in self.tasks.values() if t.kind!='return')
+
+    def assignable_tasks(self):
+        return self.tasks
 
     def send_lease(self, name, now):
         lease = self.leases[name]
@@ -224,7 +247,7 @@ class Mission:
                 self.reassignments += 1
                 self.emit('lease_expired',agent=name,task=lease.task,token=lease.token)
         if self.pilot!=1:
-            if len(self.seen)==4 and all(t.state=='done' for t in self.tasks.values() if t.kind!='return'):
+            if self.ready_to_return():
                 for a in self.agents.values():
                     key = 'return:'+a.id
                     self.tasks.setdefault(key,Task(key,'return',a.home.tolist(),now))
@@ -240,7 +263,7 @@ class Mission:
                     if path is not None:
                         proposals.append((a,task,path if a.kind=='drone' else path[0],0))
         else:
-            proposals = assign(eligible,self.tasks,self.belief,
+            proposals = assign(eligible,self.assignable_tasks(),self.belief,
                                {'ground_sigma_gate_m':1.,'information_bonus_s':65.},self.policy)
         for agent,task,path,_ in proposals:
             self.counter += 1
@@ -254,3 +277,66 @@ class Mission:
                 self.emit('link_cut_scheduled',agent=agent.id,start_s=now+3.,end_s=now+63.)
         for name in self.leases:
             self.send_lease(name,now)
+
+class ScarpBelief(Belief):
+    def __init__(self, old, occupied):
+        super().__init__(old.mean,old.valid,old.grid,3.)
+        self.occupied = occupied
+
+    def safe(self, slope_limit):
+        allowed = ~binary_dilation(self.occupied,iterations=1)
+        allowed[[0,-1],:] = False
+        allowed[:,[0,-1]] = False
+        # Limit an individual step in addition to the local mean slope.
+        jump = np.zeros_like(self.mean)
+        for axis in (0,1):
+            diff = np.abs(np.diff(self.mean,axis=axis))
+            if axis==0:
+                jump[:-1] = np.maximum(jump[:-1],diff)
+                jump[1:] = np.maximum(jump[1:],diff)
+            else:
+                jump[:,:-1] = np.maximum(jump[:,:-1],diff)
+                jump[:,1:] = np.maximum(jump[:,1:],diff)
+        acceptable = (slopes(self.mean,self.grid.cell)<=slope_limit) & (jump<=self.grid.cell*math.tan(math.radians(slope_limit)))
+        return allowed & (~self.observed | acceptable)
+
+    def traversable(self,slope_limit,sigma_gate):
+        return super().traversable(slope_limit,sigma_gate) & self.safe(slope_limit)
+
+
+class ExtensionMission(Mission):
+    """Only sensor observations enter the planner; no scenario geometry is loaded here."""
+    def __init__(self,prior,homes,pilot,policy,link,seed,emit):
+        super().__init__(prior,homes,pilot,policy,link,seed,emit)
+        if pilot==5:
+            self.belief = ScarpBelief(self.belief,self.blocked)
+            for agent in self.agents.values():
+                if agent.kind=='human':
+                    agent.slope_limit = 22.
+        else:
+            key = 'ground_survey:rover_1'
+            self.tasks[key] = Task(key,'ground_survey',list(GROUND_SCOUT),0.)
+
+    def assignable_tasks(self):
+        # Reserve the shared departure corridor for the ground scout until it clears it.
+        scout = self.tasks.get('ground_survey:rover_1')
+        if scout and scout.state!='done':
+            return {key:task for key,task in self.tasks.items() if task.kind in ('survey','ground_survey')}
+        return super().assignable_tasks()
+
+    def ready_to_return(self):
+        if self.pilot!=5:
+            return super().ready_to_return()
+        if len(self.seen)!=1 or any(task.state!='done' for task in self.tasks.values()
+                                   if task.kind=='survey'):
+            return False
+        for task in self.tasks.values():
+            if task.kind not in ('inspect','sample') or task.state!='open':
+                continue
+            kind = 'rover' if task.kind=='inspect' else 'human'
+            candidates = [agent for agent in self.agents.values() if agent.kind==kind]
+            if all(astar(self.grid,self.belief.mean,self.belief.safe(a.slope_limit),a.xy,task.xy) is None
+                   for a in candidates):
+                task.state = 'inaccessible'
+                self.emit('ground_inaccessible',task=task.id,xy=task.xy,role=kind)
+        return all(task.state in ('done','inaccessible') for task in self.tasks.values() if task.kind!='return')

@@ -204,6 +204,8 @@ def astar(grid, mean, allowed, start_xy, goal_xy):
 
 
 def compatible(agent, task):
+    if task.kind == 'ground_survey':
+        return task.id == 'ground_survey:'+agent.id
     if task.kind == 'return':
         return task.id == 'return:'+agent.id
     return (agent.kind, task.kind) in {('drone','survey'), ('rover','inspect'), ('human','sample')}

@@ -13,6 +13,7 @@ import numpy as np
 from export_gazebo import ROOT, export, text, write_xml
 from mission import Grid, load_data
 from replay_gazebo import terrain_height
+from extension_cases import FOV_GROUND, fixtures
 
 BASE = ROOT / 'generated/closed_loop'
 DATA = ROOT / 'data/jezero'
@@ -170,12 +171,15 @@ def differential_variant(model):
                 text(ode,'mu2','.025')
 
 
-def build(data,out,pilot,layout,video,rate):
+def build(data,out,pilot,layout,video,rate,scenario=None):
     ref,prior,_,meta = load_data(data)
     grid = Grid(len(ref),meta['cell_m'])
     assert grid.n==32 and grid.cell==4
     out.mkdir(parents=True,exist_ok=True)
     home = P1_HOME if pilot==1 else HOME
+    if pilot==6:
+        # Park the second rover off the eastbound ground-scout corridor.
+        home = {**home,'rover_2':(-42,-34)}
     poses = {name:[*xy,0,0] for name,xy in home.items()}
     trajectory = out/'spawn.jsonl'
     trajectory.write_text(json.dumps({'positions':poses})+'\n')
@@ -215,6 +219,12 @@ def build(data,out,pilot,layout,video,rate):
             for k in ('depth_camera','camera'):
                 sensor(link,k,k,f'/live/{name}/{k}','0 0 -.25 0 1.570796326795 0',
                        SENSOR_SIZE,SENSOR_SIZE,FOV,mask=1)
+        if pilot==6 and kind!='drone':
+            camera_z = .86 if kind=='rover' else 1.62
+            camera_x = .67 if kind=='rover' else .35
+            for k in ('depth_camera','camera'):
+                sensor(link,k,k,f'/live/{name}/{k}',f'{camera_x} 0 {camera_z} 0 .12 0',
+                       SENSOR_SIZE,SENSOR_SIZE,FOV_GROUND,mask=1)
         if video:
             offset,target = {'drone':(5.,0.),'rover':(7.,.18),'human':(8.5,.93)}[kind]
             pitch = np.arctan(1/np.sqrt(2))
@@ -228,7 +238,9 @@ def build(data,out,pilot,layout,video,rate):
         inc.find('uri').text = f'model://{name}'
         (instance/'model.config').write_bytes((folder/'model.config').read_bytes())
         write_xml(tree.getroot(),instance/'model.sdf')
-    if pilot!=1:
+    if pilot>=5:
+        fixtures(world,out,pilot,scenario,ground,box)
+    elif pilot!=1:
         for index,((x,y),rgb) in enumerate(zip(LAYOUTS[layout],SITE_COLORS),1):
             world.append(box(f'fictional_site_{index}',(x,y,ground(x,y)+.4),(2.3,2.3,.8),rgb,False))
     else:

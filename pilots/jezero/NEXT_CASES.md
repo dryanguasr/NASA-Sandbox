@@ -1,5 +1,7 @@
 # Próximos casos de Jezero
 
+[Ejecución, comparación y videos de los dos casos](../../evidence/jezero_56/report.md).
+
 La referencia metodológica es la tesis de David Reinerio Yanguas Rojas (2018), que combina exploración de espacios no convexos, heterogeneidad de los agentes y asignación de tareas por eventos. Los siguientes casos trasladan esas ideas a Jezero con el planificador y los sensores del repositorio. [Registro institucional de la tesis](https://repositorio.unal.edu.co/handle/unal/68687).
 
 ## Piloto 5 — Cuenca con acceso terrestre parcial

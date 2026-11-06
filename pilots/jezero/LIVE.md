@@ -40,3 +40,10 @@ Para el reensayo del este con video y comprobación individual de los seis agent
     OPENBLAS_NUM_THREADS=1 /usr/bin/python3 pilots/jezero/live_trial.py --pilot 3 --zone east --layout 1 --seed 7 --policy information_hungarian --rate 18 --video --smoke --out generated/closed_loop/east-retry
 
 El arranque verifica los suscriptores de velocidad y el desplazamiento de los drones. Los humanos giran hacia el siguiente punto antes de avanzar por el eje del visor. [Próximos casos de terreno no convexo y descubrimiento de tareas](NEXT_CASES.md).
+
+Los pilotos 5 y 6 se reproducen en un directorio de salida vacío con estos comandos:
+
+    OPENBLAS_NUM_THREADS=1 /usr/bin/python3 pilots/jezero/run_live_pilots.py 5 6 --jobs 3 --rate 7 --out generated/closed_loop/extensions
+    /usr/bin/python3 pilots/jezero/extension_report.py
+
+Se puede ejecutar una sola variante con `live_trial.py --pilot 5 --zone west --scenario bypass --video --smoke --out <directorio>` o con `--pilot 6 --scenario emergent` en el recorte central. [Informe, videos y telemetría de los pilotos 5 y 6](../../evidence/jezero_56/report.md).

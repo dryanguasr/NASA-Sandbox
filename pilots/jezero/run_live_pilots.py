@@ -22,6 +22,12 @@ def schedule(pilot):
         ]
     if pilot==2:
         return [('nominal',['--video','--smoke'])]
+    if pilot==5:
+        return [(case,['--zone','west','--scenario',case,'--video','--smoke'])
+                for case in ('bypass','sealed')]
+    if pilot==6:
+        return [(case,['--scenario',case,'--video','--smoke'])
+                for case in ('hidden','emergent','oracle')]
     if pilot==3:
         cases = []
         policies = ('information_hungarian','nearest_greedy')
@@ -60,6 +66,9 @@ def combine(root,pilot,paths):
     videos = [root/f'p{pilot}'/name/'live.mp4' for name in paths]
     if not all(video.is_file() and video.stat().st_size for video in videos):
         return
+    if pilot>=5 and not all(json.loads((video.parent/'result.json').read_text())['status']=='complete'
+                            for video in videos):
+        return
     (root/'videos').mkdir(exist_ok=True)
     out = root/'videos'/f'piloto_{pilot}.mp4'
     if pilot==1:
@@ -82,7 +91,7 @@ def combine(root,pilot,paths):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('pilots',nargs='*',type=int,choices=[1,2,3,4])
+    parser.add_argument('pilots',nargs='*',type=int,choices=[1,2,3,4,5,6])
     parser.add_argument('--out',type=Path,default=BASE/'executed')
     parser.add_argument('--jobs',type=int,default=4)
     parser.add_argument('--rate',type=float,default=10)
@@ -95,7 +104,12 @@ def main():
         parser.error('--jobs and --rate must be positive')
     root.mkdir(parents=True,exist_ok=True)
     excluded = {}
-    for zone in ('center','east','west') if 3 in pilots else ('center',):
+    zones = ['center']
+    if 3 in pilots:
+        zones.append('east')
+    if 3 in pilots or 5 in pilots:
+        zones.append('west')
+    for zone in zones:
         try:
             prepare(zone)
         except (RuntimeError,ValueError,OSError,subprocess.TimeoutExpired) as error:
@@ -113,7 +127,7 @@ def main():
             print(f'P{pilot} {name}: {result["status"]} t={result.get("duration_s","—")}',flush=True)
     pairs = {1:['clear','obstacle'],2:['nominal'],
              3:['center-0-7-information_hungarian','center-0-7-nearest_greedy'],
-             4:['7-ideal','7-cut']}
+             4:['7-ideal','7-cut'],5:['bypass','sealed'],6:['hidden','emergent','oracle']}
     for pilot in pilots:
         combine(root,pilot,pairs[pilot])
 
