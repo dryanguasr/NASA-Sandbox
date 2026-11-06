@@ -15,7 +15,7 @@ Los pilotos 5 y 6 prueban el acceso terrestre no convexo y la creación de tarea
 
 ### Piloto 7 · Cráter Belva
 
-Los drones descubren los objetivos a partir de imágenes de Gazebo. El relieve de HiRISE condiciona las rutas terrestres del rover y del astronauta. El video muestra el mapa cenital al centro y las seis vistas de seguimiento con cuadrícula de 4 m.
+Los drones descubren los objetivos a partir de imágenes de Gazebo. El relieve de HiRISE condiciona las rutas del rover y del astronauta. El ensayo actualizado verifica los seis regresos con el controlador bidireccional del rover. El video muestra el mapa cenital al centro y las seis vistas de seguimiento con cuadrícula de 4 m.
 
 [![Piloto Belva en Gazebo: mapa central y seis vistas de los agentes](evidence/jezero_belva/belva.gif)](evidence/jezero_belva/belva.mp4)
 

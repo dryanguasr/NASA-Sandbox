@@ -12,7 +12,7 @@
   "video": true,
   "max_time": 1200.0,
   "rate": 7.0,
-  "out": "generated/closed_loop/belva-v3",
+  "out": "generated/closed_loop/belva-steady",
   "command": [
     "gz",
     "sim",
@@ -21,33 +21,33 @@
     "--headless-rendering",
     "-v",
     "2",
-    "/mnt/c/Users/User/Documents/ChatGPT/NASA Sandbox 2/NASA-Sandbox/generated/closed_loop/belva-v3/live.sdf"
+    "/mnt/c/Users/User/Documents/ChatGPT/NASA Sandbox 2/NASA-Sandbox/generated/closed_loop/belva-steady/live.sdf"
   ],
   "terrain_sha256": "12a8118fcbcbb588a6453ce78d1e010fd323fa426d51a77f6c2316d2913d27f9",
   "gazebo": "8.14.0",
   "status": "complete",
   "error": null,
-  "duration_s": 457.05,
+  "duration_s": 453.77,
   "coverage": 1.0,
-  "t80_s": 28.549999999999997,
+  "t80_s": 28.2875,
   "initial_rmse_m": 3.7859244346618652,
-  "final_rmse_m": 0.3382738780471132,
-  "depth_frames": 1831,
+  "final_rmse_m": 0.33371976091054256,
+  "depth_frames": 1816,
   "distance_m": {
-    "rover_1": 0.0007217794696450886,
-    "rover_2": 223.3331386115449,
-    "human_1": 176.6551866255102,
+    "rover_1": 0.0008573701666765142,
+    "rover_2": 222.32406826177956,
+    "human_1": 176.54985696812034,
     "human_2": 0.0,
-    "drone_1": 438.0693945976,
-    "drone_2": 486.53864352491513
+    "drone_1": 437.1116435538926,
+    "drone_2": 486.1224752511386
   },
   "final_home_error_m": {
-    "rover_1": 0.2608530561946211,
-    "rover_2": 0.7361380809440261,
-    "human_1": 0.59407067833871,
-    "human_2": 0.24500000000017508,
-    "drone_1": 0.5821003452998105,
-    "drone_2": 0.5235100942619958
+    "rover_1": 0.1537348903131459,
+    "rover_2": 0.8806924689249191,
+    "human_1": 0.66353245482372,
+    "human_2": 0.24675000000017633,
+    "drone_1": 0.6663235817745734,
+    "drone_2": 0.6836036155366488
   },
   "samples": 1,
   "inspections": 1,
@@ -62,18 +62,18 @@
   "link_restored": false,
   "link_recovery_s": null,
   "site_visit_error_m": {
-    "inspect:S1": 0.32793741051865855,
-    "sample:S1": 0.6520614071140965
+    "inspect:S1": 0.2220947196285895,
+    "sample:S1": 0.6546248154250738
   },
   "rover_goal_error_m": null,
   "odometry_outage_drift_m": null,
-  "route_tracking_rmse_m": 0.19643219047466723,
+  "route_tracking_rmse_m": 0.1876292144103366,
   "obstacle_contact_reports": 0,
   "min_obstacle_center_clearance_m": null,
-  "wheel_odometry_vs_pose_rmse_m": 0.08426060147560073,
-  "human_heading_error_p95_deg": 0.186886402849592,
-  "human_heading_samples": 1543,
-  "video_frames": 224,
+  "wheel_odometry_vs_pose_rmse_m": 0.07097292551218783,
+  "human_heading_error_p95_deg": 0.21201295382838037,
+  "human_heading_samples": 1730,
+  "video_frames": 221,
   "wall_entry_agents": [],
   "east_ground_agents": [],
   "inaccessible": [
@@ -81,38 +81,38 @@
   ],
   "discoveries": {
     "S1": {
-      "t_s": 9.02,
+      "t_s": 8.785,
       "event": "site_detected",
       "site": "S1",
       "xy": [
         -18.0,
         18.0
       ],
-      "sensor_stamp_s": 8.5,
+      "sensor_stamp_s": 8.51,
       "observer": "drone_2",
       "observer_pose": [
-        8.626853117095106,
-        -17.21811116928985,
+        8.821399483765372,
+        -17.24599868201807,
         35.161865234375,
-        -2.930988785010423e-18
+        -4.690692279041434e-18
       ],
-      "confidence": 0.25
+      "confidence": 0.16666666666666666
     },
     "S2": {
-      "t_s": 4.06,
+      "t_s": 3.867,
       "event": "site_detected",
       "site": "S2",
       "xy": [
         6.0,
         -22.0
       ],
-      "sensor_stamp_s": 3.5,
+      "sensor_stamp_s": 3.51,
       "observer": "drone_1",
       "observer_pose": [
-        28.799870578515737,
-        -33.82927648568832,
+        28.980210124083563,
+        -33.775332986951696,
         35.161865234375,
-        2.309263891220329e-18
+        -2.3758772726978306e-18
       ],
       "confidence": 1.0
     }
@@ -120,22 +120,62 @@
   "route_comparison": {
     "inspect:S1": {
       "agent": "rover_2",
-      "direct_m": 72.33875881706379,
-      "planned_m": 112.58875727692694,
-      "observed_m": 111.44388675643403,
+      "direct_m": 72.32254769924228,
+      "planned_m": 112.57622170059837,
+      "observed_m": 111.28174972000849,
       "blocked_direct_cells": 15,
-      "assigned_s": 53.57,
-      "completed_s": 198.85
+      "assigned_s": 53.635,
+      "completed_s": 200.602
     },
     "sample:S1": {
       "agent": "human_1",
-      "direct_m": 70.9680669667705,
-      "planned_m": 90.90041699796971,
-      "observed_m": 88.5967566980135,
+      "direct_m": 70.9513116514594,
+      "planned_m": 90.8776669979697,
+      "observed_m": 88.65427111971523,
       "blocked_direct_cells": 7,
-      "assigned_s": 199.38,
-      "completed_s": 299.91
+      "assigned_s": 201.32,
+      "completed_s": 301.782
     }
+  },
+  "verified_returns": {
+    "rover_1": {
+      "assigned_s": 302.415,
+      "completed_s": 306.55,
+      "completion_home_error_m": 0.15373114982331926
+    },
+    "rover_2": {
+      "assigned_s": 302.415,
+      "completed_s": 452.52,
+      "completion_home_error_m": 0.8806924689249191
+    },
+    "human_1": {
+      "assigned_s": 302.415,
+      "completed_s": 402.95,
+      "completion_home_error_m": 0.66353245482372
+    },
+    "human_2": {
+      "assigned_s": 302.415,
+      "completed_s": 308.602,
+      "completion_home_error_m": 0.24675000000017633
+    },
+    "drone_1": {
+      "assigned_s": 302.415,
+      "completed_s": 317.495,
+      "completion_home_error_m": 0.6663235817745734
+    },
+    "drone_2": {
+      "assigned_s": 302.415,
+      "completed_s": 326.125,
+      "completion_home_error_m": 0.6836036155366488
+    }
+  },
+  "inspection_rover_return": {
+    "agent": "rover_2",
+    "reverse_samples": 0,
+    "approach_reverse_samples": 140,
+    "initial_heading_deg": 7.38689638972549,
+    "east_progress_approx_10_s_m": 7.765736219945701,
+    "cross_track_max_m": 0.650696508280987
   },
   "inaccessible_s": 123.39,
   "mesh_max_error_m": 5.000000058430487e-08,

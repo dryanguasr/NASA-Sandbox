@@ -57,6 +57,7 @@ class Worker:
     last_complete: float = -100.
     expired_logged: bool = False
     odom_missing: bool = False
+    drive_direction: int | None = None
 
     def accept(self, message):
         kind,*args = message
@@ -74,6 +75,7 @@ class Worker:
             self.expired_logged = False
             self.last_complete = -100.
             self.goal = path[-1][:2] if path else None
+            self.drive_direction = None
         self.expires = max(self.expires,expires)
 
 
@@ -218,6 +220,19 @@ def human_motion(dx,dy,yaw,speed):
     return (speed if abs(error)<=.12 else 0.), max(-1.8,min(1.8,3*error))
 
 
+def rover_motion(dx,dy,yaw,speed,direction=None):
+    """Choose the closest orientation once per waypoint, including reverse."""
+    bearing = math.atan2(dy,dx)
+    error = math.remainder(bearing-yaw,math.tau)
+    if direction is None:
+        direction = -1 if abs(error)>math.pi/2 else 1
+    if direction==-1:
+        error = math.remainder(error+math.pi,math.tau)
+    # Limit steering on the mesh, and blend in traction as the wheels align.
+    forward = direction*speed*max(0.,1.-abs(error)/.8)
+    return forward, max(-.65,min(.65,1.5*error)), direction
+
+
 def publish_control(io,name,worker,mission,altitude,now):
     nav = io.navigation(name)
     if nav is None or io.now-nav[0]>STALE_S:
@@ -238,6 +253,7 @@ def publish_control(io,name,worker,mission,altitude,now):
     # Stop at each waypoint within a bounded tracking tolerance.
     while worker.waypoints and math.dist((x,y),worker.waypoints[0][:2])<.70:
         worker.waypoints.popleft()
+        worker.drive_direction = None
     if not worker.waypoints:
         io.command(name)
         if worker.arrived is None:
@@ -251,7 +267,10 @@ def publish_control(io,name,worker,mission,altitude,now):
     dx,dy = goal[0]-x,goal[1]-y
     distance = math.hypot(dx,dy)
     speed = min(agent.speed,max(.25,distance))
-    if agent.kind=='rover':
+    if agent.kind=='rover' and mission.pilot==7:
+        forward,turn,worker.drive_direction = rover_motion(dx,dy,yaw,speed,worker.drive_direction)
+        io.command(name,x=forward,yaw=turn)
+    elif agent.kind=='rover':
         heading = math.atan2(dy,dx)-yaw
         error = math.atan2(math.sin(heading),math.cos(heading))
         io.command(name,x=speed*max(0.,math.cos(error)) if abs(error)<.50 else 0.,
@@ -558,9 +577,15 @@ def trial(args):
                         if nav and name.startswith('rover'):
                             track_errors.append(math.dist(nav[1][:2],pose[:2]))
                     previous = observed
-                    states.write(json.dumps({'t_s':round(t,3),'coverage':coverage,'poses':observed,
-                                             'tasks':{k:w.task for k,w in workers.items()},
-                                             'navigation':{k:io.navigation(k) for k in homes}})+'\n')
+                    state = {'t_s':round(t,3),'coverage':coverage,'poses':observed,
+                             'tasks':{k:w.task for k,w in workers.items()},
+                             'navigation':{k:io.navigation(k) for k in homes}}
+                    if args.pilot==7:
+                        state['rover_control'] = {
+                            name:{'direction':worker.drive_direction,
+                                  'waypoint':worker.waypoints[0] if worker.waypoints else None}
+                            for name,worker in workers.items() if name.startswith('rover')}
+                    states.write(json.dumps(state)+'\n')
                     states.flush()
                 if inserted and 'rover_1' in io.poses:
                     x,y,*_ = io.poses['rover_1'][1]

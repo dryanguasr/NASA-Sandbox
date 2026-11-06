@@ -13,7 +13,18 @@ Los drones descubrieron los dos marcadores al explorar. El rover 2 inspeccionó 
 
 Las distancias de la tabla son horizontales. Las celdas excluidas se calcularon a posteriori con HiRISE y los límites de cada tipo de agente. El [resultado detallado](result.json) separa las distancias planificadas de las observadas y registra las marcas temporales de detección, asignación y finalización.
 
-La ejecución publicada duró **457,05 s simulados**, alcanzó el 80 % de cobertura a los 28,55 s y terminó con el 100 %. El error de elevación frente al DEM HiRISE pasó de 3,79 m a 0,34 m RMSE. La mayor distancia final al punto de partida fue de 0,74 m. En los tramos con movimiento humano medible, el percentil 95 del ángulo entre la orientación y el avance fue de 0,19°.
+La ejecución corregida duró **453,77 s simulados**, alcanzó el 80 % de cobertura a los 28,29 s y terminó con el 100 %. El error de elevación frente al DEM HiRISE pasó de 3,79 m a 0,33 m RMSE. En los tramos con movimiento humano medible, el percentil 95 del ángulo entre la orientación y el avance fue de 0,21°.
+
+El rover 2 se aproximó a S1 marcha atrás y quedó orientado a 7,39° respecto del este. Al recibir el regreso, salió en avance y progresó 7,77 m hacia el este en unos diez segundos. En todo el regreso, su separación máxima de la ruta asignada fue de 0,65 m, medida sobre poses registradas aproximadamente una vez por segundo. Cada regreso se verificó con un evento de finalización y su pose de Gazebo.
+
+| Agente | Retorno confirmado (s simulados) | Distancia al punto de partida (m) |
+|---|---:|---:|
+| Rover 1 | 306,55 | 0,15 |
+| Rover 2 | 452,52 | 0,88 |
+| Astronauta 1 | 402,95 | 0,66 |
+| Astronauta 2 | 308,60 | 0,25 |
+| Dron 1 | 317,50 | 0,67 |
+| Dron 2 | 326,13 | 0,68 |
 
 ## Relieve y datos
 
@@ -36,12 +47,22 @@ El relieve abarca **32,78 m** (−2479,03 a −2446,25 m), con una pendiente má
 12a8118fcbcbb588a6453ce78d1e010fd323fa426d51a77f6c2316d2913d27f9
 ```
 
-## Diagnóstico y validaciones
+## Desvío del rover 2 y corrección
+
+En el ensayo fallido, a los 301,83 s simulados el rover recibió una ruta cuyo primer tramo útil iba de (−18, 18) a (−14, 18), hacia el este y cuesta arriba. Estaba junto a S1 en (−17,59, 18,11), con rumbo −173°. La pendiente de la celda de S1 en el DEM es de 11,15°. El controlador solo permitía avance frontal, por lo que intentó girar casi media vuelta sobre la ladera antes de avanzar. Después de la primera alineación, el rumbo osciló entre ambos lados del este. A los 307,08 s la posición de navegación discrepaba 0,86 m de la pose observada, más que la tolerancia de 0,70 m para dar un punto por alcanzado. El rover terminó a 41,78 m de la ruta asignada y perdió 9,09 m de cota. [Telemetría del desvío](repeatability.tar.gz).
+
+El ensayo anterior completó el regreso por ese mismo primer tramo. La secuencia del fallo indica que el giro en pendiente y el error de posición durante la maniobra desestabilizaron el seguimiento local. La ruta seguía apuntando hacia el este y la telemetría anterior no incluía fuerzas de contacto, así que no se puede aislar cuánto contribuyó el deslizamiento de cada rueda.
+
+La primera corrección permitió avanzar o retroceder con la orientación más cercana y conservó esa elección hasta alcanzar el punto de paso. El rover superó la salida de S1, pero perdió seguimiento más adelante, cerca de (46, 14), con el punto (54, 10) aún pendiente. El ensayo se detuvo a los 589,29 s con cinco regresos y el rover a 6,85 m de la ruta asignada. [Telemetría de la corrección intermedia](bidirectional-only.tar.gz).
+
+La segunda corrección mantuvo la marcha bidireccional y suavizó el seguimiento. Limitó el giro a 0,65 rad/s, aumentó gradualmente la velocidad longitudinal a medida que se alineaban las ruedas y redujo el paso de integración física de Gazebo de 10 a 2,5 ms en Belva. Se mantuvieron el modelo diferencial, la odometría y la parada por datos caducados. La telemetría nueva registra el punto activo y el sentido seleccionado. El recorte, los marcadores y el planificador A* son los mismos. Los cambios de seguimiento y paso físico se probaron juntos. [Configuración física de Gazebo](https://github.com/gazebosim/gz-sim/blob/main/tutorials/physics.md).
+
+## Validaciones
 
 - El primer intento se interrumpió a los 18,48 s simulados al dibujar la primera etiqueta descubierta. La capa visual llamaba a un método que no existía en el mapa. Se corrigió para usar la cota estimada de la celda.
 - En el segundo intento se detectaron ambos objetivos, pero la ruta a S1 que permitía el filtro preliminar de pendiente quedaba cerrada al aplicar también el filtro de vecindad del planificador. Se detuvo a los 505,09 s simulados, con velocidades cero. El selector definitivo evalúa ambos filtros con margen de pendiente y espacio respecto del borde del recorte.
-- Una repetición para depurar la superposición visual volvió a completar el muestreo y cinco retornos. El rover 2 derivó ladera abajo durante el regreso y se detuvo el ensayo a los 579,19 s simulados con velocidad cero para los seis. El retorno por esa ladera sigue siendo sensible a la dinámica del rover. Se publica la primera ejecución completa. [Telemetría de la repetición](repeatability.tar.gz).
-- Pasaron las dos validaciones estáticas y 31 pruebas. Se cargó el mundo canónico por separado con `bash scripts/run_gazebo.sh`. La regresión 2.5D se ejecutó por separado con `run_all.py`; sus seis comparaciones completaron cuatro muestras cada una.
+- El ensayo del desvío se detuvo a los 579,19 s simulados con velocidad cero para los seis agentes. Había completado el muestreo y cinco retornos.
+- Pasaron las dos validaciones estáticas y 34 pruebas de regresión. Se cargó por separado el mundo canónico con `bash scripts/run_gazebo.sh`. En la validación inicial de Belva se ejecutó también la regresión 2.5D con `run_all.py`, cuyas seis comparaciones completaron cuatro muestras cada una.
 - Entorno de ejecución: Ubuntu 24.04 en WSL2, Gazebo Sim 8.14.0 (Harmonic), Python 3.12.3 y FFmpeg 6.1.1. GPU del equipo: NVIDIA GeForce RTX 4050 Laptop, controlador 610.62.
 
 ## Reproducción
@@ -68,4 +89,4 @@ Para repetir la selección orbital, preparar la venv de la [guía Jezero](../../
   --lon 77.38555752781869 --side-m 128 --out generated/closed_loop/belva-source
 ```
 
-El MP4 reúne cámaras del servidor Gazebo. El centro muestra las restricciones estimadas para el rover en rojo y las rutas de trabajo en naranja (rover) y verde (astronauta). En la grabación publicada, la línea de ruta incluye un segmento visual que une la pose actual con el primer punto asignado. Las seis cámaras laterales tienen seguimiento isométrico y cuadrícula fija de 4 m en el terreno. El GIF comprime la misma toma. Ambos archivos se decodificaron completos con FFmpeg.
+El MP4 reúne cámaras del servidor Gazebo. El centro muestra las restricciones estimadas para el rover en rojo y las rutas de trabajo en naranja (rover) y verde (astronauta). Las seis cámaras laterales tienen seguimiento isométrico y cuadrícula fija de 4 m en el terreno. El GIF comprime la misma toma. Ambos archivos se decodificaron completos con FFmpeg.

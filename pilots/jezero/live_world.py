@@ -193,7 +193,7 @@ def build(data,out,pilot,layout,video,rate,scenario=None):
     world = root.find('world')
     world.set('name','jezero_live')
     physics = ET.SubElement(world,'physics',name='live',type='ignored')
-    text(physics,'max_step_size','.01')
+    text(physics,'max_step_size','.0025' if pilot==7 else '.01')
     text(physics,'real_time_factor',rate)
     ET.SubElement(world,'plugin',filename='gz-sim-imu-system',name='gz::sim::systems::Imu')
     altitude = float(np.max(prior)-meta['origin_z_m']+23.)

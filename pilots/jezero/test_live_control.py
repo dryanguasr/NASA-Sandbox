@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from live_trial import Worker, human_motion, publish_control
+from live_trial import Worker, human_motion, publish_control, rover_motion
 
 
 @pytest.mark.parametrize('dx,dy,yaw,forward,turn', [
@@ -16,6 +16,19 @@ from live_trial import Worker, human_motion, publish_control
 ])
 def test_human_faces_waypoint_before_advancing(dx,dy,yaw,forward,turn):
     assert human_motion(dx,dy,yaw,1)==pytest.approx((forward,turn))
+
+
+@pytest.mark.parametrize('yaw', [math.pi-.06, -math.pi+.06])
+def test_belva_rover_backs_up_without_pivot_at_turnaround(yaw):
+    forward,turn,direction = rover_motion(4.,0.,yaw,.85)
+    assert direction==-1
+    assert forward==pytest.approx(-.85*(1.-.06/.8))
+    assert abs(turn)==pytest.approx(.09)
+
+
+def test_belva_rover_preserves_direction_until_waypoint_changes():
+    assert rover_motion(0.,1.,0.,.85,-1)==(0.,-.65,-1)
+    assert rover_motion(0.,1.,math.pi/2,.85)==(.85,0.,1)
 
 
 def test_pose_watchdog_uses_absolute_gazebo_time():

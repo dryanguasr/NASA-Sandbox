@@ -16,6 +16,15 @@ from mission import Grid, load_data, slopes
 from select_belva import line_cells, passable
 
 
+def return_tracking(path, trace):
+    """Distances from sampled Gazebo poses to the assigned horizontal polyline."""
+    start = np.asarray(path[:-1])
+    segments = np.diff(path,axis=0)
+    offset = np.asarray(trace)[:,None,:]-start
+    progress = (offset*segments).sum(axis=2)/np.square(segments).sum(axis=1)
+    return np.linalg.norm(offset-np.clip(progress,0,1)[:,:,None]*segments,axis=2).min(axis=1)
+
+
 def audit(run):
     result = json.loads((run/'result.json').read_text())
     events = rows(run/'events.jsonl')
@@ -68,7 +77,33 @@ def audit(run):
     inaccessible = event('ground_inaccessible','task','inspect:S2')
     assert discoveries['S2']['t_s']<=inaccessible['t_s']
     assert not any(e.get('task')=='sample:S2' for e in events)
-    result.update(discoveries=discoveries, route_comparison=routes,
+    returns = {}
+    for agent in result['final_home_error_m']:
+        assigned = event('assigned','task','return:'+agent)
+        completed = event('task_completed','task','return:'+agent)
+        home_error = math.dist(completed['observed_xy_m'],assigned['path'][-1])
+        assert home_error<=2
+        returns[agent] = dict(assigned_s=assigned['t_s'],completed_s=completed['t_s'],
+                              completion_home_error_m=home_error)
+    agent = routes['inspect:S1']['agent']
+    assigned = event('assigned','task','return:'+agent)
+    samples = [s for s in states if assigned['t_s']<=s['t_s']<=returns[agent]['completed_s']]
+    track = return_tracking(assigned['path'],[s['poses'][agent][:2] for s in samples])
+    reverse = sum(s['rover_control'][agent]['direction']==-1 for s in samples)
+    inspection = routes['inspect:S1']
+    approach_reverse = sum(s['rover_control'][agent]['direction']==-1 for s in states
+                           if inspection['assigned_s']<=s['t_s']<=inspection['completed_s'])
+    departure = next(s for s in reversed(states) if s['t_s']<=assigned['t_s'])
+    after_ten = min(samples,key=lambda s:abs(s['t_s']-assigned['t_s']-10.))
+    east_progress = after_ten['poses'][agent][0]-departure['poses'][agent][0]
+    assert approach_reverse+reverse>0 and east_progress>2 and max(track)<=2, (
+        agent,approach_reverse,reverse,east_progress,max(track))
+    result.update(discoveries=discoveries, route_comparison=routes, verified_returns=returns,
+                  inspection_rover_return=dict(agent=agent,reverse_samples=reverse,
+                                               approach_reverse_samples=approach_reverse,
+                                               initial_heading_deg=math.degrees(departure['poses'][agent][3]),
+                                               east_progress_approx_10_s_m=east_progress,
+                                               cross_track_max_m=float(max(track))),
                   inaccessible_s=inaccessible['t_s'], mesh_max_error_m=error,
                   elevation_range_m=[float(dem.min()),float(dem.max())],
                   maximum_slope_deg=float(slopes(dem,4).max()))
