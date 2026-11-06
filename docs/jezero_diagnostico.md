@@ -29,7 +29,7 @@ La reproducción usa poses cinemáticas e interpola entre muestras de trayectori
 
 El montaje de 1920 × 1080 mantiene la cuadrícula de tres filas por cuatro columnas. El mapa cenital ocupa las dos columnas centrales. A cada lado se apilan, de arriba abajo, las cámaras del dron, el rover y el humano del mismo número. La vista cenital conserva los seis marcadores, las trazas recientes y los sitios que ya se descubrieron en la misión.
 
-La variante de grabación añade cámaras simuladas a los seis modelos visuales. La cámara del dron mira hacia abajo y adelante. Las cámaras del rover y del humano se sitúan a la altura del mástil y del visor, respectivamente. El montaje reúne fotogramas que tienen la misma marca de tiempo de Gazebo y espera un conjunto nuevo tras confirmar las seis poses de cada paso. Las siete pistas individuales se extraen del montaje y comparten su duración y cadencia.
+Las seis cámaras laterales siguen a los agentes en tercera persona con un ángulo isométrico. Cada cámara apunta al modelo desde 45° respecto a su eje longitudinal y unos 35,3° por encima de la horizontal. El campo de visión estrecho reduce la distorsión de perspectiva. El montaje reúne fotogramas que tienen la misma marca de tiempo de Gazebo y espera un conjunto nuevo tras confirmar las seis poses de cada paso. Las siete pistas individuales se extraen del montaje y comparten su duración y cadencia.
 
 Se verificaron los 725 conjuntos de poses y se decodificaron los ocho archivos completos. Cada video tiene 783 fotogramas a 15 fps y dura 52,2 s. Los registros de poses incluyen la marca de tiempo compartida por las cámaras de cada fotograma de misión. [Verificación de los archivos de video](../evidence/jezero_replay/multivista-video-check.json).
 

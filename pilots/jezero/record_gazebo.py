@@ -36,9 +36,13 @@ CAMERA_Z, FOV = 560, 1.02
 COLORS = {'drone': '#63dce9', 'rover': '#ffcc72', 'human': '#acf09d'}
 KINDS = ('drone', 'rover', 'human')
 NAMES = {'drone': 'Dron', 'rover': 'Rover', 'human': 'Humano'}
-MOUNTS = {'drone': ('body', '.28 0 .02 0 .48 0'),
-          'rover': ('chassis', '.45 0 .82 0 .13 0'),
-          'human': ('suit', '.34 0 1.60 0 .12 0')}
+# Link, diagonal offset, and height of the target above the link origin.
+MOUNTS = {'drone': ('body', 3.2, 0.0),
+          'rover': ('chassis', 4.4, .18),
+          'human': ('suit', 6.0, .93)}
+ISOMETRIC_PITCH = math.atan(1/math.sqrt(2))
+ISOMETRIC_YAW = -3*math.pi/4
+ISOMETRIC_FOV = .39
 MODELS = GENERATED / 'observation_models'
 
 
@@ -75,7 +79,7 @@ def add_camera(link, name, width, height, fov, near, pose):
 
 def camera_world():
     shutil.copytree(GENERATED/'models', MODELS, dirs_exist_ok=True)
-    for kind, (link_name, pose) in MOUNTS.items():
+    for kind, (link_name, offset, target_z) in MOUNTS.items():
         path = MODELS/f'replay_{kind}'/'model.sdf'
         model_tree = ET.parse(path)
         model = model_tree.getroot().find('model')
@@ -83,7 +87,9 @@ def camera_world():
             for sensor in link.findall('sensor'):
                 link.remove(sensor)
         link = model.find(f"link[@name='{link_name}']")
-        add_camera(link, 'replay_camera', CAMERA_WIDTH, CAMERA_HEIGHT, 1.24, .05, pose)
+        # Equal XYZ offsets set the isometric angle. A narrow FOV limits perspective distortion.
+        pose = f'{offset} {offset} {offset+target_z} 0 {ISOMETRIC_PITCH} {ISOMETRIC_YAW}'
+        add_camera(link, 'replay_camera', CAMERA_WIDTH, CAMERA_HEIGHT, ISOMETRIC_FOV, .05, pose)
         model_tree.write(path, encoding='utf-8', xml_declaration=True)
     tree = ET.parse(GENERATED / 'jezero_mission.sdf')
     world = tree.getroot().find('world')
@@ -266,7 +272,7 @@ def main():
                     draw.rounded_rectangle((x,y,x+456,y+336),radius=8,fill='#1c2734')
                     frame.paste(Image.frombytes('RGB',(CAMERA_WIDTH,CAMERA_HEIGHT),frames[name]),(x,y+35))
                     label(x+12,y+3,f'{NAMES[kind]} {index}',23,color)
-                    label(x+257,y+7,'CÁMARA SIMULADA',17,'#bec9d6')
+                    label(x+240,y+7,'VISTA ISOMÉTRICA',17,'#bec9d6')
                     task = mission['tasks'][name]
                     if task is None:
                         task_label = 'En base' if t >= returns[name] else 'En espera'

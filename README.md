@@ -50,7 +50,7 @@ export GZ_PARTITION=jezero_mission
 Requiere Gazebo Harmonic y bindings `python3-gz-transport13`, `python3-gz-msgs10`.
 La ejecución local y la grabación se documentan en el [diagnóstico de Jezero](docs/jezero_diagnostico.md).
 
-[Ver o descargar el montaje con siete cámaras](evidence/jezero_replay/jezero_multivista.mp4).
+[Ver o descargar el montaje con mapa cenital y seis vistas isométricas](evidence/jezero_replay/jezero_multivista.mp4).
 
 [![Vista general y seis cámaras de Jezero](evidence/jezero_replay/multivista-preview.png)](evidence/jezero_replay/jezero_multivista.mp4)
 
