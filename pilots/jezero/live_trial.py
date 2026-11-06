@@ -22,7 +22,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 from live_mission import Mission, project
-from live_world import BASE, BLOCK_XY, FOV, LAYOUTS, build, prepare
+from live_world import BASE, BLOCK_XY, FOV, LAYOUTS, build, control_topic, prepare
 from mission import load_data
 
 ROOT_TOPIC = '/world/jezero_live'
@@ -94,7 +94,8 @@ class LiveIO:
         self.callbacks = []
         self.obstacle_contacts = 0
         self.node.subscribe(Contacts,"/live/obstacle/contacts",self.contacts)
-        self.pubs = {name:self.node.advertise(f'/model/{name}/cmd_vel',Twist) for name in homes}
+        self.pubs = {}
+        self.horizontal_commands = {}
         self.node.subscribe(Clock,ROOT_TOPIC+'/clock',self.clock)
         self.node.subscribe(Pose_V,ROOT_TOPIC+'/pose/info',self.pose)
         for name in homes:
@@ -168,7 +169,14 @@ class LiveIO:
     def command(self,name,x=0.,y=0.,z=0.,yaw=0.):
         msg = Twist()
         msg.linear.x,msg.linear.y,msg.linear.z,msg.angular.z = x,y,z,yaw
-        self.pubs[name].publish(msg)
+        publisher = self.pubs.get(name)
+        if publisher is None:
+            return
+        connected = publisher.has_connections()
+        self.horizontal_commands[name] = math.hypot(x,y)
+        accepted = publisher.publish(msg)
+        if (x or y or z or yaw) and (not connected or accepted is False):
+            raise RuntimeError(f'{name}: velocity transport unavailable on {control_topic(name)}')
 
     def observations(self, mission, previous, noise):
         for name in self.homes:
@@ -191,9 +199,15 @@ class LiveIO:
                                pose[:2],pose[2]-.25,mission.grid,FOV,t,noise)
 
 
+def human_motion(dx,dy,yaw,speed):
+    """Face the next waypoint before advancing along the model's forward axis."""
+    error = math.atan2(math.sin(math.atan2(dy,dx)-yaw),math.cos(math.atan2(dy,dx)-yaw))
+    return (speed if abs(error)<=.12 else 0.), max(-1.8,min(1.8,3*error))
+
+
 def publish_control(io,name,worker,mission,altitude,now):
     nav = io.navigation(name)
-    if nav is None or now-nav[0]>STALE_S:
+    if nav is None or io.now-nav[0]>STALE_S:
         if not worker.odom_missing:
             mission.emit('navigation_stale_stop',agent=name)
             worker.odom_missing = True
@@ -229,9 +243,11 @@ def publish_control(io,name,worker,mission,altitude,now):
         error = math.atan2(math.sin(heading),math.cos(heading))
         io.command(name,x=speed*max(0.,math.cos(error)) if abs(error)<.50 else 0.,
                    yaw=float(np.clip(2*error,-1.4,1.4)))
+    elif agent.kind=='human':
+        forward,turn = human_motion(dx,dy,yaw,speed)
+        io.command(name,x=forward,yaw=turn,z=float(np.clip(goal[2]-z,-.6,.6)))
     else:
-        target_z = altitude if agent.kind=='drone' else goal[2]
-        io.command(name,x=speed*dx/distance,y=speed*dy/distance,z=float(np.clip(target_z-z,-.6,.6)))
+        io.command(name,x=speed*dx/distance,y=speed*dy/distance,z=float(np.clip(altitude-z,-.6,.6)))
 
 
 class Video:
@@ -338,20 +354,31 @@ def trial(args):
     odom_loss_start = odom_loss_end = None
     status = 'failed'
     error = None
+    progress = {}
+    previous_human_pose = {}
+    human_heading_errors = []
     with (out/'gazebo.log').open('w') as log,(out/'states.jsonl').open('w') as states:
         server = subprocess.Popen(command,env=env,stdout=log,stderr=subprocess.STDOUT,
                                   start_new_session=True)
         try:
             deadline = time.monotonic()+40
             required = [name for name in homes if name.startswith('drone')]
-            while not (all(io.navigation(name) is not None for name in homes) and
+            while not (all(name in io.poses and io.navigation(name) is not None for name in homes) and
                        all((name,'depth_camera') in io.images and (name,'camera') in io.images for name in required)):
                 if time.monotonic()>deadline or server.poll() is not None:
                     raise RuntimeError(f'Topics unavailable: {io.node.topic_list()}')
                 time.sleep(.04)
+            io.pubs = {name:io.node.advertise(control_topic(name),Twist) for name in homes}
+            deadline = time.monotonic()+15
+            while not all(pub.has_connections() for pub in io.pubs.values()):
+                if time.monotonic()>deadline or server.poll() is not None:
+                    missing = [name for name,pub in io.pubs.items() if not pub.has_connections()]
+                    raise RuntimeError(f'No velocity subscribers for {missing}')
+                time.sleep(.04)
+            emit('control_topics_ready',topics={name:control_topic(name) for name in homes})
             start = origin_clock = io.now
-            if args.smoke:
-                for name in homes:
+            for name in homes:
+                if args.smoke or name in required:
                     begin = io.poses[name][1][:2]
                     until = io.now+.7
                     while io.now<until:
@@ -364,7 +391,7 @@ def trial(args):
                     emit('individual_control',agent=name,displacement_m=distance,passed=distance>.025)
                     if distance<=.025:
                         raise RuntimeError(f'{name} did not respond to its individual command')
-                start = origin_clock = io.now
+            start = origin_clock = io.now
             next_control = start
             deadline = time.monotonic()+max(120,args.max_time*2)
             while not mission.completed:
@@ -418,6 +445,23 @@ def trial(args):
                         workers[receiver].accept(msg)
                 for name,worker in workers.items():
                     publish_control(io,name,worker,mission,altitude,t)
+                    actual = io.poses[name][1]
+                    if name in required and io.horizontal_commands.get(name,0.)>=.25:
+                        since,anchor = progress.setdefault(name,(t,actual[:2]))
+                        if math.dist(anchor,actual[:2])>=.12:
+                            progress[name] = t,actual[:2]
+                        elif t-since>=5:
+                            emit('actuator_no_progress',agent=name,topic=control_topic(name),task=worker.task)
+                            raise RuntimeError(f'{name}: no measured motion after five seconds of velocity commands')
+                    else:
+                        progress.pop(name,None)
+                    if name.startswith('human'):
+                        prev = previous_human_pose.get(name)
+                        if prev is not None and math.dist(prev[:2],actual[:2])>=.025:
+                            direction = math.atan2(actual[1]-prev[1],actual[0]-prev[0])
+                            angle = direction-actual[3]
+                            human_heading_errors.append(abs(math.degrees(math.atan2(math.sin(angle),math.cos(angle)))))
+                        previous_human_pose[name] = actual
                 for name,worker in workers.items():
                     if worker.waypoints and name in io.poses:
                         key = (name,worker.token)
@@ -497,7 +541,8 @@ def trial(args):
                   obstacle_contact_reports=io.obstacle_contacts,
                   min_obstacle_center_clearance_m=min_distance if math.isfinite(min_distance) else None,
                   wheel_odometry_vs_pose_rmse_m=float(np.sqrt(np.mean(np.square(track_errors)))) if track_errors else None,
-                  video_frames=video.frames if video else 0)
+                  human_heading_error_p95_deg=float(np.percentile(human_heading_errors,95)) if human_heading_errors else None,
+                  human_heading_samples=len(human_heading_errors),video_frames=video.frames if video else 0)
     if status=='complete':
         if args.pilot==1:
             accepted = report['rover_goal_error_m']<=2 and (

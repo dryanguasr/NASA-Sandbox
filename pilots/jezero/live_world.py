@@ -27,6 +27,10 @@ BLOCK_XY = (-18,-2)
 P1_HOME = {'drone_1':(-50,-2), 'rover_1':(-50,-2)}
 
 
+def control_topic(name):
+    return f'/live/{name}/cmd_vel'
+
+
 def prepare(zone):
     folder = BASE/'data'/zone
     if (folder/'terrain.npz').exists():
@@ -194,6 +198,8 @@ def build(data,out,pilot,layout,video,rate):
         tree = ET.parse(ROOT/'models'/KINDS[kind]/'model.sdf')
         model = tree.getroot().find('model')
         model.set('name',name)
+        drive = model.find('plugin')
+        text(drive,'topic',control_topic(name))
         if kind=='rover':
             differential_variant(model)
         for link in model.findall('link'):

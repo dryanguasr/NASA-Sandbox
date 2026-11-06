@@ -26,6 +26,8 @@ La calibración con ruedas e IMU acumuló error. También se observó pérdida d
 
 - `p3/east-1-7-information_hungarian` · timeout. Tareas pendientes: survey:-46:18.
 
+Este caso se repitió por separado con verificación del canal de velocidad y giro de los humanos hacia su avance. La tabla anterior conserva la matriz original. [Diagnóstico, resultado y video del reensayo](east_retry.md).
+
 ### Percepción y misión nominal
 
 - **clear** · complete. error de llegada 0.59 m.

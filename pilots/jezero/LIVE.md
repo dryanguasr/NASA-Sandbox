@@ -34,3 +34,9 @@ Cada ensayo guarda sus estados, eventos, comandos, log de Gazebo y resultado. Lo
 El protocolo de comunicación transporta observaciones, estados, asignaciones y confirmaciones. Las asignaciones llevan un token que cambia al reasignarlas. La caducidad local ordena velocidad cero y el coordinador descarta confirmaciones de tokens vencidos. Las interrupciones afectan al canal de misión, mientras que la navegación y el control continúan locales.
 
 [Informe, resultados, videos y telemetría](../../evidence/jezero_live/report.md).
+
+Para el reensayo del este con video y comprobación individual de los seis agentes:
+
+    OPENBLAS_NUM_THREADS=1 /usr/bin/python3 pilots/jezero/live_trial.py --pilot 3 --zone east --layout 1 --seed 7 --policy information_hungarian --rate 18 --video --smoke --out generated/closed_loop/east-retry
+
+El arranque verifica los suscriptores de velocidad y el desplazamiento de los drones. Los humanos giran hacia el siguiente punto antes de avanzar por el eje del visor. [Próximos casos de terreno no convexo y descubrimiento de tareas](NEXT_CASES.md).

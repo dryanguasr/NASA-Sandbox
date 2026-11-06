@@ -149,6 +149,9 @@ def report(out,summary,audits,videos):
         for key,row in failed:
             unfinished = ', '.join(row.get('remaining_tasks',[])) or '—'
             lines.append(f'- `{key}` · {row["status"]}. Tareas pendientes: {unfinished}.')
+    if (out/'east_retry.md').is_file():
+        lines.extend(['','El reensayo del este se informa por separado de la matriz original. '
+                      '[Diagnóstico, resultado y video del reensayo](east_retry.md).'])
     lines.extend(['','### Percepción y misión nominal',''])
     for name in ('clear','obstacle','odom-outage'):
         row = summary['p1/'+name]
