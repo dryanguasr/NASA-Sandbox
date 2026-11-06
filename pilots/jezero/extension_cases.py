@@ -1,8 +1,9 @@
-"""Scenario fixtures for Jezero 5 and 6. Ground truth is evaluator-only."""
+"""Scenario fixtures for Jezero pilots 5–7, used by the simulator and evaluator."""
 from dataclasses import dataclass
+import json
 import xml.etree.ElementTree as ET
 
-from export_gazebo import text
+from export_gazebo import ROOT, text
 
 RAVINE_GOAL = (30,-22)
 WALL_X = 2
@@ -20,7 +21,15 @@ class Site:
     color: tuple
 
 
+def belva_fixture():
+    return json.loads((ROOT/'data/jezero_live/belva/scenario.json').read_text())
+
+
 def sites_for(pilot):
+    if pilot==7:
+        sites = belva_fixture()['sites']
+        return [Site('S1',tuple(sites['S1']),(0,1,0)),
+                Site('S2',tuple(sites['S2']),(0,0,1))]
     if pilot==5:
         return [Site('S1',RAVINE_GOAL,(0,1,0))]
     return [Site('S1',(-26,-14),(0,1,0)),Site('S2',(22,-22),(0,0,1)),
@@ -35,7 +44,7 @@ def fixtures(world,out,pilot,scenario,ground,box):
             model = box(f'experimental_scarp_{index}',(WALL_X,y,ground(WALL_X,y)+1.6),
                         (2*WALL_EDGE,4.04,7.),(1,0,0),True)
             world.append(model)
-    else:
+    elif pilot==6:
         x,y = sites_for(6)[-1].xy
         # The roof is opaque to both cameras. A shallow overhang shelters the ground-only target.
         world.append(box('fictional_overhang',(x,y,ground(x,y)+2.6),(9,9,.45),(.42,.30,.20),True))

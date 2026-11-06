@@ -308,7 +308,7 @@ class ExtensionMission(Mission):
     """Only sensor observations enter the planner; no scenario geometry is loaded here."""
     def __init__(self,prior,homes,pilot,policy,link,seed,emit):
         super().__init__(prior,homes,pilot,policy,link,seed,emit)
-        if pilot==5:
+        if pilot in (5,7):
             self.belief = ScarpBelief(self.belief,self.blocked)
             for agent in self.agents.values():
                 if agent.kind=='human':
@@ -325,9 +325,10 @@ class ExtensionMission(Mission):
         return super().assignable_tasks()
 
     def ready_to_return(self):
-        if self.pilot!=5:
+        if self.pilot not in (5,7):
             return super().ready_to_return()
-        if len(self.seen)!=1 or any(task.state!='done' for task in self.tasks.values()
+        expected = 2 if self.pilot==7 else 1
+        if len(self.seen)!=expected or any(task.state!='done' for task in self.tasks.values()
                                    if task.kind=='survey'):
             return False
         for task in self.tasks.values():

@@ -13,7 +13,7 @@ import numpy as np
 from export_gazebo import ROOT, export, text, write_xml
 from mission import Grid, load_data
 from replay_gazebo import terrain_height
-from extension_cases import FOV_GROUND, fixtures
+from extension_cases import FOV_GROUND, belva_fixture, fixtures
 
 BASE = ROOT / 'generated/closed_loop'
 DATA = ROOT / 'data/jezero'
@@ -52,6 +52,8 @@ def prepare(zone):
                     parent_terrain_sha256=meta['terrain_sha256'])
         meta['terrain_sha256'] = hashlib.sha256((folder/'terrain.npz').read_bytes()).hexdigest()
         (folder/'metadata.json').write_text(json.dumps(meta,indent=2)+'\n')
+    elif zone=='belva':
+        raise ValueError('Belva requires the verified orbital crop in data/jezero_live/belva')
     else:
         sign = 1 if zone=='east' else -1
         failures = []
@@ -177,6 +179,8 @@ def build(data,out,pilot,layout,video,rate,scenario=None):
     assert grid.n==32 and grid.cell==4
     out.mkdir(parents=True,exist_ok=True)
     home = P1_HOME if pilot==1 else HOME
+    if pilot==7:
+        home = belva_fixture()['homes']
     if pilot==6:
         # Park the second rover off the eastbound ground-scout corridor.
         home = {**home,'rover_2':(-42,-34)}

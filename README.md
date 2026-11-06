@@ -13,6 +13,14 @@ La extensión de Jezero en lazo cerrado ejecuta cuatro pilotos con percepción s
 
 Los pilotos 5 y 6 prueban el acceso terrestre no convexo y la creación de tareas a partir de observaciones aéreas y terrestres. [Resultados y videos](evidence/jezero_56/report.md).
 
+### Piloto 7 · Cráter Belva
+
+Los drones descubren los objetivos a partir de imágenes de Gazebo. El relieve de HiRISE condiciona las rutas terrestres del rover y del astronauta. El video muestra el mapa cenital al centro y las seis vistas de seguimiento con cuadrícula de 4 m.
+
+[![Piloto Belva en Gazebo: mapa central y seis vistas de los agentes](evidence/jezero_belva/belva.gif)](evidence/jezero_belva/belva.mp4)
+
+[Video MP4](evidence/jezero_belva/belva.mp4) · [Informe, telemetría y reproducción](evidence/jezero_belva/report.md).
+
 [Guía técnica](pilots/jezero/README.md) · [Reporte de resultados](evidence/jezero/report.md) · [Instrucciones para Codex](docs/jezero_pilot_codex.md).
 
 ```bash

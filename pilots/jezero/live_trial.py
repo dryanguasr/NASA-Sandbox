@@ -274,7 +274,7 @@ class Video:
                          '-movflags','+faststart',str(self.path)],stdin=subprocess.PIPE)
         self.frames = 0
 
-    def draw(self, io, workers, t, coverage, event):
+    def draw(self, io, workers, t, coverage, event, mission=None):
         keys = [('overview','video'),*((name,'side') for name in workers)]
         frames = {key:io.images.get(key) for key in keys}
         if any(frame is None for frame in frames.values()):
@@ -288,10 +288,31 @@ class Video:
             if step==w*3:
                 image.paste(Image.frombytes('RGB',(w,h),data),(x,y))
         paste(('overview','video'),300,12)
+        if mission is not None:
+            # Overlay only observed restrictions, in the actual overhead camera projection.
+            overlay = Image.new('RGBA',image.size)
+            annotations = ImageDraw.Draw(overlay)
+            belief = mission.belief
+            def overhead(x,y,z):
+                scale = 576/(2*math.tan(1.24/2)*(102-z))
+                return 588+x*scale,300-y*scale
+            for r,c in zip(*np.where(belief.observed & ~belief.safe(18.))):
+                x,y = mission.grid.xy((r,c))
+                annotations.polygon([overhead(x+dx,y+dy,belief.mean[r,c])
+                                     for dx,dy in ((-2,-2),(-2,2),(2,2),(2,-2))],fill=(185,47,20,78))
+            image.paste(overlay,(0,0),overlay)
+            for name,lease in mission.leases.items():
+                if not lease.task.startswith(('inspect:','sample:')):
+                    continue
+                draw.line([overhead(*p,belief.mean[mission.grid.rc(p)]) for p in lease.path],
+                          fill='orange' if name.startswith('rover') else 'lightgreen',width=2)
+            for site,xy in mission.seen.items():
+                x,y = overhead(*xy,belief.mean[mission.grid.rc(xy)])
+                label(x+5,y-14,site)
         draw.rectangle((300,12,876,40),fill='#111923')
         label(312,16,f'JEZERO | {self.label} | t={t:05.1f} s')
         draw.rectangle((300,557,876,587),fill='#111923')
-        label(312,563,f'Cobertura {coverage:.1%} · {event}')
+        label(312,563,f'Cobertura {coverage:.1%} · {event}' + (' · rojo: restricción observada' if mission else ''))
         kinds = {'drone':0,'rover':1,'human':2}
         colors = {'drone':'cyan','rover':'orange','human':'lightgreen'}
         for name, worker in workers.items():
@@ -352,7 +373,13 @@ def trial(args):
                 completed_visits[task] = math.dist(actual,target)
         if 'sensor_stamp_s' in payload:
             payload['sensor_stamp_s'] -= origin_clock
-        if kind in ('obstacle_observed','replan','site_detected','task_completed','local_lease_stop','link_restored'):
+        if args.pilot==7 and kind=='site_detected':
+            last_event = f'{payload["site"]} detectado'
+        elif args.pilot==7 and kind=='ground_inaccessible':
+            last_event = f'{payload["task"].split(":")[-1]} inaccesible'
+        elif args.pilot==7 and kind=='task_completed' and payload['task'].startswith(('inspect:','sample:')):
+            last_event = 'S1 inspeccionado' if payload['task'].startswith('inspect:') else 'S1 muestreado'
+        elif args.pilot!=7 and kind in ('obstacle_observed','replan','site_detected','task_completed','local_lease_stop','link_restored'):
             last_event = kind
         event_file.write(json.dumps({'t_s':round(t,3),'event':kind,**payload})+'\n')
         event_file.flush()
@@ -364,7 +391,7 @@ def trial(args):
     command = ['gz','sim','-s','-r','--headless-rendering','-v','2',str(world)]
     report = dict(vars(args),command=command,terrain_sha256=meta['terrain_sha256'],
                   gazebo=subprocess.check_output(['gz','sim','--versions'],text=True).strip())
-    label = f'P{args.pilot} {args.scenario or args.policy} {args.link}'
+    label = 'P7 Belva' if args.pilot==7 else f'P{args.pilot} {args.scenario or args.policy} {args.link}'
     video = Video(out,label) if args.video else None
     previous_frames = {}
     distances = {name:0. for name in homes}
@@ -541,7 +568,7 @@ def trial(args):
                                                                max(abs(y-BLOCK_XY[1])-2.5,0)))
                 if video and t-video_time>=2.:
                     video_time = t
-                    video.draw(io,workers,t,coverage,last_event)
+                    video.draw(io,workers,t,coverage,last_event,mission if args.pilot==7 else None)
             if mission.completed:
                 status = 'complete'
         except (Exception,KeyboardInterrupt) as exc:
@@ -600,6 +627,10 @@ def trial(args):
                 accepted = accepted and not east_ground_agents and report['inaccessible']==['inspect:S1']
             else:
                 accepted = accepted and len(completed_visits)==2 and max(completed_visits.values())<=2
+        elif args.pilot==7:
+            accepted = report['returns']==6 and max(returns.values())<=2 and (
+                {'inspect:S1','sample:S1'}<=set(completed_visits) and max(completed_visits.values())<=2
+                and report['inaccessible']==['inspect:S2'])
         else:
             accepted = report['returns']==6 and max(returns.values())<=2 and (
                 len(completed_visits)==8 and max(completed_visits.values())<=2)
@@ -612,9 +643,9 @@ def trial(args):
 
 if __name__=='__main__':
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--pilot',type=int,choices=[1,2,3,4,5,6],required=True)
+    p.add_argument('--pilot',type=int,choices=[1,2,3,4,5,6,7],required=True)
     p.add_argument('--scenario',choices=['bypass','sealed','hidden','emergent','oracle'])
-    p.add_argument('--zone',choices=['center','east','west'],default='center')
+    p.add_argument('--zone',choices=['center','east','west','belva'],default='center')
     p.add_argument('--layout',type=int,choices=[0,1],default=0)
     p.add_argument('--seed',type=int,default=7)
     p.add_argument('--policy',choices=['information_hungarian','nearest_greedy'],default='information_hungarian')
@@ -630,4 +661,6 @@ if __name__=='__main__':
     scenarios = {5:('bypass','sealed'),6:('hidden','emergent','oracle')}
     if args.scenario not in scenarios.get(args.pilot,(None,)):
         p.error('Pilot 5 needs bypass/sealed; pilot 6 needs hidden/emergent/oracle')
+    if (args.pilot==7)!=(args.zone=='belva'):
+        p.error('Pilot 7 and the belva zone must be selected together')
     raise SystemExit(trial(args))

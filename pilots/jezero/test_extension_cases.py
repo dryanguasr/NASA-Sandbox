@@ -1,6 +1,7 @@
 """Regression checks for the nonconvex mask and local discoveries."""
 import numpy as np
 
+from extension_cases import belva_fixture
 from live_mission import ExtensionMission, Grid, project
 from mission import astar
 
@@ -45,3 +46,16 @@ def test_science_tasks_start_empty_for_discovery():
     assert 'inspect:S4' not in m.assignable_tasks()
     m.tasks['ground_survey:rover_1'].state = 'done'
     assert 'inspect:S4' in m.assignable_tasks()
+
+
+def test_belva_only_creates_inspections_from_observations():
+    homes = belva_fixture()['homes']
+    m = ExtensionMission(np.zeros((32,32)),homes,
+                         7,'information_hungarian','ideal',7,lambda *a,**k: None)
+    assert all(t.kind=='survey' for t in m.tasks.values())
+    assert m.agents['rover_1'].slope_limit==18
+    assert m.agents['human_1'].slope_limit==22
+    m.reveal('S1',[-18,18],8,'drone_1',8)
+    assert 'inspect:S1' in m.assignable_tasks()
+    assert 'inspect:S2' not in m.tasks
+    assert 'sample:S1' not in m.tasks
