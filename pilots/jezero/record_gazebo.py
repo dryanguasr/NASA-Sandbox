@@ -36,10 +36,10 @@ CAMERA_Z, FOV = 560, 1.02
 COLORS = {'drone': '#63dce9', 'rover': '#ffcc72', 'human': '#acf09d'}
 KINDS = ('drone', 'rover', 'human')
 NAMES = {'drone': 'Dron', 'rover': 'Rover', 'human': 'Humano'}
-# Link, diagonal offset, and height of the target above the link origin.
-MOUNTS = {'drone': ('body', 3.2, 0.0),
-          'rover': ('chassis', 4.4, .18),
-          'human': ('suit', 6.0, .93)}
+# Diagonal offset, target height above model origin, and maximum horizontal lag (m).
+MOUNTS = {'drone': (4.6, 0.0, .85),
+          'rover': (6.4, .55, .9),
+          'human': (8.7, .93, 1.1)}
 ISOMETRIC_PITCH = math.atan(1/math.sqrt(2))
 ISOMETRIC_YAW = -3*math.pi/4
 ISOMETRIC_FOV = .39
@@ -77,19 +77,20 @@ def add_camera(link, name, width, height, fov, near, pose):
     return sensor
 
 
-def camera_world():
+def camera_position(name, x, y, z):
+    offset, target_z, _ = MOUNTS[name.split('_')[0]]
+    return x+offset, y+offset, z+offset+target_z
+
+
+def camera_world(initial_positions):
     shutil.copytree(GENERATED/'models', MODELS, dirs_exist_ok=True)
-    for kind, (link_name, offset, target_z) in MOUNTS.items():
+    for kind in MOUNTS:
         path = MODELS/f'replay_{kind}'/'model.sdf'
         model_tree = ET.parse(path)
         model = model_tree.getroot().find('model')
         for link in model.findall('link'):
             for sensor in link.findall('sensor'):
                 link.remove(sensor)
-        link = model.find(f"link[@name='{link_name}']")
-        # Equal XYZ offsets set the isometric angle. A narrow FOV limits perspective distortion.
-        pose = f'{offset} {offset} {offset+target_z} 0 {ISOMETRIC_PITCH} {ISOMETRIC_YAW}'
-        add_camera(link, 'replay_camera', CAMERA_WIDTH, CAMERA_HEIGHT, ISOMETRIC_FOV, .05, pose)
         model_tree.write(path, encoding='utf-8', xml_declaration=True)
     tree = ET.parse(GENERATED / 'jezero_mission.sdf')
     world = tree.getroot().find('world')
@@ -97,6 +98,15 @@ def camera_world():
     ET.SubElement(physics,'max_step_size').text = '.02'
     ET.SubElement(physics,'real_time_factor').text = '1'
     ET.SubElement(world.find('light'), 'cast_shadows').text = 'true'
+    for name, (x,y,z,_) in initial_positions.items():
+        model = ET.SubElement(world,'model',name=f'camera_{name}')
+        ET.SubElement(model,'static').text = 'true'
+        position = ' '.join(map(str,camera_position(name,x,y,z)))
+        ET.SubElement(model,'pose').text = f'{position} 0 {ISOMETRIC_PITCH} {ISOMETRIC_YAW}'
+        link = ET.SubElement(model,'link',name='camera_link')
+        sensor = add_camera(link,'replay_camera',CAMERA_WIDTH,CAMERA_HEIGHT,
+                            ISOMETRIC_FOV,.05,'0 0 0 0 0 0')
+        ET.SubElement(sensor,'topic').text = f'/jezero/{name}'
     model = ET.SubElement(world, 'model', name='observer')
     ET.SubElement(model, 'static').text = 'true'
     ET.SubElement(model, 'pose').text = f'0 0 {CAMERA_Z} 0 {math.pi/2} {math.pi/2}'
@@ -115,14 +125,36 @@ def pixel(x, y, z=0):
 
 def drive(trajectory, connection):
     # Keep synchronous service calls in a process separate from Python subscribers.
+    centers = {}
+
+    def add_camera_poses(request):
+        for agent in list(request.pose):
+            x,y,z = agent.position.x,agent.position.y,agent.position.z
+            previous_x,previous_y = centers.get(agent.name,(x,y))
+            # A fixed world bearing shows turns; bounded lag shows translation in the frame.
+            dx,dy = .8*(x-previous_x),.8*(y-previous_y)
+            max_lag = MOUNTS[agent.name.split('_')[0]][2]
+            scale = max(1.,math.hypot(dx,dy)/max_lag)
+            center_x,center_y = x-dx/scale,y-dy/scale
+            centers[agent.name] = center_x,center_y
+            pose = request.pose.add()
+            pose.name = f'camera_{agent.name}'
+            pose.position.x,pose.position.y,pose.position.z = camera_position(agent.name,center_x,center_y,z)
+            cp,sp = math.cos(ISOMETRIC_PITCH/2),math.sin(ISOMETRIC_PITCH/2)
+            cy,sy = math.cos(ISOMETRIC_YAW/2),math.sin(ISOMETRIC_YAW/2)
+            pose.orientation.w,pose.orientation.x = cp*cy,-sp*sy
+            pose.orientation.y,pose.orientation.z = sp*cy,cp*sy
+
     def acknowledge(t, request):
-        expected = {p.name:(p.position.x,p.position.y,p.position.z) for p in request.pose}
+        expected = {p.name:(p.position.x,p.position.y,p.position.z) for p in request.pose
+                    if not p.name.startswith('camera_')}
         connection.send(('frame',t,expected))
         connection.recv()
 
     try:
         result = replay(trajectory,SPEED,FPS,WORLD,acknowledge,
-                        terrain=GENERATED/'models/jezero_terrain/meshes/terrain.obj')
+                        terrain=GENERATED/'models/jezero_terrain/meshes/terrain.obj',
+                        add_camera_poses=add_camera_poses)
         connection.send(('result',result))
     except (Exception,SystemExit) as error:
         connection.send(('error',str(error)))
@@ -146,7 +178,7 @@ def main():
                if e['event']=='completed' and e['kind']=='return'}
     fonts = {size: ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',size)
              for size in (17,20,23,28,33)}
-    world = camera_world()
+    world = camera_world(rows[0]['positions'])
     os.environ['GZ_PARTITION'] = f'jezero_record_{os.getpid()}'
     env = dict(os.environ, LIBGL_ALWAYS_SOFTWARE='1',
                GZ_SIM_RESOURCE_PATH=str(MODELS))
@@ -183,11 +215,7 @@ def main():
 
     callbacks = []
     for name in camera_ids:
-        if name=='overview':
-            topic = '/jezero/overview'
-        else:
-            link = MOUNTS[name.split('_')[0]][0]
-            topic = f'/world/{WORLD}/model/{name}/link/{link}/sensor/replay_camera/image'
+        topic = f'/jezero/{name}'
         callback = lambda msg, name=name: receive_image(name,msg)
         callbacks.append(callback)
         node.subscribe(GazeboImage,topic,callback)

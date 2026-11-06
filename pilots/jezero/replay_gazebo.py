@@ -36,7 +36,7 @@ def terrain_height(path):
     return height
 
 
-def replay(trajectory, speed, hz, world, on_pose=None, terrain=None):
+def replay(trajectory, speed, hz, world, on_pose=None, terrain=None, add_camera_poses=None):
     try:
         from gz.transport13 import Node
         from gz.msgs10.pose_v_pb2 import Pose_V
@@ -70,6 +70,8 @@ def replay(trajectory, speed, hz, world, on_pose=None, terrain=None):
             pose.position.x,pose.position.y,pose.position.z=xyz
             delta=math.atan2(math.sin(right[3]-left[3]),math.cos(right[3]-left[3]))
             yaw=left[3]+f*delta;pose.orientation.w=math.cos(yaw/2);pose.orientation.z=math.sin(yaw/2)
+        if add_camera_poses is not None:
+            add_camera_poses(req)
         ok,response=node.request(service,req,Pose_V,Boolean,5000)
         if not ok:
             # A timed-out pose command can safely be repeated before advancing the replay.

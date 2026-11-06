@@ -14,8 +14,8 @@
     "generated/jezero/jezero_observation.sdf"
   ],
   "gazebo": "8.14.0",
-  "max_pose_error_m": 4.687500165800884e-08,
-  "synchronized_camera_sets": 752,
+  "max_pose_error_m": 7.105427357601002e-14,
+  "synchronized_camera_sets": 751,
   "cameras": [
     "drone_1",
     "drone_2",
