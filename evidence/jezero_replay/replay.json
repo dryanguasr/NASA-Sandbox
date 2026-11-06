@@ -1,0 +1,22 @@
+{
+  "status": "replay_completed",
+  "pose_vectors": 725,
+  "mission_seconds": 1930.0,
+  "note": "Visualization only; no dynamics or closed-loop validation.",
+  "command": [
+    "gz",
+    "sim",
+    "-s",
+    "-r",
+    "--headless-rendering",
+    "-v",
+    "3",
+    "generated/jezero/jezero_observation.sdf"
+  ],
+  "gazebo": "8.14.0",
+  "max_pose_error_m": 6.355287432313019e-14,
+  "gazebo_camera_frames": 768,
+  "video_frames": 783,
+  "fps": 15,
+  "speed": 40
+}

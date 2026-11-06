@@ -1,0 +1,14 @@
+Reading reference: https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/HiRISE/JEZ_hirise_soc_006_DTM_MOLAtopography_DeltaGeoid_1m_Eqc_latTs0_lon0_blend40.tif
+Reading prior: https://asc-pds-services.s3.us-west-2.amazonaws.com/mosaic/mars2020_trn/CTX/JEZ_ctx_B_soc_008_DTM_MOLAtopography_DeltaGeoid_20m_Eqc_latTs0_lon0.tif
+{
+  "shape": [
+    128,
+    128
+  ],
+  "reference_range_m": [
+    -2576.75634765625,
+    -2565.443603515625
+  ],
+  "prior_reference_rmse_m": 1.5009193420410156,
+  "terrain_sha256": "18d20b39a680d93addc3c3151bb3f19a5f41fc8f9a170396d4094694bbd76d6b"
+}

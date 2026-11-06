@@ -70,7 +70,9 @@ export GZ_PARTITION=jezero_mission
 /usr/bin/python3 pilots/jezero/replay_gazebo.py --speed 40
 ```
 
-Requiere `python3-gz-transport13` y `python3-gz-msgs10`. La API empleada está documentada en https://gazebosim.org/api/transport/13/python.html y el servicio `set_pose_vector` en https://gazebosim.org/api/sim/8/classgz_1_1sim_1_1systems_1_1UserCommands.html . Esta integración no se marca como ejecutada hasta disponer de evidencia de Gazebo.
+Requiere `python3-gz-transport13` y `python3-gz-msgs10`. El reproductor alinea la altura visual con los triángulos de la malla exportada. Para grabar el recorrido completo, ejecutar `/usr/bin/python3 pilots/jezero/record_gazebo.py` después de `run_all.py`, con Pillow, DejaVu Sans y FFmpeg instalados. El script arranca su propio servidor, sincroniza siete cámaras por marca de tiempo de Gazebo y guarda el montaje, los siete paneles individuales y las poses observadas en `evidence/jezero_replay/`. La opción `--extract-only` vuelve a exportar los paneles desde el montaje existente.
+
+[Diagnóstico y evidencia de la ejecución en Gazebo](../../docs/jezero_diagnostico.md).
 
 ## Ampliaciones posteriores
 

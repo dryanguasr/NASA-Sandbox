@@ -1,0 +1,74 @@
+{
+  "multivista": {
+    "codec_name": "h264",
+    "width": 1920,
+    "height": 1080,
+    "r_frame_rate": "15/1",
+    "nb_frames": "783",
+    "duration_s": 52.2,
+    "sha256": "9a75af693bc813e0085eb4e6369ed43e6cf3223fce75e4c125a33427e2ca3645"
+  },
+  "overview": {
+    "codec_name": "h264",
+    "width": 960,
+    "height": 1080,
+    "r_frame_rate": "15/1",
+    "nb_frames": "783",
+    "duration_s": 52.2,
+    "sha256": "2ce9824ce9f753f5d8799ee6ae4b45c8df34cbd383d2d44b45e9ce22a53fc590"
+  },
+  "drone_1": {
+    "codec_name": "h264",
+    "width": 456,
+    "height": 336,
+    "r_frame_rate": "15/1",
+    "nb_frames": "783",
+    "duration_s": 52.2,
+    "sha256": "8bc2e7dca03d4df7434fe4a658919393a79ecbbad15e93208017c59c8d7752d2"
+  },
+  "rover_1": {
+    "codec_name": "h264",
+    "width": 456,
+    "height": 336,
+    "r_frame_rate": "15/1",
+    "nb_frames": "783",
+    "duration_s": 52.2,
+    "sha256": "3f74d3349ea0950eec4353381cc3bc04e40d0c75d47cb486457bd5eb442f0094"
+  },
+  "human_1": {
+    "codec_name": "h264",
+    "width": 456,
+    "height": 336,
+    "r_frame_rate": "15/1",
+    "nb_frames": "783",
+    "duration_s": 52.2,
+    "sha256": "24462b971e85f6cb53d7c11be3998e0dcad4e507402f83b2c282c97de8d5007d"
+  },
+  "drone_2": {
+    "codec_name": "h264",
+    "width": 456,
+    "height": 336,
+    "r_frame_rate": "15/1",
+    "nb_frames": "783",
+    "duration_s": 52.2,
+    "sha256": "4a941186afbf72b6bf38a6e21ce184d1413a78b7c1e3f5e2eceb132be74c49a6"
+  },
+  "rover_2": {
+    "codec_name": "h264",
+    "width": 456,
+    "height": 336,
+    "r_frame_rate": "15/1",
+    "nb_frames": "783",
+    "duration_s": 52.2,
+    "sha256": "51cd02cbfc46b20b41527c5c53806348ab3eec09756277735b064cfbeea5ab9d"
+  },
+  "human_2": {
+    "codec_name": "h264",
+    "width": 456,
+    "height": 336,
+    "r_frame_rate": "15/1",
+    "nb_frames": "783",
+    "duration_s": 52.2,
+    "sha256": "a51f9d6678d6beb923fbb5c2b6d80ec3cb350f40cbf3c01f6b23a9ff19e3ffad"
+  }
+}

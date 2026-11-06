@@ -5,7 +5,7 @@ Laboratorio con **2 humanos, 2 drones y 2 rovers**. Hay dos pilotos independient
 | Piloto | Terreno | Ejecución comprobada | Límites principales |
 |---|---|---|---|
 | Base / piloto 0 | Sintético, 90 × 90 m | Gazebo Harmonic: carga, sensores, movimientos y parada; video y logs | Humanos y drones cinemáticos; sin biomecánica ni aerodinámica |
-| **Jezero / misión** | **USGS/MRO real, 512 × 512 m, CTX + HiRISE** | **Simulación de misión 2.5D, 16 pruebas, seis comparaciones y visor comprobado en navegador** | Sensores ideales simulados; exportación Gazebo de reproducción cinemática aún pendiente de ejecución |
+| **Jezero / misión** | **USGS/MRO real, 512 × 512 m, CTX + HiRISE** | **Misión 2.5D, 16 pruebas, seis ejecuciones comparativas, visor y reproducción en Gazebo Harmonic** | Sensores ideales simulados y reproducción cinemática por poses |
 
 ## Empezar por el piloto Jezero
 
@@ -47,7 +47,12 @@ export GZ_PARTITION=jezero_mission
 /usr/bin/python3 pilots/jezero/replay_gazebo.py --speed 40
 ```
 
-Requiere Gazebo Harmonic y bindings `python3-gz-transport13`, `python3-gz-msgs10`. Esta reproducción no se considera ejecutada hasta registrar evidencia local.
+Requiere Gazebo Harmonic y bindings `python3-gz-transport13`, `python3-gz-msgs10`.
+La ejecución local y la grabación se documentan en el [diagnóstico de Jezero](docs/jezero_diagnostico.md).
+
+[Ver o descargar el montaje con siete cámaras](evidence/jezero_replay/jezero_multivista.mp4).
+
+[![Vista general y seis cámaras de Jezero](evidence/jezero_replay/multivista-preview.png)](evidence/jezero_replay/jezero_multivista.mp4)
 
 ## Conservar el piloto 0 como regresión
 
