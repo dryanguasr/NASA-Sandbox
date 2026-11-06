@@ -1,0 +1,44 @@
+[
+  {
+    "zone": "center",
+    "sha256": "a309d218cc09abdde3c2cc49aa4cf1e584d9be3bbb5e864cb7956831648ce131",
+    "cell_m": 4.0,
+    "lat_deg": 18.45,
+    "lon_deg": 77.45,
+    "mesh_height_error_m": 4.9999925977317616e-08,
+    "geotiff_height_error_m": {
+      "reference": 0.0,
+      "prior": 0.0
+    },
+    "mean_slope_deg": 2.8485307693481445,
+    "max_slope_deg": 13.140244483947754
+  },
+  {
+    "zone": "east",
+    "sha256": "06fee0c67b88f1b10e1076ca885f9b3e8a1d2eb74915e80b85162903f1a0adf6",
+    "cell_m": 4.0,
+    "lat_deg": 18.45,
+    "lon_deg": 77.46000000000001,
+    "mesh_height_error_m": 4.9999925977317616e-08,
+    "geotiff_height_error_m": {
+      "reference": 0.0,
+      "prior": 0.0
+    },
+    "mean_slope_deg": 1.4368607997894287,
+    "max_slope_deg": 6.012099742889404
+  },
+  {
+    "zone": "west",
+    "sha256": "ab821ef40e1128e58eb8e925e1f150638ee25fc89064299979d67462794b0a8f",
+    "cell_m": 4.0,
+    "lat_deg": 18.45,
+    "lon_deg": 77.44,
+    "mesh_height_error_m": 4.9999925977317616e-08,
+    "geotiff_height_error_m": {
+      "reference": 0.0,
+      "prior": 0.0
+    },
+    "mean_slope_deg": 4.847725868225098,
+    "max_slope_deg": 15.387332916259766
+  }
+]

@@ -9,6 +9,8 @@ Laboratorio con **2 humanos, 2 drones y 2 rovers**. Hay dos pilotos independient
 
 ## Empezar por el piloto Jezero
 
+La extensión de Jezero en lazo cerrado ejecuta cuatro pilotos con percepción simulada de Gazebo, control por velocidad y comparaciones de terreno y comunicación. Consulta la [guía de reproducción](pilots/jezero/LIVE.md) y el [informe con los videos y la telemetría](evidence/jezero_live/report.md).
+
 [Guía técnica](pilots/jezero/README.md) · [Reporte de resultados](evidence/jezero/report.md) · [Instrucciones para Codex](docs/jezero_pilot_codex.md).
 
 ```bash
