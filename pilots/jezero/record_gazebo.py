@@ -22,7 +22,7 @@ from gz.msgs10.image_pb2 import Image as GazeboImage
 from gz.msgs10.pose_v_pb2 import Pose_V
 from gz.transport13 import Node
 
-from replay_gazebo import replay
+from replay_gazebo import replay, terrain_height
 
 ROOT = Path(__file__).resolve().parents[2]
 MISSION = ROOT / 'evidence/jezero'
@@ -44,6 +44,7 @@ ISOMETRIC_PITCH = math.atan(1/math.sqrt(2))
 ISOMETRIC_YAW = -3*math.pi/4
 ISOMETRIC_FOV = .39
 MODELS = GENERATED / 'observation_models'
+SCENE_MASK, GRID_MASK = 1, 2
 
 
 def panel_origin(name):
@@ -82,8 +83,50 @@ def camera_position(name, x, y, z):
     return x+offset, y+offset, z+offset+target_z
 
 
+def add_terrain_grid():
+    """Lay narrow ribbons over the DEM along its metric east/north grid."""
+    model = MODELS/'jezero_terrain'
+    meta = json.loads((GENERATED/'provenance.json').read_text())
+    cell = meta['cell_m']
+    count = meta['shape'][0]
+    posts = [(index-(count-1)/2)*cell for index in range(count)]
+    height = terrain_height(model/'meshes/terrain.obj')
+    half_width = .045
+    with (model/'meshes/side_grid.obj').open('w') as mesh:
+        mesh.write('o side_grid\nvn 0 0 1\n')
+        start = 1
+        for axis in (0,1):
+            for fixed in posts[1:-1]:
+                for along in posts:
+                    for edge in (fixed-half_width,fixed+half_width):
+                        x,y = (edge,along) if axis==0 else (along,edge)
+                        mesh.write(f'v {x:.5f} {y:.5f} {height(x,y)+.025:.5f}\n')
+                for index in range(count-1):
+                    a = start+2*index
+                    faces = ((a,a+1,a+2),(a+1,a+3,a+2)) if axis==0 else (
+                             (a,a+2,a+1),(a+1,a+2,a+3))
+                    for face in faces:
+                        mesh.write('f '+' '.join(f'{v}//1' for v in face)+'\n')
+                start += 2*count
+    path = model/'model.sdf'
+    tree = ET.parse(path)
+    link = tree.getroot().find('model/link')
+    grid = ET.SubElement(link,'visual',name='side_grid')
+    ET.SubElement(grid,'visibility_flags').text = str(GRID_MASK)
+    ET.SubElement(grid,'cast_shadows').text = 'false'
+    geometry = ET.SubElement(grid,'geometry')
+    mesh = ET.SubElement(geometry,'mesh')
+    ET.SubElement(mesh,'uri').text = 'model://jezero_terrain/meshes/side_grid.obj'
+    material = ET.SubElement(grid,'material')
+    ET.SubElement(material,'ambient').text = '.37 .22 .14 1'
+    ET.SubElement(material,'diffuse').text = '.55 .33 .20 1'
+    tree.write(path,encoding='utf-8',xml_declaration=True)
+    return cell
+
+
 def camera_world(initial_positions):
     shutil.copytree(GENERATED/'models', MODELS, dirs_exist_ok=True)
+    grid_spacing = add_terrain_grid()
     for kind in MOUNTS:
         path = MODELS/f'replay_{kind}'/'model.sdf'
         model_tree = ET.parse(path)
@@ -107,15 +150,17 @@ def camera_world(initial_positions):
         sensor = add_camera(link,'replay_camera',CAMERA_WIDTH,CAMERA_HEIGHT,
                             ISOMETRIC_FOV,.05,'0 0 0 0 0 0')
         ET.SubElement(sensor,'topic').text = f'/jezero/{name}'
+        ET.SubElement(sensor.find('camera'),'visibility_mask').text = str(SCENE_MASK | GRID_MASK)
     model = ET.SubElement(world, 'model', name='observer')
     ET.SubElement(model, 'static').text = 'true'
     ET.SubElement(model, 'pose').text = f'0 0 {CAMERA_Z} 0 {math.pi/2} {math.pi/2}'
     link = ET.SubElement(model, 'link', name='camera_link')
     sensor = add_camera(link, 'overview', SIZE, SIZE, FOV, 1, '0 0 0 0 0 0')
     ET.SubElement(sensor, 'topic').text = '/jezero/overview'
+    ET.SubElement(sensor.find('camera'),'visibility_mask').text = str(SCENE_MASK)
     path = GENERATED / 'jezero_observation.sdf'
     tree.write(path, encoding='utf-8', xml_declaration=True)
-    return path
+    return path,grid_spacing
 
 
 def pixel(x, y, z=0):
@@ -178,7 +223,7 @@ def main():
                if e['event']=='completed' and e['kind']=='return'}
     fonts = {size: ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',size)
              for size in (17,20,23,28,33)}
-    world = camera_world(rows[0]['positions'])
+    world,grid_spacing = camera_world(rows[0]['positions'])
     os.environ['GZ_PARTITION'] = f'jezero_record_{os.getpid()}'
     env = dict(os.environ, LIBGL_ALWAYS_SOFTWARE='1',
                GZ_SIM_RESOURCE_PATH=str(MODELS))
@@ -311,6 +356,7 @@ def main():
                         if action != 'return':
                             task_label += '  '+target
                     label(x+12,y+312,task_label,17,color)
+                    label(x+310,y+312,f'Cuadrícula {grid_spacing:g} m',17,'#bec9d6')
                 if times[-1]/2 <= t < times[-1]/2+SPEED/FPS:
                     frame.save(OUT/'multivista-preview.png')
                 repetitions = 30 if count==0 or t>=times[-1] else 1
@@ -356,6 +402,7 @@ def main():
     result.update({'command':command,'gazebo':subprocess.check_output(['gz','sim','--versions'],text=True).strip(),
                    'max_pose_error_m':max_pose_error,'synchronized_camera_sets':latest['images'],
                    'cameras':sorted(camera_ids),
+                   'side_grid_spacing_m':grid_spacing,
                    'video_frames':count,'fps':FPS,'speed':SPEED})
     (OUT/'multivista.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result,indent=2))

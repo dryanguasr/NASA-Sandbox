@@ -31,6 +31,8 @@ El montaje de 1920 × 1080 mantiene la cuadrícula de tres filas por cuatro colu
 
 Las seis cámaras laterales siguen a los agentes en tercera persona con un ángulo isométrico. La orientación se fija respecto al terreno a 45° de los ejes del mapa y unos 35,3° por encima de la horizontal. Las cámaras están aproximadamente un 45 % más lejos que en el primer montaje isométrico y siguen la posición horizontal con un desfase limitado. Así se ven el terreno circundante, el desplazamiento dentro del encuadre y los cambios de rumbo del modelo. El montaje reúne fotogramas que tienen la misma marca de tiempo de Gazebo y espera un conjunto nuevo tras confirmar las seis poses de cada paso. Las siete pistas individuales se extraen del montaje y comparten su duración y cadencia.
 
+Una cuadrícula tenue de 4 m entre líneas sigue el relieve de la malla y permanece fija en las coordenadas este y norte del terreno. Gazebo la dibuja únicamente para las seis cámaras laterales. El mapa cenital conserva sus marcadores y trazas.
+
 Se verificaron los 725 conjuntos de poses y se decodificaron los ocho archivos completos. Cada video tiene 783 fotogramas a 15 fps y dura 52,2 s. Los registros de poses incluyen la marca de tiempo compartida por las cámaras de cada fotograma de misión. [Verificación de los archivos de video](../evidence/jezero_replay/multivista-video-check.json).
 
 [Montaje completo en 1080p](../evidence/jezero_replay/jezero_multivista.mp4) · [Mapa general](../evidence/jezero_replay/jezero_overview.mp4) · [Registro de sincronización](../evidence/jezero_replay/multivista.json).

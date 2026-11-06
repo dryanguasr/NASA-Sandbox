@@ -15,7 +15,7 @@
   ],
   "gazebo": "8.14.0",
   "max_pose_error_m": 7.105427357601002e-14,
-  "synchronized_camera_sets": 751,
+  "synchronized_camera_sets": 748,
   "cameras": [
     "drone_1",
     "drone_2",
@@ -25,6 +25,7 @@
     "rover_1",
     "rover_2"
   ],
+  "side_grid_spacing_m": 4.0,
   "video_frames": 783,
   "fps": 15,
   "speed": 40
