@@ -90,3 +90,46 @@ Para repetir la selección orbital, preparar la venv de la [guía Jezero](../../
 ```
 
 El MP4 reúne cámaras del servidor Gazebo. El centro muestra las restricciones estimadas para el rover en rojo y las rutas de trabajo en naranja (rover) y verde (astronauta). Las seis cámaras laterales tienen seguimiento isométrico y cuadrícula fija de 4 m en el terreno. El GIF comprime la misma toma. Ambos archivos se decodificaron completos con FFmpeg.
+
+## Comparativo de semillas
+
+Se repitió el piloto corregido en Gazebo Harmonic con las semillas **7, 11, 19, 23 y 31**. La semilla cambia el ruido de las mediciones de elevación y de las correcciones de posición de los rovers. Se mantuvieron el mismo recorte HiRISE, los mismos marcadores y bases, el enlace ideal y el controlador corregido. Se ejecutó sin cámaras de grabación, con un límite de 1.200 s simulados por semilla y dos grupos de procesos en particiones independientes de Gazebo Transport. El video de la ejecución anterior sigue disponible arriba.
+
+**Los seis agentes regresaron en 5 de 5 misiones.** Hubo **0 fallos y 0 agotamientos del límite**. Las cinco ejecuciones pasaron las seis pruebas individuales de movimiento, alcanzaron el 100 % de cobertura y enviaron velocidad cero a los seis agentes al finalizar.
+
+| Semilla | Estado | Regresos verificados | Duración simulada (s) | Mayor error final a base (m) | Máximo desvío del rover en el regreso (m) |
+|---|---|---:|---:|---:|---:|
+| 7 | Completa | 6/6 | 450,71 | 0,76 | 0,48 |
+| 11 | Completa | 6/6 | 450,72 | 0,79 | 0,42 |
+| 19 | Completa | 6/6 | 464,45 | 0,68 | 0,48 |
+| 23 | Completa | 6/6 | 450,94 | 0,87 | 0,45 |
+| 31 | Completa | 6/6 | 421,87 | 0,84 | 0,45 |
+
+En la semilla 19 el rover 2 salió de S1 con rumbo −175,65°, próximo al del fallo original. Completó el regreso con 146 muestras de telemetría en marcha atrás y una separación máxima de 0,48 m de la ruta asignada. Las otras cuatro semillas llegaron a S1 con el rover orientado hacia el este y regresaron en avance. En todas se inspeccionó y muestreó S1 y se declaró S2 inaccesible por tierra. El identificador `inspect:S2` queda en la lista de tareas no completadas con estado `inaccessible`.
+
+La consistencia observada corresponde a estas cinco semillas, este terreno y esta configuración. La variación de semillas evalúa los ruidos simulados de percepción y posicionamiento. El orden temporal de los mensajes también depende de la ejecución concurrente. El informe conserva aparte los fallos de desarrollo anteriores.
+
+Para verificar un regreso se exigió un evento de finalización con pose observada a 2 m o menos de la base individual y una pose final dentro de ese mismo radio. Se registró por separado el estado de la misión y el envío de velocidad cero. El desvío del rover que inspeccionó S1 se calculó a partir de poses muestreadas aproximadamente una vez por segundo respecto de su ruta de regreso asignada.
+
+[Métricas por semilla y agente](seed-comparison.json) · [Telemetría, consola y validaciones](seed-telemetry.tar.gz).
+
+```bash
+export OPENBLAS_NUM_THREADS=1
+out=generated/closed_loop/belva-seeds
+mkdir -p "$out"
+run_seed() {
+  local seed="$1" code=0
+  python3 pilots/jezero/live_trial.py --pilot 7 --zone belva --seed "$seed" \
+    --policy information_hungarian --link ideal --smoke --rate 7 --max-time 1200 \
+    --out "$out/seed-$seed" > "$out/seed-$seed.console.log" 2>&1 || code=$?
+  printf '%s\n' "$code" > "$out/seed-$seed.exit"
+}
+run_seed 7 & p7=$!
+run_seed 11 & p11=$!
+wait "$p7" "$p11"
+run_seed 19 & p19=$!
+run_seed 23 & p23=$!
+run_seed 31 & p31=$!
+wait "$p19" "$p23" "$p31"
+python3 pilots/jezero/belva_compare.py "$out" evidence/jezero_belva 7 11 19 23 31
+```

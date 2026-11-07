@@ -1,0 +1,376 @@
+{
+  "runs": [
+    {
+      "seed": 7,
+      "status": "complete",
+      "error": null,
+      "exit_code": 0,
+      "duration_s": 450.71,
+      "coverage": 1.0,
+      "terrain_sha256": "12a8118fcbcbb588a6453ce78d1e010fd323fa426d51a77f6c2316d2913d27f9",
+      "returns": {
+        "rover_1": {
+          "verified": true,
+          "completion_s": 305.755,
+          "completion_error_m": 0.14709288254701264,
+          "final_error_m": 0.1470968343257357,
+          "last_sampled_error_m": 0.14709666710702354,
+          "last_task": ""
+        },
+        "rover_2": {
+          "verified": true,
+          "completion_s": 449.272,
+          "completion_error_m": 0.7619284082658317,
+          "final_error_m": 0.7619284082658317,
+          "last_sampled_error_m": 0.7619284082658317,
+          "last_task": ""
+        },
+        "human_1": {
+          "verified": true,
+          "completion_s": 402.377,
+          "completion_error_m": 0.6595381037306325,
+          "final_error_m": 0.6595381037306325,
+          "last_sampled_error_m": 0.6595381037306325,
+          "last_task": ""
+        },
+        "human_2": {
+          "verified": true,
+          "completion_s": 307.822,
+          "completion_error_m": 0.25025000000017883,
+          "final_error_m": 0.25025000000017883,
+          "last_sampled_error_m": 0.25025000000017883,
+          "last_task": ""
+        },
+        "drone_1": {
+          "verified": true,
+          "completion_s": 316.743,
+          "completion_error_m": 0.6389818438212918,
+          "final_error_m": 0.6389818438212918,
+          "last_sampled_error_m": 0.6389818438212918,
+          "last_task": ""
+        },
+        "drone_2": {
+          "verified": true,
+          "completion_s": 325.325,
+          "completion_error_m": 0.6869380642653427,
+          "final_error_m": 0.6869380642653427,
+          "last_sampled_error_m": 0.6869380642653427,
+          "last_task": ""
+        }
+      },
+      "verified_count": 6,
+      "individual_checks": 6,
+      "zero_sent": true,
+      "remaining_tasks": [
+        "inspect:S2"
+      ],
+      "inaccessible": [
+        "inspect:S2"
+      ],
+      "inspection_rover": "rover_2",
+      "rover_return_cross_track_max_m": 0.47689888813622733,
+      "rover_return_first_over_2m_s": null,
+      "rover_return_initial_heading_deg": 6.876563833675459,
+      "rover_return_reverse_samples": 0,
+      "inspection_rover_last_waypoint": null
+    },
+    {
+      "seed": 11,
+      "status": "complete",
+      "error": null,
+      "exit_code": 0,
+      "duration_s": 450.715,
+      "coverage": 1.0,
+      "terrain_sha256": "12a8118fcbcbb588a6453ce78d1e010fd323fa426d51a77f6c2316d2913d27f9",
+      "returns": {
+        "rover_1": {
+          "verified": true,
+          "completion_s": 305.94,
+          "completion_error_m": 0.19550614506254485,
+          "final_error_m": 0.1955101415009523,
+          "last_sampled_error_m": 0.19551006487754163,
+          "last_task": ""
+        },
+        "rover_2": {
+          "verified": true,
+          "completion_s": 449.995,
+          "completion_error_m": 0.7918792000722004,
+          "final_error_m": 0.7918792000722004,
+          "last_sampled_error_m": 0.7918792000722004,
+          "last_task": "return:rover_2"
+        },
+        "human_1": {
+          "verified": true,
+          "completion_s": 400.03,
+          "completion_error_m": 0.6743091056679392,
+          "final_error_m": 0.6743091056679392,
+          "last_sampled_error_m": 0.6743091056679392,
+          "last_task": ""
+        },
+        "human_2": {
+          "verified": true,
+          "completion_s": 307.912,
+          "completion_error_m": 0.2520000000001801,
+          "final_error_m": 0.2520000000001801,
+          "last_sampled_error_m": 0.2520000000001801,
+          "last_task": ""
+        },
+        "drone_1": {
+          "verified": true,
+          "completion_s": 316.925,
+          "completion_error_m": 0.6504514133422088,
+          "final_error_m": 0.6504514133422088,
+          "last_sampled_error_m": 0.6504514133422088,
+          "last_task": ""
+        },
+        "drone_2": {
+          "verified": true,
+          "completion_s": 325.522,
+          "completion_error_m": 0.6775565603525995,
+          "final_error_m": 0.6775565603525995,
+          "last_sampled_error_m": 0.6775565603525995,
+          "last_task": ""
+        }
+      },
+      "verified_count": 6,
+      "individual_checks": 6,
+      "zero_sent": true,
+      "remaining_tasks": [
+        "inspect:S2"
+      ],
+      "inaccessible": [
+        "inspect:S2"
+      ],
+      "inspection_rover": "rover_2",
+      "rover_return_cross_track_max_m": 0.42073747959111785,
+      "rover_return_first_over_2m_s": null,
+      "rover_return_initial_heading_deg": 7.987405215164634,
+      "rover_return_reverse_samples": 0,
+      "inspection_rover_last_waypoint": null
+    },
+    {
+      "seed": 19,
+      "status": "complete",
+      "error": null,
+      "exit_code": 0,
+      "duration_s": 464.4475,
+      "coverage": 1.0,
+      "terrain_sha256": "12a8118fcbcbb588a6453ce78d1e010fd323fa426d51a77f6c2316d2913d27f9",
+      "returns": {
+        "rover_1": {
+          "verified": true,
+          "completion_s": 312.077,
+          "completion_error_m": 0.14477809003110162,
+          "final_error_m": 0.14478228054425415,
+          "last_sampled_error_m": 0.14478213343010185,
+          "last_task": ""
+        },
+        "rover_2": {
+          "verified": true,
+          "completion_s": 463.715,
+          "completion_error_m": 0.48162210186306154,
+          "final_error_m": 0.48162210186306154,
+          "last_sampled_error_m": 0.48162210186306154,
+          "last_task": ""
+        },
+        "human_1": {
+          "verified": true,
+          "completion_s": 407.012,
+          "completion_error_m": 0.6795889576420724,
+          "final_error_m": 0.6795889576420724,
+          "last_sampled_error_m": 0.6795889576420724,
+          "last_task": ""
+        },
+        "human_2": {
+          "verified": true,
+          "completion_s": 314.132,
+          "completion_error_m": 0.25375000000018133,
+          "final_error_m": 0.25375000000018133,
+          "last_sampled_error_m": 0.25375000000018133,
+          "last_task": ""
+        },
+        "drone_1": {
+          "verified": true,
+          "completion_s": 323.028,
+          "completion_error_m": 0.6777153249049437,
+          "final_error_m": 0.6777153249049437,
+          "last_sampled_error_m": 0.6777153249049437,
+          "last_task": ""
+        },
+        "drone_2": {
+          "verified": true,
+          "completion_s": 331.715,
+          "completion_error_m": 0.6100638181221962,
+          "final_error_m": 0.6100638181221962,
+          "last_sampled_error_m": 0.6100638181221962,
+          "last_task": ""
+        }
+      },
+      "verified_count": 6,
+      "individual_checks": 6,
+      "zero_sent": true,
+      "remaining_tasks": [
+        "inspect:S2"
+      ],
+      "inaccessible": [
+        "inspect:S2"
+      ],
+      "inspection_rover": "rover_2",
+      "rover_return_cross_track_max_m": 0.4844852666051622,
+      "rover_return_first_over_2m_s": null,
+      "rover_return_initial_heading_deg": -175.65022157293822,
+      "rover_return_reverse_samples": 146,
+      "inspection_rover_last_waypoint": null
+    },
+    {
+      "seed": 23,
+      "status": "complete",
+      "error": null,
+      "exit_code": 0,
+      "duration_s": 450.9375,
+      "coverage": 1.0,
+      "terrain_sha256": "12a8118fcbcbb588a6453ce78d1e010fd323fa426d51a77f6c2316d2913d27f9",
+      "returns": {
+        "rover_1": {
+          "verified": true,
+          "completion_s": 306.13,
+          "completion_error_m": 0.19145284079935515,
+          "final_error_m": 0.19145667152553655,
+          "last_sampled_error_m": 0.1914565195944213,
+          "last_task": ""
+        },
+        "rover_2": {
+          "verified": true,
+          "completion_s": 450.623,
+          "completion_error_m": 0.8740320778673533,
+          "final_error_m": 0.8740320778673533,
+          "last_sampled_error_m": 0.8740320778673533,
+          "last_task": "return:rover_2"
+        },
+        "human_1": {
+          "verified": true,
+          "completion_s": 401.895,
+          "completion_error_m": 0.6909591252516556,
+          "final_error_m": 0.6909591252516556,
+          "last_sampled_error_m": 0.6909591252516556,
+          "last_task": ""
+        },
+        "human_2": {
+          "verified": true,
+          "completion_s": 308.197,
+          "completion_error_m": 0.24850000000017758,
+          "final_error_m": 0.24850000000017758,
+          "last_sampled_error_m": 0.24850000000017758,
+          "last_task": ""
+        },
+        "drone_1": {
+          "verified": true,
+          "completion_s": 317.162,
+          "completion_error_m": 0.618297736248641,
+          "final_error_m": 0.618297736248641,
+          "last_sampled_error_m": 0.618297736248641,
+          "last_task": ""
+        },
+        "drone_2": {
+          "verified": true,
+          "completion_s": 325.762,
+          "completion_error_m": 0.6423904994141975,
+          "final_error_m": 0.6423904994141975,
+          "last_sampled_error_m": 0.6423904994141975,
+          "last_task": ""
+        }
+      },
+      "verified_count": 6,
+      "individual_checks": 6,
+      "zero_sent": true,
+      "remaining_tasks": [
+        "inspect:S2"
+      ],
+      "inaccessible": [
+        "inspect:S2"
+      ],
+      "inspection_rover": "rover_2",
+      "rover_return_cross_track_max_m": 0.4495893465757749,
+      "rover_return_first_over_2m_s": null,
+      "rover_return_initial_heading_deg": 8.328518420186859,
+      "rover_return_reverse_samples": 0,
+      "inspection_rover_last_waypoint": null
+    },
+    {
+      "seed": 31,
+      "status": "complete",
+      "error": null,
+      "exit_code": 0,
+      "duration_s": 421.865,
+      "coverage": 1.0,
+      "terrain_sha256": "12a8118fcbcbb588a6453ce78d1e010fd323fa426d51a77f6c2316d2913d27f9",
+      "returns": {
+        "rover_1": {
+          "verified": true,
+          "completion_s": 285.673,
+          "completion_error_m": 0.2154821807820055,
+          "final_error_m": 0.21548582886096648,
+          "last_sampled_error_m": 0.21548593990108866,
+          "last_task": ""
+        },
+        "rover_2": {
+          "verified": true,
+          "completion_s": 420.407,
+          "completion_error_m": 0.8391254353724916,
+          "final_error_m": 0.8391254353724916,
+          "last_sampled_error_m": 0.8391254353724916,
+          "last_task": ""
+        },
+        "human_1": {
+          "verified": true,
+          "completion_s": 386.425,
+          "completion_error_m": 0.6428409083005909,
+          "final_error_m": 0.6428409083005909,
+          "last_sampled_error_m": 0.6428409083005909,
+          "last_task": ""
+        },
+        "human_2": {
+          "verified": true,
+          "completion_s": 287.64,
+          "completion_error_m": 0.25112500000017945,
+          "final_error_m": 0.25112500000017945,
+          "last_sampled_error_m": 0.25112500000017945,
+          "last_task": ""
+        },
+        "drone_1": {
+          "verified": true,
+          "completion_s": 296.637,
+          "completion_error_m": 0.6598377504684784,
+          "final_error_m": 0.6598377504684784,
+          "last_sampled_error_m": 0.6598377504684784,
+          "last_task": ""
+        },
+        "drone_2": {
+          "verified": true,
+          "completion_s": 305.325,
+          "completion_error_m": 0.6174293916758591,
+          "final_error_m": 0.6174293916758591,
+          "last_sampled_error_m": 0.6174293916758591,
+          "last_task": ""
+        }
+      },
+      "verified_count": 6,
+      "individual_checks": 6,
+      "zero_sent": true,
+      "remaining_tasks": [
+        "inspect:S2"
+      ],
+      "inaccessible": [
+        "inspect:S2"
+      ],
+      "inspection_rover": "rover_2",
+      "rover_return_cross_track_max_m": 0.4501265719156109,
+      "rover_return_first_over_2m_s": null,
+      "rover_return_initial_heading_deg": 4.704786984046697,
+      "rover_return_reverse_samples": 0,
+      "inspection_rover_last_waypoint": null
+    }
+  ],
+  "six_returns": 5,
+  "complete_missions": 5
+}
