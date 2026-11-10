@@ -1,0 +1,386 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Preparación Space Apps · Checklist y manual</title><style>
+:root{--ink:#182d3c;--muted:#536777;--paper:#f7f8fa;--surface:#fff;--line:#d8e0e6;--accent:#0b665e;--p0:#8b272f;--p1:#725419;--p2:#4b567b;color-scheme:light;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-size:17px;line-height:1.65}a{color:#075e84;text-underline-offset:3px}a:hover{text-decoration-thickness:2px}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #17618b;outline-offset:3px}header{background:#122d3f;color:#fff;padding:36px max(24px,calc((100vw - 1250px)/2)) 30px}header .eyebrow{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#b8d9d6;margin:0}header h1{font-size:clamp(30px,4vw,44px);line-height:1.15;max-width:900px;margin:14px 0}header p{max-width:860px;margin:0;color:#dbe5eb}.shell{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:250px minmax(0,1fr);gap:38px;padding:30px 24px 70px}nav{position:sticky;top:18px;align-self:start;max-height:calc(100vh - 36px);overflow:auto;padding-right:10px;font-size:14px}nav strong{display:block;margin-bottom:12px}nav a{display:block;padding:7px 9px;border-left:2px solid var(--line);text-decoration:none}nav a:hover{background:#e5eef1}main{min-width:0;overflow-wrap:anywhere}main>h1{display:none}h2{font-size:27px;line-height:1.25;margin:42px 0 20px;padding-top:12px;border-top:2px solid var(--line);scroll-margin-top:20px}h3{font-size:21px;line-height:1.3;margin:28px 0 12px}p{margin:12px 0}table{width:100%;border-collapse:collapse;margin:18px 0;font-size:15px;line-height:1.5}th{text-align:left;background:#e5eef1}td,th{padding:11px 12px;border:1px solid var(--line);vertical-align:top}blockquote{margin:20px 0;padding:8px 20px;background:#e9f4f1;border-left:4px solid var(--accent)}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eaf0f3;padding:20px;border-radius:6px;font-size:14px;line-height:1.65}code{font-size:.91em}li{margin-bottom:9px}.toolbar{background:var(--surface);padding:20px;border:1px solid var(--line);border-radius:9px;margin:20px 0;box-shadow:0 2px 6px #1122330a}.filters{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.filters label{display:grid;gap:3px;font-size:13px;font-weight:650;flex:1;min-width:140px}.filters .wide{min-width:210px;flex:2}input[type=search],select,input[type=text]{font:inherit;font-size:15px;padding:9px 11px;border:1px solid #9cabb6;border-radius:5px;background:white;color:var(--ink);width:100%}button,.filelabel{display:inline-block;cursor:pointer;border:1px solid #8096a6;background:#fff;color:var(--ink);font:inherit;font-size:14px;padding:9px 12px;border-radius:5px}button:hover,.filelabel:hover{background:#edf4f6}.buttons{display:flex;gap:10px;flex-wrap:wrap}.progress{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:700}.progress b{font-size:24px}progress{width:100%;height:12px;accent-color:var(--accent)}.subnote{font-size:13px;color:var(--muted);line-height:1.5}.item{padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:8px;margin:10px 0}.item.done{border-left:5px solid #0b665e}.item-top{display:flex;gap:12px;align-items:flex-start}.item-top input{width:22px;height:22px;flex:none;accent-color:var(--accent);margin-top:4px}.item-top label{font-size:17px;font-weight:700;cursor:pointer}.tags{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}.tag{border-radius:4px;padding:2px 7px;font-size:12px;font-weight:650;background:#edf1f5}.P0{background:#f8e7e8;color:var(--p0)}.P1{background:#f7efdc;color:var(--p1)}.P2{background:#eaedf6;color:var(--p2)}.accept{font-size:15px;line-height:1.55;margin:8px 0;color:#364b5c}.evidence-label{font-size:13px;display:block;margin:9px 0 4px}.empty{padding:18px;border:1px dashed #829aaa}#status{min-height:24px;color:#32574e;font-size:14px;margin:10px 0}.smallprint{padding:14px 20px;background:#fff4dd;border-left:4px solid #80621b;font-size:15px}.skip{position:absolute;left:-10000px}.skip:focus{left:12px;top:12px;background:white;padding:12px;z-index:100}.print-only{display:none}
+@media(max-width:1000px){.shell{grid-template-columns:1fr;padding:22px 18px;gap:12px}nav{position:static;max-height:none;border-bottom:1px solid var(--line);padding-bottom:15px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}nav strong{grid-column:1/-1}header{padding:26px 20px}h2{font-size:24px}table{font-size:14px}td,th{padding:8px;overflow-wrap:anywhere}}
+@media(max-width:600px){body{font-size:16px}nav{grid-template-columns:1fr}.filters{display:block}.filters label{margin-bottom:10px}.item{padding:13px}table{display:block;overflow:auto}.progress{display:block}.progress span{display:block}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+@media print{body{background:white;font-size:10pt;line-height:1.45}header{padding:0;background:white;color:#122d3f;border-bottom:2px solid #122d3f}header .eyebrow,header p{color:#345}header h1{font-size:25pt}.shell{display:block;padding:0;max-width:none}nav,.toolbar,.buttons,.filters,#status,.skip{display:none}h2{font-size:17pt;break-after:avoid;margin-top:24pt}h3{font-size:13pt;break-after:avoid}.item{break-inside:avoid;padding:9px;margin:6px 0}.item-top label{font-size:10pt}.accept,.subnote,.evidence-label,input[type=text]{font-size:9pt}table{font-size:9pt}td,th{padding:6px}a{color:inherit}pre{font-size:9pt;break-inside:avoid}.print-only{display:block}.smallprint{background:white}input{box-shadow:none}.item[hidden],.group[hidden]{display:block!important}}
+</style></head><body><a href="#main" class="skip">Saltar al contenido</a><header><p class="eyebrow">Equipo de exploración · Preparación técnica</p><h1>De un prototipo que funciona a una experiencia que se entiende</h1><p>Checklist verificable y manual de demos científicas interactivas. Principios de videojuego al servicio de decisiones, evidencia y comunicación.</p></header><div class="shell"><nav aria-label="Contenido del manual"><strong>Contenido</strong><a href="#section-1">1. La decisión estratégica</a><a href="#section-2">2. Cómo usar la checklist</a><a href="#section-3">3. Manual de experiencia tipo videojuego</a><a href="#section-4">4. Arquitectura técnica mínima</a><a href="#section-5">5. Ejercicios previos de interfaz, separados del entregable</a><a href="#section-6">6. Aplicación al piloto Jezero ya existente</a><a href="#section-7">7. Responsabilidades sugeridas</a><a href="#section-8">8. Prueba de aceptación de la experiencia</a><a href="#section-9">9. Reglas de recorte de alcance</a><a href="#section-10">10. Lecturas dirigidas</a><a href="#section-11">11. Plantilla de una página para cualquier producto</a><a href="#section-fuentes">Fuentes y notas</a></nav><main id="main"><h1>Preparación técnica y diseño de demos científicas interactivas</h1>
+<p><strong>Equipo:</strong> David Yanguas, Jesús Flores, Jorge Fajardo, Daniel Cartagena y Diego Amaya.<br />
+<strong>Edición del documento:</strong> 10 de noviembre de 2026.<br />
+<strong>Aplicación:</strong> NASA Space Apps; guía reutilizable para otros retos y productos.<br />
+<strong>Estado:</strong> recomendaciones y criterios propuestos. Las casillas no vienen certificadas como cumplidas.</p>
+<h2 id="section-1">1. La decisión estratégica</h2>
+<p>La preparación debería fortalecer tres capacidades: construir algo que funcione, demostrar por qué aporta y permitir que otra persona lo entienda sin depender continuamente de un desarrollador. El acabado visual debe facilitar esa comprensión.</p>
+<p>La experiencia deseada para un jurado es: <strong>«Entiendo el problema; puedo probar una decisión; veo su consecuencia; puedo comprobar de dónde sale el resultado».</strong> Esa es la prioridad del manual. No se promete un resultado competitivo ni se asignan pesos oficiales inventados.</p>
+<p>La guía de evaluación 2025 usa impacto, creatividad, validez, relevancia y presentación como orientación para un juicio global. También incluye usabilidad dentro de la validez. Es un antecedente útil para preparar evidencia, pero los formatos y condiciones aplicables se verifican en la guía vigente de 2026. [S2]</p>
+<h3>Un requisito previo importante</h3>
+<p>La organización global indicó el 5 de noviembre de 2026 que se puede estudiar, investigar recursos y formar equipo antes del evento, pero que comenzar el proyecto antes del inicio oficial puede causar descalificación. [S1] El sandbox ya desarrollado no queda autorizado para la competencia por llamarse «prueba». Antes de reutilizarlo, describir honestamente su historial y pedir aclaración escrita al organizador competente. No borrar historial ni asumir que reescribir el código elimina la restricción.</p>
+<p>Esta guía es material de estudio. Los ejercicios de interfaz previos deberían hacerse con problemas independientes del entregable. Los diseños finales, pantallas y código específicos se reservan para la ventana autorizada. La aprobación local puede no resolver por sí sola una condición de elegibilidad global: aclarar el alcance de la respuesta recibida.</p>
+<h2 id="section-2">2. Cómo usar la checklist</h2>
+<p><strong>P0:</strong> condición esencial para una propuesta defendible y presentable. <strong>P1:</strong> mejora importante cuando la base está estable. <strong>P2:</strong> ampliación opcional.</p>
+<p><strong>Antes:</strong> estudio, acuerdos, revisión de reglas o ejercicios independientes. <strong>Evento:</strong> implementación y comprobación sobre el producto que se entregará. <strong>Ambos:</strong> practicar antes y volver a verificar sobre el entregable dentro de la ventana permitida.</p>
+<p>Los responsables son una propuesta, no una evaluación de aptitudes. Jesús tiene el perfil de integración más probable según lo descrito, pero conviene comprobar su experiencia concreta en interfaces. Cada integrante debe tener un resultado propio verificable y una persona de respaldo. Marcar una casilla exige una evidencia o nota breve; estar «verificado» aquí no equivale a aprobación de NASA.</p>
+<div class="toolbar" aria-label="Controles de checklist"><div class="progress"><span id="progress-title">Preparación verificada</span><b id="count">0 / 0</b></div><progress id="bar" value="0" max="1" aria-labelledby="progress-title"></progress><p class="subnote" id="p0count"></p><div class="filters"><label class="wide">Buscar<input id="search" type="search" placeholder="Tema, criterio o identificador"></label><label>Prioridad<select id="priority"><option value="">Todas</option><option>P0</option><option>P1</option><option>P2</option></select></label><label>Responsable<select id="owner"><option value="">Todos</option><option>David</option><option>Jesús</option><option>Jorge</option><option>Daniel</option><option>Diego</option></select></label><label>Momento<select id="phase"><option value="">Todos</option><option>Antes</option><option>Ambos</option><option>Evento</option></select></label><label>Estado<select id="completion"><option value="">Todos</option><option value="pending">Pendientes</option><option value="done">Verificados</option></select></label></div><div class="buttons"><button id="export" type="button">Exportar avance JSON</button><button id="import" type="button">Importar avance JSON</button><input id="importfile" type="file" accept="application/json,.json" hidden><button id="print" type="button">Imprimir / guardar PDF</button><button id="reset" type="button">Borrar avance</button></div><p class="subnote">Funciona sin conexión. El avance se guarda en este navegador cuando lo permite. No hay sincronización entre personas: exporta el JSON para respaldarlo o compartirlo. Ninguna casilla viene marcada como cumplida.</p><div id="status" role="status" aria-live="polite"></div></div><div id="checklist"></div>
+<h2 id="section-3">3. Manual de experiencia tipo videojuego</h2>
+<h3>3.1 Diseñar desde lo que debe entender el usuario</h3>
+<p>El marco MDA distingue mecánicas, dinámicas y experiencia. [S5] Lo adaptaría a una demostración científica así:</p>
+<table>
+<thead>
+<tr>
+  <th>Pregunta</th>
+  <th>Aplicación a la demo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>¿Qué queremos que experimente?</td>
+  <td>Curiosidad, capacidad de decidir y comprensión de una consecuencia.</td>
+</tr>
+<tr>
+  <td>¿Qué comportamiento lo produce?</td>
+  <td>Elegir entre alternativas y comparar sus resultados.</td>
+</tr>
+<tr>
+  <td>¿Qué control concreto hace falta?</td>
+  <td>Un selector de estrategia, un objetivo elegible o una condición de escenario.</td>
+</tr>
+<tr>
+  <td>¿Qué evidencia lo respalda?</td>
+  <td>Trayectoria, evento y medida calculados para esa misma ejecución.</td>
+</tr>
+</tbody>
+</table>
+<p>No todas las aplicaciones necesitan ser juegos. Un simulador, tablero o mapa puede aprovechar objetivos claros, decisiones, descubrimientos y retroalimentación sin puntuaciones artificiales, recompensas arbitrarias ni ficción excesiva.</p>
+<h3>3.2 El ciclo central de interacción</h3>
+<p><strong>Situación → objetivo → elección → consecuencia → comparación → siguiente decisión.</strong></p>
+<p>En una aplicación de exploración, la pregunta podría ser: «¿Priorizamos conocer el terreno pronto o terminar la misión en menos tiempo?». En una herramienta ambiental: «¿Qué zona conviene inspeccionar primero?». En una aplicación educativa: «¿Qué cambia al modificar esta condición?». La estructura funciona con temas diferentes.</p>
+<p>Una decisión útil tiene al menos dos alternativas defendibles y una consecuencia visible. Pulsar «iniciar» y observar una animación puede ser una buena introducción, pero no reemplaza una exploración de decisiones.</p>
+<h3>3.3 Diseñar una demostración corta completa</h3>
+<p>Como objetivo de ensayo interno, preparar una secuencia de 90 segundos, adaptable al tiempo oficial:</p>
+<table>
+<thead>
+<tr>
+  <th>Intervalo propuesto</th>
+  <th>Qué ve y entiende el espectador</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>0–15 s</td>
+  <td>Quién tiene el problema y qué debe decidir.</td>
+</tr>
+<tr>
+  <td>15–30 s</td>
+  <td>Qué información existe y qué incertidumbre queda.</td>
+</tr>
+<tr>
+  <td>30–55 s</td>
+  <td>Una elección del usuario y la respuesta del sistema.</td>
+</tr>
+<tr>
+  <td>55–75 s</td>
+  <td>Un resultado comparado con una alternativa comprensible.</td>
+</tr>
+<tr>
+  <td>75–90 s</td>
+  <td>El beneficio, el costo y el límite principal.</td>
+</tr>
+</tbody>
+</table>
+<p>Los 90 segundos son un criterio de preparación propio, no el límite oficial de Space Apps. Separar demo interactiva, presentación local y material de entrega global: pueden tener restricciones diferentes.</p>
+<h3>3.4 Tres vistas, tres necesidades</h3>
+<p><strong>Demo guiada.</strong> Caso precargado, pocas acciones y hitos con explicación. Debe servir al presentador sin obligarlo a operar veinte controles.</p>
+<p><strong>Exploración.</strong> Cambios permitidos, comparación entre alternativas, pausa, reinicio y selección de entidades. El sistema mantiene consistencia entre entradas y resultados.</p>
+<p><strong>Evidencia.</strong> Fuentes, unidades, hipótesis, versión, semilla, métricas detalladas y archivos exportables. Lo avanzado se ofrece de forma accesible, sin llenar la primera pantalla. Esta separación aplica la revelación progresiva de información. [S3]</p>
+<h3>3.5 Arquitectura visual de una pantalla</h3>
+<p>Propuesta para una vista horizontal de computadora:</p>
+<ul>
+<li>Encabezado: objetivo de la misión, escenario y estado de ejecución.</li>
+<li>Área principal: mapa o visualización central; debe dominar la pantalla.</li>
+<li>Panel lateral: selección actual, decisión y explicación corta de sus consecuencias.</li>
+<li>Banda de resultados: hasta tres medidas principales con unidades y comparación.</li>
+<li>Línea de tiempo: hitos, reproducción, pausa y reinicio.</li>
+<li>Acceso secundario claro: fuentes, supuestos y reporte.</li>
+</ul>
+<p>No es obligatorio usar este reparto para todos los productos. Lo importante es que el tamaño visual responda a la importancia de la información. Si el jurado debe leer una tabla extensa para entender por qué la aplicación existe, falta una síntesis.</p>
+<h3>3.6 Biblioteca de patrones útiles</h3>
+<table>
+<thead>
+<tr>
+  <th>Patrón</th>
+  <th>Para qué sirve</th>
+  <th>Implementación mínima</th>
+  <th>Riesgo a evitar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Antes/después</td>
+  <td>Mostrar mejora del conocimiento o cambio de decisión.</td>
+  <td>Dos vistas sincronizadas con la misma escala y leyenda.</td>
+  <td>Cambiar escalas para exagerar diferencias.</td>
+</tr>
+<tr>
+  <td>Dos políticas</td>
+  <td>Mostrar una compensación entre objetivos.</td>
+  <td>Escenario común y dos resultados identificados.</td>
+  <td>Cambiar objetivos o presupuesto entre políticas.</td>
+</tr>
+<tr>
+  <td>«¿Por qué?»</td>
+  <td>Explicar asignaciones o recomendaciones.</td>
+  <td>Razón derivada de eventos, capacidades y costos.</td>
+  <td>Inventar razones mediante texto persuasivo.</td>
+</tr>
+<tr>
+  <td>Hitos</td>
+  <td>Saltar al descubrimiento o decisión relevante.</td>
+  <td>Marcadores en la línea temporal.</td>
+  <td>Ocultar eventos desfavorables.</td>
+</tr>
+<tr>
+  <td>Detalle a demanda</td>
+  <td>Mostrar rigor sin saturar.</td>
+  <td>Seleccionar entidad y abrir su ficha.</td>
+  <td>Convertir cada clic en un panel distinto sin salida.</td>
+</tr>
+<tr>
+  <td>Recuperar vista</td>
+  <td>Reducir errores de navegación.</td>
+  <td>Botón «Volver a la vista general».</td>
+  <td>Cámara 3D que se pierde o gira sola.</td>
+</tr>
+<tr>
+  <td>Resultado exportable</td>
+  <td>Permitir verificar y compartir.</td>
+  <td>PNG/CSV/JSON asociados al run_id.</td>
+  <td>Exportar datos de otra ejecución.</td>
+</tr>
+<tr>
+  <td>Estado vacío con salida</td>
+  <td>Resolver situaciones sin solución.</td>
+  <td>Motivo y acciones disponibles.</td>
+  <td>Pantalla en blanco o progreso infinito.</td>
+</tr>
+</tbody>
+</table>
+<h3>3.7 Hacer visible la causalidad</h3>
+<p>La unidad narrativa más valiosa es <strong>dato → decisión → consecuencia</strong>. Un ejemplo de mensaje, cuyo contenido tendría que proceder del sistema, es:</p>
+<blockquote>
+<p>Se observó el sector norte. El objetivo B quedó disponible para inspección. Rover 2 fue asignado porque cumple los requisitos y tiene menor costo estimado entre los rovers disponibles.</p>
+</blockquote>
+<p>Mostrar solo «INSPECT:S2» conserva el identificador pero pierde la explicación. Conservar ambos: frase en la vista principal e identificador técnico en el detalle. La visibilidad del estado y la retroalimentación son principios de usabilidad, no adornos. [S4]</p>
+<p>En una versión posterior, mostrar la tabla de candidatos con costo y restricciones. No llamar «óptimo» a un resultado si solo es óptimo para la asignación instantánea y no para toda la misión.</p>
+<h3>3.8 Usar la incertidumbre como parte de la experiencia</h3>
+<p>Separar al menos: sin información, información orbital aproximada y observación local. Un área observada puede seguir siendo incierta. La visualización no debe sugerir que ha pasado automáticamente a ser segura.</p>
+<p>La referencia de evaluación se coloca en una vista claramente rotulada y aislada de los controles del planificador. Si se compara CTX con HiRISE, explicar qué es información inicial, qué es referencia reservada y qué obtiene realmente el sensor simulado. Una capa de incertidumbre necesita unidad, escala y definición, no solo una paleta atractiva.</p>
+<h3>3.9 Gramática visual propuesta</h3>
+<p>Usar pocos tamaños tipográficos y espaciados consistentes; una familia legible y fuente de sistema son suficientes. Evitar tipografía de ciencia ficción para párrafos y cifras.</p>
+<p>Asignar formas diferentes a clases de agente y combinar forma, texto y color. Separar identidad —qué agente es— de estado —qué está haciendo—. No reutilizar el mismo significado visual para «rover», «éxito» y «zona segura».</p>
+<p>Como referencia de accesibilidad web, WCAG indica contraste mínimo 4.5:1 para texto normal y 3:1 para texto grande, con sus excepciones. La información no debe depender exclusivamente del color. [S6, S7] Probar el diseño en proyección y a distancia: cumplir una razón de contraste no garantiza por sí solo legibilidad en la sala. [S8]</p>
+<p>Objetivos internos sugeridos: texto principal de 18–22 px en modo presentación, controles grandes, foco visible, pocas cifras decimales y cifras con unidades. Los tamaños concretos se ajustan tras probar la pantalla real; no son requisitos de NASA.</p>
+<p>Animar lo que cambió, permitir pausa y respetar reducción de movimiento. Evitar destellos, lluvia de partículas, audio obligatorio y desplazamientos de cámara que interrumpan la lectura. El aspecto oscuro puede servir en una pantalla, pero comprobar una alternativa de alto contraste para proyección.</p>
+<h3>3.10 Estados que deben diseñarse antes del acabado</h3>
+<p>Definir visualmente: listo, calculando, completo, sin solución, error, cancelado y resultado desactualizado. Cada estado responde «qué pasa» y «qué puedo hacer».</p>
+<p>Si cambia una entrada, el resultado anterior queda marcado como desactualizado. Si se reinicia, no debe seguir apareciendo un callback tardío de otra ejecución. Si dos paneles comparan políticas, mostrar el mismo tiempo simulado o identificar expresamente que se están comparando estados finales.</p>
+<p>Nunca mostrar controles que aparenten alterar el modelo y solo modifiquen la decoración. Un slider de batería no corresponde al piloto actual mientras la batería no esté modelada. Un selector de estrategia que carga una ejecución ya calculada debe decirlo.</p>
+<h2 id="section-4">4. Arquitectura técnica mínima</h2>
+<p>Separar tres capas: <strong>cálculo → contrato de datos → presentación</strong>. El motor resuelve el problema; la interfaz ayuda a entenderlo. Gazebo puede aportar reproducción o sensores, pero no debe bloquear necesariamente la apertura del resumen y de la evidencia.</p>
+<p>El contrato podría incluir:</p>
+<pre><code class="language-text">run_id, schema_version, scenario_id, policy_id, seed
+sources, assumptions, coordinate_frame, units
+t_sim, agent_states, task_states, events, metrics
+</code></pre>
+<p>Distinguir tres modos: cálculo nuevo, reproducción verificable y material ilustrativo. No usar un video o una trayectoria guardada como si reflejara una decisión recién calculada.</p>
+<p>Una ejecución nueva requiere invalidar salidas anteriores, mostrar progreso, gestionar cancelación y asociar todos los resultados al mismo identificador. Una reproducción solo necesita navegar un registro inmutable; sigue siendo interactiva si permite inspección y comparación honesta.</p>
+<h3>Elección de herramientas</h3>
+<p><strong>Primera opción para el equipo:</strong> extender habilidades web, sin cambiar el motor de misión por razones estéticas. HTML/CSS/JavaScript y Canvas/SVG bastan para mapas, controles, trazas y resultados. Elegir React u otro framework solo si alguien puede mantenerlo cómodamente.</p>
+<p><strong>Three.js:</strong> opción para un terreno 3D puntual cuando aporte comprensión. Su documentación incluye instalación con npm y desarrollo mediante servidor local. Empaquetar recursos; no dar por hecho que una aplicación modular funcionará con doble clic o sin CDN. [S10]</p>
+<p><strong>Godot:</strong> buena posibilidad cuando la interacción de juego sea el producto central y haya experiencia real en el equipo. La exportación web tiene requisitos de WebAssembly/WebGL 2, restricciones por lenguaje y condiciones adicionales al usar multihilo. Comprobar el despliegue antes de comprometerse con el motor. [S11]</p>
+<p>No escoger una herramienta por una captura espectacular. El criterio de selección es producir una decisión, una consecuencia y una comparación verificables con el menor riesgo de integración.</p>
+<h2 id="section-5">5. Ejercicios previos de interfaz, separados del entregable</h2>
+<h3>Ejercicio A — Decisión y consecuencia</h3>
+<p>Problema independiente: tres vehículos reparten paquetes en un plano ficticio. Diseñar una pantalla que permita cambiar una prioridad y comparar resultados de dos casos de práctica. La observación clave es si una persona ajena explica el cambio sin recibir una clase.</p>
+<h3>Ejercicio B — Explicación del algoritmo</h3>
+<p>Usar un pequeño conjunto de resultados ya calculados. Permitir seleccionar una asignación y ver candidato elegido, alternativas, costo y motivo de incompatibilidad. Todo texto debe salir de datos explícitos, no de explicaciones inventadas.</p>
+<h3>Ejercicio C — Robustez de la experiencia</h3>
+<p>Cargar un archivo con datos faltantes, reiniciar durante una animación, cambiar el tamaño de ventana y quitar internet. El objetivo es aprender a diseñar estados coherentes y recuperar el control. Una práctica de interfaz puede revelar más riesgos de producto que añadir otro simulador.</p>
+<h3>Ejercicio D — Narración y exportación</h3>
+<p>A partir de una misma ejecución de práctica, generar una tarjeta de resultados, una tabla y una captura. Comprobar que las tres representaciones cuentan la misma historia. Ensayar explicaciones breves y ampliadas, sin tomar ese material como el entregable competitivo.</p>
+<p>Los ejercicios generan aprendizaje y criterios. Su eventual reutilización material depende de las reglas y de la respuesta sobre trabajo previo.</p>
+<h2 id="section-6">6. Aplicación al piloto Jezero ya existente</h2>
+<p>La versión adjunta de <code>Jezero_visor_mision.html</code> ya contiene mapa, cuatro capas, reproducción, velocidad, trayectorias, agentes, objetivos y eventos. El trabajo de diseño pendiente más valioso no sería añadir más paneles: sería conectar esos elementos con una decisión del usuario.</p>
+<h3>Experiencia candidata para estudiar</h3>
+<ol>
+<li>Explicar la misión en una frase.</li>
+<li>Elegir entre conocer pronto el terreno o completar antes las tareas, sin prometer una nueva política si no se ha implementado.</li>
+<li>Comparar las dos políticas disponibles sobre el mismo escenario.</li>
+<li>Saltar al primer descubrimiento y mostrar la cadena de tareas.</li>
+<li>Mostrar resultado favorable y costo asociado.</li>
+<li>Abrir la evidencia y los límites.</li>
+</ol>
+<p>El reporte adjunto aporta una compensación real dentro de ese experimento: la política informativa llegó al 80 % de cobertura en 320 s frente a 440 s de proximidad, pero terminó la misión en 1930 s frente a 1660 s. Ese contraste es una historia de decisión útil. Son simulaciones sobre el mismo terreno y objetivos; tres semillas de ruido no prueban generalización.</p>
+<p>Pendientes metodológicos que la interfaz debe respetar: CTX y HiRISE proceden de MRO; sensores y objetivos son hipotéticos; no hay batería ni conectividad limitada; no hay reconstrucción por cámaras. La propuesta no requiere introducir ahora comunicaciones degradadas, porque se acordó conexión global ideal.</p>
+<h2 id="section-7">7. Responsabilidades sugeridas</h2>
+<table>
+<thead>
+<tr>
+  <th>Persona</th>
+  <th>Responsabilidad propuesta</th>
+  <th>Entregable de preparación</th>
+  <th>Límite de alcance</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>David</td>
+  <td>Problema, rigor, prioridades y explicación</td>
+  <td>Criterios de éxito, afirmaciones permitidas y preguntas de defensa.</td>
+  <td>Evitar convertirse en aprobador de cada detalle de interfaz.</td>
+</tr>
+<tr>
+  <td>Jesús</td>
+  <td>Integración, contrato de datos y despliegue</td>
+  <td>Ejercicio que conecte datos y pantalla; plan de ejecución y pruebas.</td>
+  <td>Confirmar experiencia de frontend antes de asignarle toda la UI.</td>
+</tr>
+<tr>
+  <td>Jorge</td>
+  <td>Interacción y visualización</td>
+  <td>Patrón de decisión/consecuencia y gramática visual.</td>
+  <td>Una mecánica central y un efecto visual útil antes de cualquier 3D extra.</td>
+</tr>
+<tr>
+  <td>Daniel</td>
+  <td>Datos, medidas y comparación</td>
+  <td>Diccionario de datos, métricas y ensayo comparativo independiente.</td>
+  <td>Congelar una línea base antes de añadir un método más complejo.</td>
+</tr>
+<tr>
+  <td>Diego</td>
+  <td>Pruebas, eventos comprensibles y evidencia</td>
+  <td>Registro de usabilidad y componente acotado de eventos/exportación.</td>
+  <td>Tener una contribución funcional propia y apoyo de Jesús; no quedar solo con tareas auxiliares.</td>
+</tr>
+</tbody>
+</table>
+<p>Parejas útiles: Jesús–Jorge para integrar interacción y motor; Daniel–Diego para revisar trazabilidad y pruebas. David revisa las decisiones de alcance y las afirmaciones, no cada color o animación.</p>
+<h2 id="section-8">8. Prueba de aceptación de la experiencia</h2>
+<p>Como umbrales internos de entrenamiento, no oficiales:</p>
+<ul>
+<li>En 15 s una persona identifica a quién sirve y para qué.</li>
+<li>En 30 s encuentra la acción principal.</li>
+<li>En 90 s explica una consecuencia y una diferencia entre alternativas.</li>
+<li>Puede reiniciar y volver a la vista general sin ayuda.</li>
+<li>Puede localizar una fuente y reconocer una limitación.</li>
+<li>La demo se abre sin depender del terminal de un desarrollador.</li>
+</ul>
+<p>Probar con dos o tres personas ajenas al desarrollo y preguntar: «¿Qué intentabas hacer?», «¿Qué esperabas al pulsar?», «¿Qué cambió?», «¿Qué no te queda claro?». Observar antes de explicar. Esto es detección cualitativa de problemas, no un estudio de usuarios representativo.</p>
+<p>Automatizar después los recorridos que ya tienen sentido. Playwright puede comparar capturas con referencias, pero el render depende de navegador, sistema y configuración; fijar esos factores y el tiempo de simulación. [S9] Las capturas detectan cambios visuales; las pruebas de datos detectan incoherencias numéricas.</p>
+<h2 id="section-9">9. Reglas de recorte de alcance</h2>
+<p>Toda función debe tener un usuario, una decisión que mejora, un responsable y una prueba de aceptación. Si falta uno, pasa a la lista de extras.</p>
+<p>Poner por delante: propósito claro, datos trazables, flujo completo, comparación honesta, estados de error, reinicio y exportación. Después: explicación avanzada, atajos temporales, modo presentación y pulido de transiciones. Al final: 3D adicional, audio o personalización.</p>
+<p>No introducir por defecto cuentas, autenticación, chat, multijugador, nuevos motores físicos ni edición libre de escenarios. Un chatbot sería justificable solo con una necesidad y pruebas concretas; no por la expectativa de que «usar IA» haga más competitivo el producto.</p>
+<p>Durante el evento, reservar un tramo explícito para congelar funciones, verificar y ensayar. La fracción concreta depende del horario; como punto de partida de planificación usar el último cuarto del tiempo útil. Es una propuesta del equipo, no una regla del evento.</p>
+<h2 id="section-10">10. Lecturas dirigidas</h2>
+<p><strong>NASA Eyes:</strong> explorar una experiencia de datos científicos interactivos y anotar cómo orienta, selecciona y explica, sin intentar reproducir toda su escala. [S12]</p>
+<p><strong>MDA:</strong> identificar experiencia deseada y traducirla a una mecánica observable. [S5]</p>
+<p><strong>Revelación progresiva y estado del sistema:</strong> decidir qué mostrar al principio y cómo comunicar cálculo, resultado y error. [S3, S4]</p>
+<p><strong>Accesibilidad y pruebas:</strong> revisar contraste, redundancia de color y capturas automatizadas. [S6–S9]</p>
+<p>El objetivo de lectura es obtener una decisión de diseño y un criterio de prueba por recurso, no acumular tutoriales.</p>
+<h2 id="section-11">11. Plantilla de una página para cualquier producto</h2>
+<pre><code class="language-text">Nombre provisional:
+Usuario y situación:
+Decisión que necesita tomar:
+Dato que cambia esa decisión:
+Lo que hará al abrir la aplicación:
+Alternativas que podrá comparar:
+Consecuencia visible:
+Métrica principal y unidad:
+Comparación sencilla:
+Supuesto y límite más importantes:
+Fuente y uso permitido:
+Modo: cálculo nuevo / reproducción / ilustración:
+Responsable de integración:
+Prueba con persona ajena:
+Plan de recuperación:
+</code></pre>
+<p><strong>Criterio final:</strong> la experiencia es convincente cuando permite comprender y verificar una decisión, incluso sin el video editado y sin que el profesor traduzca cada pantalla.</p>
+<h2 id="section-fuentes">Fuentes y notas</h2>
+<p>Las secciones de diseño, los tiempos de ensayo y la asignación de responsabilidades son propuestas propias para este equipo. Las normas aplicables se consultan en su versión vigente; las guías históricas están identificadas como tales.</p>
+<p><strong>[S1] Organización global Space Apps, respuesta del 5 de noviembre de 2026.</strong> Preparación permitida, restricción de trabajo previo y riesgo de descalificación.<br />
+https://github.com/nasa/spaceapps/discussions/1813</p>
+<p><strong>[S2] Space Apps, Judging Instructional Guidance 2025.</strong> Antecedente de criterios y requisitos. No reemplaza las bases de 2026.<br />
+https://spaceapps-v2-staging.s3.amazonaws.com/media/documents/Final_Space_Apps_2025_Judging_Guidelines_for_web.pdf</p>
+<p><strong>[S3] Nielsen Norman Group, Progressive Disclosure.</strong> Separar acciones frecuentes de detalle avanzado.<br />
+https://www.nngroup.com/articles/progressive-disclosure/</p>
+<p><strong>[S4] Nielsen Norman Group, Visibility of System Status.</strong> Mostrar estado y consecuencias de las acciones.<br />
+https://www.nngroup.com/articles/visibility-system-status/</p>
+<p><strong>[S5] Hunicke, LeBlanc y Zubek (2004), MDA.</strong> Marco de mecánicas, dinámicas y experiencia; adaptación propia a demos científicas.<br />
+https://aaai.org/papers/ws04-04-001-mda-a-formal-approach-to-game-design-and-game-research/</p>
+<p><strong>[S6] W3C, WCAG 2.2: contraste mínimo.</strong> Texto normal 4.5:1 y texto grande 3:1, con las excepciones del criterio.<br />
+https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html</p>
+<p><strong>[S7] W3C, WCAG 2.2: uso del color.</strong> El color no debe ser el único canal para comunicar significado.<br />
+https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html</p>
+<p><strong>[S8] Microsoft, Xbox Accessibility Guideline 102.</strong> Contraste y condiciones de visualización en interfaces de juegos.<br />
+https://learn.microsoft.com/en-us/gaming/accessibility/xbox-accessibility-guidelines/102</p>
+<p><strong>[S9] Playwright, Visual comparisons.</strong> Comparación de capturas y necesidad de entornos consistentes.<br />
+https://playwright.dev/docs/test-snapshots</p>
+<p><strong>[S10] Three.js, Installation.</strong> Dependencias, build y servidor local para aplicaciones web.<br />
+https://threejs.org/manual/pages/installation.html</p>
+<p><strong>[S11] Godot, Exporting for the Web.</strong> WebAssembly/WebGL 2 y requisitos de exportación, incluidos multihilo y C#.<br />
+https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_web.html</p>
+<p><strong>[S12] NASA Science, Eyes.</strong> Referencia de visualización científica interactiva.<br />
+https://science.nasa.gov/eyes/</p>
+<p><strong>[S13] HackAthlone 2026, reproducción del reto Martian Map.</strong> Referencia de trabajo: mapa integrado, exploración humana y varias misiones; contrastar con enunciado central vigente.<br />
+https://hackathlone.com/challenges/interplanetary-survival-guide-martian-map</p>
+<p><strong>Antecedentes del equipo consultados:</strong> <code>Jezero_visor_mision.html</code>, versión adjunta en esta conversación, y <code>Jezero_reporte_resultados.md</code>, secciones «Alcance y procedencia», «Comparación pareada» y «Límites». Los resultados citados describen ese piloto, no una nueva ejecución ni el estado actual completo del repositorio.</p>
+</main></div><script>
+const ITEMS=[{"group": "01 · Alcance y elegibilidad", "id": "A01", "priority": "P0", "owner": "David", "phase": "Antes", "title": "Aclarar qué se puede reutilizar del sandbox", "acceptance": "Respuesta escrita del organizador competente sobre trabajo previo; inventario de código, datos, recursos y fechas. No asumir que cambiar de repositorio o reescribirlo resuelve la restricción."}, {"group": "01 · Alcance y elegibilidad", "id": "A02", "priority": "P0", "owner": "David", "phase": "Antes", "title": "Definir usuario, decisión y resultado esperado", "acceptance": "Una frase: «Ayudamos a [usuario] a decidir [acción] usando [datos] y evaluamos el resultado con [medida]». La formulación final se ajusta al reto y a las reglas."}, {"group": "01 · Alcance y elegibilidad", "id": "A03", "priority": "P0", "owner": "David", "phase": "Evento", "title": "Mapear requisitos del reto a evidencia visible", "acceptance": "Cada requisito obligatorio tiene una pantalla, un resultado o una explicación comprobable. Separar requisitos, sugerencias y extras propios; no inventar ponderaciones oficiales."}, {"group": "01 · Alcance y elegibilidad", "id": "A04", "priority": "P0", "owner": "Daniel", "phase": "Ambos", "title": "Distinguir contribución propia, recursos y uso de IA", "acceptance": "Inventario de fuentes, licencias, herramientas de IA y revisión humana. Verificar política vigente de declaración, imágenes, audio, branding y materiales previos."}, {"group": "01 · Alcance y elegibilidad", "id": "A05", "priority": "P1", "owner": "David", "phase": "Antes", "title": "Reconocer alternativas existentes y la diferencia propuesta", "acceptance": "Tres capacidades ya resueltas por otras herramientas y una decisión que la propuesta pretende mejorar. No prometer novedad científica sin revisión específica."}, {"group": "02 · Datos y conocimiento", "id": "D01", "priority": "P0", "owner": "Daniel", "phase": "Ambos", "title": "Documentar la procedencia de cada capa", "acceptance": "Producto, misión, instrumento, fecha, unidades, proyección, escala nativa, NoData, condiciones de uso y checksum. Evidencia de que cada capa aporta a una decisión."}, {"group": "02 · Datos y conocimiento", "id": "D02", "priority": "P0", "owner": "Daniel", "phase": "Ambos", "title": "Repasar coordenadas, orientación y escalas", "acceptance": "Ejercicio independiente con un punto conocido y distancias verificadas. Norte, ejes, latitud/longitud y datum consistentes. No aplicar una proyección terrestre a Marte sin justificación."}, {"group": "02 · Datos y conocimiento", "id": "D03", "priority": "P0", "owner": "Daniel", "phase": "Ambos", "title": "Diferenciar resolución, exactitud e incertidumbre", "acceptance": "La leyenda distingue retícula de cálculo de resolución nativa. La incertidumbre del modelo tiene unidades y supuestos; NoData no se convierte en terreno seguro."}, {"group": "02 · Datos y conocimiento", "id": "D04", "priority": "P0", "owner": "David", "phase": "Evento", "title": "Comprobar que los datos satisfacen el reto", "acceptance": "Si se exige integrar varias misiones, verificarlo realmente: CTX y HiRISE en el piloto pertenecen a MRO. No añadir una capa decorativa para aparentar integración."}, {"group": "02 · Datos y conocimiento", "id": "D05", "priority": "P0", "owner": "Jesús", "phase": "Evento", "title": "Separar referencia del simulador y conocimiento del agente", "acceptance": "Una prueba verifica que el planificador no lee alturas, objetivos o estados ocultos. La vista de evaluación no modifica la información del agente."}, {"group": "02 · Datos y conocimiento", "id": "D06", "priority": "P1", "owner": "Diego", "phase": "Antes", "title": "Ensayar lectura y recuperación de archivos de datos", "acceptance": "Práctica con archivos pequeños: apertura, recorte, validación y error por recurso ausente; entender qué está cacheado y qué depende de una descarga."}, {"group": "03 · Algoritmos y evidencia", "id": "E01", "priority": "P0", "owner": "David", "phase": "Ambos", "title": "Elegir una medida principal y una comparación sencilla", "acceptance": "Definición operacional, unidad y sentido de mejora de cada medida. Comparar con una estrategia comprensible, manteniendo datos, objetivos y presupuesto equivalentes."}, {"group": "03 · Algoritmos y evidencia", "id": "E02", "priority": "P0", "owner": "Jesús", "phase": "Evento", "title": "Verificar capacidades, precedencias y exclusión de tareas", "acceptance": "Un objetivo no se muestra antes de descubrirse, una muestra no se asigna antes de inspeccionarse, una tarea no se duplica y un agente no ejecuta dos trabajos incompatibles."}, {"group": "03 · Algoritmos y evidencia", "id": "E03", "priority": "P0", "owner": "Jesús", "phase": "Evento", "title": "Resolver explícitamente la inviabilidad", "acceptance": "Sin ruta o sin agente capaz, la tarea queda pendiente/bloqueada y se explica el motivo. No inventar un resultado ni forzar una asignación inválida."}, {"group": "03 · Algoritmos y evidencia", "id": "E04", "priority": "P1", "owner": "Daniel", "phase": "Evento", "title": "Examinar sensibilidad y resultados desfavorables", "acceptance": "Probar distintos objetivos, terrenos o condiciones relevantes; variar solo ruido no demuestra generalización. Registrar cuándo una política pierde y por qué."}, {"group": "03 · Algoritmos y evidencia", "id": "E05", "priority": "P0", "owner": "David", "phase": "Evento", "title": "Limitar las afirmaciones a lo realmente implementado", "acceptance": "Separar observación real, observación simulada, supuesto y función futura. En el piloto actual no atribuir fotogrametría, batería, seguridad EVA ni Heterogeneous DisCoverage completo."}, {"group": "04 · Arquitectura e integración", "id": "I01", "priority": "P0", "owner": "Jesús", "phase": "Ambos", "title": "Acordar un contrato entre motor y visualización", "acceptance": "Esquema mínimo: run_id, escenario, política, semilla, t_sim, unidades, marco, agentes, tareas, eventos y métricas. Identificadores y orden temporal estables."}, {"group": "04 · Arquitectura e integración", "id": "I02", "priority": "P0", "owner": "Jesús", "phase": "Evento", "title": "Invalidar los resultados cuando cambian las entradas", "acceptance": "Cambiar una condición marca el resultado como desactualizado hasta recalcular o cargar una ejecución compatible. Nunca mostrar una trayectoria vieja bajo parámetros nuevos."}, {"group": "04 · Arquitectura e integración", "id": "I03", "priority": "P0", "owner": "Jesús", "phase": "Evento", "title": "Etiquetar ejecución nueva y reproducción guardada", "acceptance": "El usuario sabe si está calculando, reproduciendo una corrida o viendo material ilustrativo. La comparación identifica los dos escenarios y las dos políticas."}, {"group": "04 · Arquitectura e integración", "id": "I04", "priority": "P0", "owner": "Jesús", "phase": "Ambos", "title": "Ensayar arranque limpio y funcionamiento sin internet", "acceptance": "Prueba en una segunda máquina o entorno limpio, con dependencias fijadas y recursos locales. No basar la demo en cachés del navegador, CDN, cuentas personales o llaves expuestas."}, {"group": "04 · Arquitectura e integración", "id": "I05", "priority": "P1", "owner": "Daniel", "phase": "Evento", "title": "Exportar resultados desde una única fuente", "acceptance": "Pantalla, tabla descargada y resumen coinciden en valores, unidades y run_id. Exportar PNG/CSV/JSON según necesidad; evitar cifras copiadas manualmente."}, {"group": "04 · Arquitectura e integración", "id": "I06", "priority": "P0", "owner": "Jesús", "phase": "Ambos", "title": "Definir dueño de integración y trabajo paralelo seguro", "acceptance": "Responsables de módulos, interfaces y rama de integración acordados. Cambios grandes aislados y revisados; no varios agentes editando simultáneamente los mismos archivos."}, {"group": "05 · Experiencia interactiva", "id": "U01", "priority": "P0", "owner": "Jorge", "phase": "Antes", "title": "Escribir un guion de interacción con una decisión central", "acceptance": "En un ejercicio ajeno al entregable: objetivo → elección → consecuencia → comparación. El usuario puede explicar qué cambió por su acción."}, {"group": "05 · Experiencia interactiva", "id": "U02", "priority": "P0", "owner": "Jorge", "phase": "Evento", "title": "Diseñar una primera pantalla que explique el propósito", "acceptance": "La pantalla responde qué problema se resuelve, para quién y qué acción ejecutar. Hay un caso precargado y un botón principal, no una pantalla vacía con veinte parámetros."}, {"group": "05 · Experiencia interactiva", "id": "U03", "priority": "P0", "owner": "Jorge", "phase": "Evento", "title": "Hacer visible la causalidad de las decisiones", "acceptance": "Una selección permite inspeccionar dato nuevo, regla o criterio activado, tarea creada, agente elegido y efecto. Las razones se derivan de eventos y costos del algoritmo."}, {"group": "05 · Experiencia interactiva", "id": "U04", "priority": "P1", "owner": "Jorge", "phase": "Evento", "title": "Separar demo guiada, exploración y evidencia", "acceptance": "La vista inicial es sencilla; el usuario puede explorar y acceder a supuestos/fuentes sin perderse. La explicación avanzada está a un nivel de distancia, no mezclada con todo."}, {"group": "05 · Experiencia interactiva", "id": "U05", "priority": "P0", "owner": "Jorge", "phase": "Evento", "title": "Proporcionar pausa, reinicio y recuperación de cámara", "acceptance": "Se puede volver al caso inicial y recuperar el encuadre en una acción. Reiniciar cancela cálculos y limpia selección, tiempo, eventos, métricas y animaciones de la ejecución anterior."}, {"group": "05 · Experiencia interactiva", "id": "U06", "priority": "P1", "owner": "Diego", "phase": "Evento", "title": "Convertir eventos técnicos en mensajes comprensibles", "acceptance": "Traducir etiquetas internas a frases como «Rover 2 inspecciona el objetivo B». Ofrecer identificadores técnicos y datos completos en el detalle para conservar trazabilidad."}, {"group": "06 · Diseño visual y accesibilidad", "id": "V01", "priority": "P0", "owner": "Jorge", "phase": "Antes", "title": "Definir una gramática visual estable", "acceptance": "En ejercicios genéricos: tipografía, espaciado, botones, leyenda, símbolos y estados consistentes. Colores de agente y colores de estado no se confunden."}, {"group": "06 · Diseño visual y accesibilidad", "id": "V02", "priority": "P0", "owner": "Diego", "phase": "Evento", "title": "Comprobar lectura y contraste en condiciones de presentación", "acceptance": "Probar a 1366×768 y 1920×1080, zoom 125–150 % y proyección o vista alejada. Contraste de texto conforme al criterio aplicado; ninguna alerta depende solo del color."}, {"group": "06 · Diseño visual y accesibilidad", "id": "V03", "priority": "P0", "owner": "Diego", "phase": "Evento", "title": "Probar teclado, foco y alternativas al movimiento", "acceptance": "Controles alcanzables con teclado, foco visible, información que no dependa solo de hover o audio, pausa y reducción de movimiento. Evitar destellos y cámara involuntaria."}, {"group": "06 · Diseño visual y accesibilidad", "id": "V04", "priority": "P1", "owner": "Jorge", "phase": "Evento", "title": "Usar animación solo cuando explique un cambio", "acceptance": "Cada transición tiene propósito: mostrar observación, creación de tarea, reasignación o comparación. Velocidad de reproducción y tiempo simulado siempre identificables."}, {"group": "06 · Diseño visual y accesibilidad", "id": "V05", "priority": "P2", "owner": "Jorge", "phase": "Evento", "title": "Añadir 3D o sonido solo después de superar los criterios esenciales", "acceptance": "El mapa y los resultados siguen disponibles si falla WebGL. Audio opcional y silenciable; 3D sin añadir una interacción más difícil que la decisión científica."}, {"group": "07 · Pruebas de producto", "id": "T01", "priority": "P0", "owner": "Diego", "phase": "Ambos", "title": "Hacer una prueba con personas ajenas al equipo", "acceptance": "Dos o tres personas ejecutan un ejercicio sin recibir instrucciones paso a paso. Anotar dónde se detienen y qué entendieron; no interpretarlo como validación estadística."}, {"group": "07 · Pruebas de producto", "id": "T02", "priority": "P0", "owner": "Diego", "phase": "Evento", "title": "Ensayar fallos y acciones rápidas", "acceptance": "Doble clic, cambio de escenario durante cálculo, reinicio, error de carga, resultado vacío y pérdida de red. La interfaz conserva coherencia y ofrece una salida."}, {"group": "07 · Pruebas de producto", "id": "T03", "priority": "P1", "owner": "Jesús", "phase": "Evento", "title": "Automatizar recorridos y regresión visual", "acceptance": "Pruebas sobre controles y resultados; capturas en estados fijos, misma semilla, entorno y reloj. Revisar referencias antes de aceptar diferencias de imagen."}, {"group": "07 · Pruebas de producto", "id": "T04", "priority": "P1", "owner": "Jesús", "phase": "Evento", "title": "Medir carga y respuesta en el portátil de presentación", "acceptance": "Presupuesto interno propuesto: primera vista útil <5 s en arranque local limpio, confirmación visual inmediata y comparación/replay fluido. Si tarda más, estado de progreso y cancelación."}, {"group": "08 · Comunicación y entrega", "id": "C01", "priority": "P0", "owner": "David", "phase": "Evento", "title": "Mostrar beneficio, costo y límites juntos", "acceptance": "Una comparación visible y trazable: qué mejora, qué empeora y bajo qué hipótesis. No esconder la política básica si gana en una medida."}, {"group": "08 · Comunicación y entrega", "id": "C02", "priority": "P0", "owner": "Diego", "phase": "Evento", "title": "Probar enlaces y entregables desde una sesión ajena", "acceptance": "Sin autenticación inesperada ni permisos privados. Comprobar reglas vigentes de idioma, formato, duración, referencias y declaración de IA."}, {"group": "08 · Comunicación y entrega", "id": "C03", "priority": "P0", "owner": "David", "phase": "Evento", "title": "Ensayar defensa y relevo del presentador", "acceptance": "Cualquiera puede explicar usuario, datos, contribución, comparación y límites. Preparar ruta breve y ampliada; duración final subordinada al formato autorizado."}, {"group": "08 · Comunicación y entrega", "id": "C04", "priority": "P1", "owner": "Jesús", "phase": "Evento", "title": "Congelar una versión presentable y disponer de respaldo", "acceptance": "Release/commit identificable, copia local, resultado guardado y video de respaldo claramente rotulado. Ensayar transición al respaldo sin fingir ejecución nueva."}, {"group": "08 · Comunicación y entrega", "id": "C05", "priority": "P2", "owner": "David", "phase": "Antes", "title": "Mantener un listado de extras que no entran en la primera versión", "acceptance": "Excluir por defecto cuentas, multijugador, motor físico nuevo, editor universal, chat ornamental y efectos que no cambien una decisión. Reintroducir solo con criterio de aceptación y responsable."}];
+const KEY='space-apps-preparation-v1';
+let state={};
+const $=id=>document.getElementById(id);
+function msg(s){$('status').textContent=s;}
+function normalize(obj){
+ if(!obj||typeof obj!=='object'||Array.isArray(obj))throw new Error('Formato no válido.');
+ const clean={};
+ for(const it of ITEMS){const v=obj[it.id];if(v&&typeof v==='object'){const note=typeof v.note==='string'?v.note.slice(0,5000):'';clean[it.id]={done:v.done===true&&note.trim().length>0,note};}}
+ return clean;
+}
+try{state=normalize(JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){state={};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){msg('Este navegador no permite guardar localmente. Exporta el JSON para conservar el avance.');}}
+function totals(){const done=ITEMS.filter(i=>state[i.id]?.done).length;const crit=ITEMS.filter(i=>i.priority==='P0');const cdone=crit.filter(i=>state[i.id]?.done).length;$('count').textContent=`${done} / ${ITEMS.length}`;$('bar').max=ITEMS.length;$('bar').value=done;$('p0count').textContent=`P0 esenciales: ${cdone} de ${crit.length} verificados. El contador no estima probabilidades de ganar.`;}
+function render(){
+ const root=$('checklist');root.replaceChildren();
+ const q=$('search').value.trim().toLocaleLowerCase('es'),pr=$('priority').value,ow=$('owner').value,ph=$('phase').value,co=$('completion').value;
+ let n=0;
+ for(const group of [...new Set(ITEMS.map(x=>x.group))]){
+  const visible=ITEMS.filter(i=>i.group===group&&(!pr||i.priority===pr)&&(!ow||i.owner===ow)&&(!ph||i.phase===ph)&&(!q||[i.id,i.title,i.acceptance].join(' ').toLocaleLowerCase('es').includes(q))&&(!co||(co==='done'?state[i.id]?.done:!state[i.id]?.done)));
+  if(!visible.length)continue;
+  const sec=document.createElement('section');sec.className='group';const h=document.createElement('h3');h.textContent=group;sec.append(h);
+  for(const it of visible){
+   n++;const v=state[it.id]||{done:false,note:''};
+   const card=document.createElement('article');card.className='item'+(v.done?' done':'');card.dataset.id=it.id;
+   const top=document.createElement('div');top.className='item-top';
+   const cb=document.createElement('input');cb.type='checkbox';cb.id='check-'+it.id;cb.checked=v.done;
+   const label=document.createElement('label');label.htmlFor=cb.id;label.textContent=it.id+' · '+it.title;top.append(cb,label);card.append(top);
+   const tags=document.createElement('div');tags.className='tags';for(const [txt,cls] of [[it.priority,it.priority],[it.owner,''],[it.phase,'']]){const s=document.createElement('span');s.className='tag '+cls;s.textContent=txt;tags.append(s);}card.append(tags);
+   const desc=document.createElement('p');desc.className='accept';desc.id='desc-'+it.id;desc.textContent=it.acceptance;card.append(desc);cb.setAttribute('aria-describedby',desc.id);
+   const nl=document.createElement('label');nl.className='evidence-label';nl.htmlFor='note-'+it.id;nl.textContent='Evidencia o nota de verificación';
+   const note=document.createElement('input');note.type='text';note.id='note-'+it.id;note.maxLength=5000;note.value=v.note;note.placeholder='Resultado, archivo, prueba o pendiente concreto';card.append(nl,note);
+   note.addEventListener('input',()=>{state[it.id]={done:cb.checked&&note.value.trim().length>0,note:note.value};if(!note.value.trim()){cb.checked=false;card.classList.remove('done');}save();totals();});
+   cb.addEventListener('change',()=>{if(cb.checked&&!note.value.trim()){cb.checked=false;msg('Añade una evidencia o nota breve antes de marcar '+it.id+' como verificado.');note.focus();return;}state[it.id]={done:cb.checked,note:note.value};card.classList.toggle('done',cb.checked);save();totals();msg(it.id+(cb.checked?' marcado como verificado.':' marcado como pendiente.'));});
+   sec.append(card);
+  }root.append(sec);
+ }
+ if(!n){const p=document.createElement('p');p.className='empty';p.textContent='No hay criterios que coincidan con estos filtros.';root.append(p);}totals();
+}
+for(const id of ['search','priority','owner','phase','completion'])$(id).addEventListener(id==='search'?'input':'change',render);
+$('export').addEventListener('click',()=>{const payload={schema_version:1,document:'space-apps-preparation',exported_at:new Date().toISOString(),items:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='avance_preparacion_space_apps.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);msg('Avance exportado. Conserva este archivo como respaldo.');});
+$('import').addEventListener('click',()=>$('importfile').click());
+$('importfile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>1000000)throw new Error('Archivo demasiado grande.');const d=JSON.parse(await f.text());if(d.schema_version!==1||d.document!=='space-apps-preparation')throw new Error('El archivo no corresponde a esta checklist.');const clean=normalize(d.items);if(!confirm('La importación reemplazará el avance de este navegador. ¿Continuar?'))return;state=clean;save();render();msg('Avance importado correctamente.');}catch(e){msg('No se importó: '+e.message);}finally{$('importfile').value='';}});
+$('reset').addEventListener('click',()=>{if(!confirm('¿Borrar todas las marcas y notas de esta checklist en este navegador?'))return;state={};save();render();msg('Avance borrado.');});
+$('print').addEventListener('click',()=>{for(const id of ['search','priority','owner','phase','completion'])$(id).value='';render();window.print();});
+render();
+</script></body></html>
