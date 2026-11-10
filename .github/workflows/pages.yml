@@ -1,0 +1,78 @@
+name: Mission Control web checks and optional Pages
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'scripts/build_web_data.*'
+      - 'scripts/build_web_media.mjs'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Publish the tested web/dist to configured GitHub Pages (Sites is primary)'
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mission-control-pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - name: Checkout source and immutable evidence history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - name: Install media inspection tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes ffmpeg
+      - name: Build only the static presentation
+        run: npm --prefix web run build
+      - name: Validate data, replay and web artifact
+        run: npm --prefix web test
+      - name: Enforce published-site size limit
+        run: |
+          bytes=$(du -sb web/dist | cut -f1)
+          echo "Static artifact bytes: $bytes"
+          test "$bytes" -lt 1000000000
+          test -f web/dist/index.html
+      - name: Read existing Pages configuration
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy
+        uses: actions/configure-pages@v5
+      - name: Upload only the selected web output
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: web/dist
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy tested artifact to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

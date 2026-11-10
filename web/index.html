@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Del mapa orbital a las decisiones de campo. Explora misiones registradas de seis agentes en Jezero, compara estrategias y verifica la evidencia.">
+  <title>Jezero · Mission Control</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#explorador">Saltar al explorador</a>
+<header class="topbar">
+  <a class="brand" href="#inicio" aria-label="Jezero, inicio"><span class="orbit-mark" aria-hidden="true">◎</span><span>JEZERO <small>MISSION CONTROL</small></span></a>
+  <nav aria-label="Navegación principal"><a href="#explorador">Explorar</a><a href="#comparador">Estrategias</a><a href="#videoteca">Videos</a><a href="#evidencia">Evidencia</a></nav>
+  <span class="lab-tag">LAB / BORRADOR 01</span>
+</header>
+<main>
+<section id="inicio" class="hero">
+  <div class="hero-copy"><p class="eyebrow">MARTE · JEZERO · 18,45° N / 77,45° E</p><h1>Del mapa orbital<br>a las decisiones<br><em>de campo.</em></h1>
+    <p class="intro">Seis agentes. Un terreno por conocer.<br>Explora cómo una observación se convierte en una tarea y qué cambia al priorizar información.</p>
+    <div class="actions"><a class="button primary" href="#explorador">Explorar la misión <span aria-hidden="true">↗</span></a><button id="start-demo" class="button">▷ Ver demostración</button></div>
+    <p class="hero-note">Para equipos que diseñan y explican exploración científica.<br>Reproducción de registros existentes · Sin cálculo nuevo</p>
+  </div>
+  <div class="hero-terrain"><canvas id="hero-map" width="800" height="800" aria-label="Relieve orbital inicial CTX del recorte real de Jezero"></canvas><div class="terrain-caption"><span>01 / MAPA ORBITAL INICIAL</span><strong>512 × 512 m</strong><small>CTX · MRO / USGS · Norte arriba</small></div><div class="north" aria-hidden="true">↑<br>N</div></div>
+  <div class="hero-footer"><span><b>02</b> humanos</span><span><b>02</b> rovers</span><span><b>02</b> drones</span><a href="#videoteca">Último avance: cráter Belva <span aria-hidden="true">↗</span></a></div>
+</section>
+<section id="explorador" class="section explorer" aria-labelledby="explorer-title">
+  <div class="section-heading"><div><p class="eyebrow">01 / EXPLORADOR TEMPORAL</p><h2 id="explorer-title">Conocer. Asignar. Explorar.</h2></div><button class="quiet" id="presentation" aria-pressed="false">Modo presentación</button></div>
+  <div id="load-status" class="notice" role="status">Cargando los registros de misión…</div>
+  <div class="runbar"><label>Ejecución registrada <select id="run-select"><option value="information_hungarian">Jezero · informativa · semilla 7</option><option value="nearest_greedy">Jezero · proximidad · resultados finales</option></select></label><span class="badge">SIMULACIÓN 2.5D</span><span class="muted">Enlace global ideal</span></div>
+  <div id="unavailable" class="notice" hidden><h3>Trayectoria no disponible en el registro publicado</h3><p>Esta política tiene métricas verificables, pero no una trayectoria inmutable incluida. Consulta los resultados finales en el comparador. No se genera ni se reutiliza otra animación.</p><a href="#comparador" class="button">Comparar resultados</a></div>
+  <div id="replay-ui">
+    <div class="metrics"><div><small>Cobertura observada</small><strong id="coverage">—</strong></div><div><small>Objetivos descubiertos</small><strong id="discovered">—</strong></div><div><small>Muestreos completados</small><strong id="samples">—</strong></div></div>
+    <div id="guide" class="guide" hidden><div><span class="eyebrow" id="guide-step">DEMO GUIADA</span><h3 id="guide-title"></h3><p id="guide-text"></p></div><div class="guide-actions"><button id="guide-back" aria-label="Paso anterior de la demo">←</button><button id="guide-next">Siguiente →</button><button id="guide-close" aria-label="Cerrar demo guiada">×</button></div></div>
+    <div class="mission-layout">
+      <div class="map-panel">
+        <div class="map-toolbar"><label>Capa <select id="layer"><option value="mean">Estimación disponible</option><option value="prior">Mapa orbital inicial · CTX</option><option value="sigma">Incertidumbre · σ (m)</option><option value="reference">Evaluación · referencia HiRISE</option></select></label><label class="toggle"><input type="checkbox" id="trails" checked> Trayectorias</label></div>
+        <div class="map-wrap"><canvas id="mission-map" width="800" height="800" aria-label="Mapa temporal de Jezero. Selecciona agentes y objetivos desde el panel adjunto."></canvas><div id="map-overlay" class="map-overlay"></div><div class="north">↑<br>N</div><div class="scale"><span></span>100 m</div><span class="map-coord">LOCAL MARS · 512 m</span></div>
+        <div class="map-legend"><span>△ Dron</span><span>□ Rover</span><span>○ Humano</span><span>◇ Objetivo ficticio</span><span>⌂ Base</span></div>
+        <p id="layer-note" class="map-note"></p>
+      </div>
+      <aside class="context"><div class="context-head"><h3>Equipo de campo</h3><button id="overview" class="text-button">Vista general ↺</button></div><div id="agents" class="agents"></div><div id="targets" class="targets" aria-label="Objetivos descubiertos"></div><div id="context-detail" class="context-detail" aria-live="polite"></div><details><summary>Registro de eventos</summary><ol id="events" class="event-list"></ol></details></aside>
+    </div>
+    <div class="timeline"><div class="time-head"><span><b id="time">T+0000 s</b> <small id="play-state">Listo</small></span><span id="snapshot-time" class="muted"></span></div><label class="sr-only" for="seek">Tiempo de misión en segundos</label><input type="range" id="seek" min="0" max="1930" step="5" value="0"><div class="play-controls"><div><button id="play" class="primary">▶ Reproducir</button><button id="reset">↺ Reiniciar</button><button id="prev-event" aria-label="Hito anterior">|←</button><button id="next-event" aria-label="Hito siguiente">→|</button></div><label>Velocidad <select id="speed"><option value="10">10×</option><option value="40" selected>40×</option><option value="100">100×</option></select></label></div></div>
+  </div>
+  <p class="footnote">Registro guardado · Posiciones cada 5 s; mapas cada 20 s, sin interpolación científica. Sensores ideales, objetivos ficticios. <a href="#evidencia">Ver alcance y fuentes ↗</a></p>
+</section>
+<section id="comparador" class="section comparison" aria-labelledby="compare-title">
+  <div class="section-heading"><div><p class="eyebrow">02 / COMPARAR DECISIONES</p><h2 id="compare-title">Conocer antes tiene un costo.</h2></div><span class="badge">RESULTADOS FINALES · 2.5D</span></div>
+  <p class="section-intro">Mismo recorte, mismos objetivos y enlace ideal. Tres semillas de ruido por política: seis ejecuciones registradas. Elegir una política carga resultados existentes.</p>
+  <div class="comparison-key"><span class="cyan">━ Informativa · information_hungarian</span><span class="sand">━ Proximidad · nearest_greedy</span></div>
+  <div id="comparison-bars" class="comparison-bars"></div>
+  <div class="tradeoff"><p id="tradeoff"></p><p>Las semillas cambian el ruido del sensor. Este experimento no demuestra superioridad global ni generalización a otros terrenos. Las cifras no corresponden a Belva.</p></div>
+  <details><summary>Tabla completa y condiciones</summary><div class="table-scroll"><table id="comparison-table"><thead><tr><th>Métrica</th><th>Informativa</th><th>Proximidad</th></tr></thead><tbody></tbody></table></div></details>
+  <div class="download-links"><a href="data/comparison.json" download>↓ Resumen JSON</a><a href="evidence/jezero/benchmark.csv" download>↓ Ejecuciones CSV</a><a href="evidence/jezero/report.html">Leer informe ↗</a></div>
+</section>
+<section id="videoteca" class="section library" aria-labelledby="video-title">
+  <div class="section-heading"><div><p class="eyebrow">03 / REGISTRO AUDIOVISUAL</p><h2 id="video-title">Del registro a la evidencia.</h2></div><span class="muted">Videos locales · Controles nativos</span></div>
+  <div class="belva-summary"><div><span class="badge copper">AVANCE / CRÁTER BELVA</span><h3>El terreno también puede decir «no».</h3><p>Gazebo en lazo cerrado: los drones descubren objetivos, el relieve condiciona las rutas y S2 queda inaccesible. El ensayo filmado verifica el retorno de los seis agentes.</p></div><div id="belva-metrics"></div></div>
+  <div id="videos" class="videos"></div>
+  <p class="footnote">Los humanos y drones siguen siendo cinemáticos. No se valida aerodinámica, biomecánica ni seguridad EVA. Los videos muestran ejecuciones anteriores, no una simulación activada desde esta página.</p>
+</section>
+<section id="evidencia" class="section evidence" aria-labelledby="evidence-title">
+  <div class="section-heading"><div><p class="eyebrow">04 / PROCEDENCIA Y LÍMITES</p><h2 id="evidence-title">Cada afirmación, una fuente.</h2></div><a class="button" href="data/manifest.json" download>↓ Manifiesto de datos</a></div>
+  <div class="source-grid"><article><span class="source-index">A</span><h3>Terreno real. Conocimiento parcial.</h3><p>CTX y HiRISE son instrumentos de MRO. CTX aporta el mapa orbital inicial; HiRISE se reserva al sensor simulado y la evaluación.</p><dl><dt>CTX / resolución nativa</dt><dd>20 m</dd><dt>HiRISE / resolución nativa</dt><dd>1 m</dd><dt>Retícula de cálculo</dt><dd>4 m · 128 × 128</dd><dt>Vista web remuestreada</dt><dd>8 m · 64 × 64</dd></dl><p>Interpolar CTX no crea detalle de 4 m. Marco local equirectangular marciano; no WGS84.</p><a href="data/jezero/metadata.json">Metadatos y SHA-256 ↗</a></article><article><span class="source-index">B</span><h3>Tres niveles de evidencia.</h3><dl class="fidelity"><dt>Simulación 2.5D</dt><dd>Planificación, sensor de alturas ideal y seis agentes en una misión calculada.</dd><dt>Reproducción cinemática</dt><dd>Gazebo visualiza poses ya calculadas. No cierra un nuevo bucle de control.</dd><dt>Gazebo en lazo cerrado</dt><dd>Belva utiliza observaciones simuladas y control por velocidad; conserva componentes cinemáticos e idealizaciones.</dd></dl></article><article><span class="source-index">C</span><h3>Lo que este laboratorio no afirma.</h3><p>Los objetivos científicos son ficticios. No hay fotogrametría, batería, presupuesto de EVA, dinámica de rotores, biomecánica ni validación de tracción.</p><p>La asignación usa tareas conocidas y mapa estimado. Enlace global, instantáneo y sin pérdidas en los casos principales.</p><p>Borrador independiente. No es un producto oficial de NASA ni una entrega competitiva. Reutilizarlo requiere resolver las reglas de trabajo previo con la organización.</p></article></div>
+  <div class="provenance-line"><span id="run-provenance"></span><a href="data/mission.json" download>↓ Registro de misión</a><a href="media-manifest.json" download>↓ Inventario de medios</a><a href="evidence/jezero_belva/report.html">Informe Belva ↗</a></div>
+</section>
+<section id="preparacion" class="section preparation"><div><p class="eyebrow">05 / ESPACIO DEL EQUIPO</p><h2>Preparar también es verificar.</h2><p>Documentos de preparación del 10 de noviembre de 2026. Su referencia al piloto original no sustituye los avances posteriores de Belva.</p><p class="muted">El manual guarda el avance en este navegador. Incluye filtros, notas e importación/exportación JSON; no sincroniza un equipo.</p></div><div class="prep-links"><a href="preparacion/Manual_interactivo_Space_Apps.html">Abrir manual interactivo <span>↗</span></a><a href="preparacion/Manual_y_checklist_Space_Apps.md" download>Manual completo <span>↓ MD</span></a><a href="preparacion/Checklist_tecnica_Space_Apps.md" download>Checklist técnica <span>↓ MD</span></a></div></section>
+</main>
+<footer><a class="brand" href="#inicio">◎ JEZERO <small>MISSION CONTROL</small></a><p>NASA-Sandbox · Laboratorio independiente de exploración heterogénea</p><a href="LICENSE">Licencia y atribución</a></footer>
+<noscript><p class="notice">Activa JavaScript para explorar el registro temporal. Los videos, informes y documentos permanecen disponibles mediante el respaldo local.</p></noscript>
+</body></html>

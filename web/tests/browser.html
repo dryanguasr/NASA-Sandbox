@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: 'unsafe-inline'; connect-src 'self';">
+<title>Mission Control · validación en navegador</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#0c131b;color:#e8edf2;font:16px/1.5 system-ui,sans-serif}h1{font-size:28px;margin:0 0 12px}p{max-width:1000px;color:#bdcbd5}button,a{font:inherit;color:inherit;background:#203441;border:1px solid #78919c;padding:10px 18px;border-radius:4px;display:inline-block;margin:5px 8px 5px 0;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #8ce0d9;outline-offset:3px}button:disabled{opacity:.5;cursor:wait}.pass{color:#8ce0bd}.fail{color:#ffac9d}.pending{color:#e5c78f}#status{font-size:20px;font-weight:700;margin:18px 0}#cases{max-height:390px;overflow:auto;padding:14px 14px 14px 38px;background:#14212b}li{padding:5px}pre{background:#101d27;border:1px solid #455a68;padding:16px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:600px;overflow:auto;font-size:13px}.stage{overflow:auto;border:1px solid #5a707d;background:white;max-height:860px;margin:20px 0}iframe{display:block;border:0;width:1366px;height:768px}#aux-stage{max-height:300px}summary{cursor:pointer;padding:8px}#download[hidden]{display:none}
+</style>
+</head>
+<body>
+<h1>Mission Control · pruebas sobre la interfaz real</h1>
+<p>Ejecuta la página construida bajo <code>/NASA-Sandbox/</code> en un iframe del mismo origen. El arnés añade captura de errores y bloquea conexiones externas con CSP. No sustituye la inspección visual, el recorrido manual de teclado ni una prueba con personas.</p>
+<button id="run">Ejecutar pruebas</button><a id="download" hidden download="browser-validation.json">Descargar evidencia JSON</a>
+<div id="status" role="status" aria-live="polite">Listo. Pulsa Ejecutar pruebas; los tres videos se probarán silenciados.</div>
+<ol id="cases"></ol>
+<details><summary>Resultado JSON completo</summary><pre id="output">Sin ejecución.</pre></details>
+<div class="stage"><iframe id="app" title="Interfaz real bajo prueba" allow="autoplay; fullscreen"></iframe></div>
+<details><summary>Casos aislados de recuperación y preparación</summary><div class="stage" id="aux-stage"><iframe id="aux" title="Casos aislados de prueba" allow="autoplay; fullscreen"></iframe></div></details>
+<script type="module">
+const BASE = '/NASA-Sandbox/';
+const IDS = ['human_1','human_2','rover_1','rover_2','drone_1','drone_2'];
+const PREP_KEY = 'space-apps-preparation-qa-harness-v1';
+const $ = id => document.getElementById(id);
+let report, sourceMission, sourceComparison, sourceMedia;
+let appWindow, appDocument;
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const assert = (value, message) => { if (!value) throw new Error(message); };
+async function until(predicate, label, timeout=12000) {
+  const end = performance.now() + timeout;
+  while (performance.now() < end) {
+    if (predicate()) return;
+    await delay(40);
+  }
+  throw new Error('Tiempo agotado: ' + label);
+}
+function publish() {
+  $('output').textContent = JSON.stringify(report, null, 2);
+  if ($('download').href.startsWith('blob:')) URL.revokeObjectURL($('download').href);
+  $('download').href = URL.createObjectURL(new Blob([JSON.stringify(report,null,2)], {type:'application/json'}));
+  $('download').hidden = false;
+}
+async function check(name, action) {
+  const item = document.createElement('li'); item.textContent = 'En curso · ' + name; item.className='pending'; $('cases').append(item);
+  $('status').textContent = name;
+  const started = performance.now();
+  try {
+    const details = await action();
+    report.tests.push({name, status:'pass', duration_ms:+(performance.now()-started).toFixed(1), details:details??null});
+    item.textContent = '✓ ' + name; item.className='pass';
+  } catch (error) {
+    report.tests.push({name, status:'fail', duration_ms:+(performance.now()-started).toFixed(1), error:error.message});
+    item.textContent = '✗ ' + name + ' · ' + error.message; item.className='fail';
+  }
+  item.scrollIntoView({block:'nearest'}); publish();
+}
+async function load(frame, mode='normal') {
+  await navigateFrame(frame,'/__tests__/app.html?mode='+encodeURIComponent(mode)+'&visit='+Date.now());
+  await until(()=>frame.contentDocument?.documentElement.dataset.ready, mode+' app startup');
+  return {win:frame.contentWindow,doc:frame.contentDocument};
+}
+async function navigateFrame(frame, url) {
+  await new Promise((resolve,reject)=>{
+    const timer=setTimeout(()=>{frame.removeEventListener('load',loaded);reject(new Error('Iframe navigation timeout'));},12000);
+    function loaded(){clearTimeout(timer);resolve();}
+    frame.addEventListener('load',loaded,{once:true});frame.src=url;
+  });
+}
+const control = id => {const node=appDocument.getElementById(id); assert(node,'Control ausente: '+id);return node;};
+function event(node,type='change',win=appWindow) {node.dispatchEvent(new win.Event(type,{bubbles:true}));}
+function seek(time) {const input=control('seek');input.value=time;event(input,'input');}
+function click(id) {control(id).click();}
+function runSelection(value) {control('run-select').value=value;event(control('run-select'));}
+function visible(node) {return !node.hidden && appWindow.getComputedStyle(node).display!=='none';}
+function text(id) {return control(id).textContent;}
+async function videoEvent(video,name,action,timeout=12000) {
+  return new Promise((resolve,reject)=>{
+    const timer=setTimeout(()=>finish(new Error('Video no emitió '+name)),timeout);
+    const done=()=>finish();const failed=()=>finish(new Error('Video error '+video.error?.code));
+    function finish(error){clearTimeout(timer);video.removeEventListener(name,done);video.removeEventListener('error',failed);error?reject(error):resolve();}
+    video.addEventListener(name,done,{once:true});video.addEventListener('error',failed,{once:true});
+    try{action();}catch(e){finish(e);}
+  });
+}
+async function run() {
+  $('run').disabled=true;$('cases').replaceChildren();$('download').hidden=true;
+  report={schema_version:1,started_at:new Date().toISOString(),url:location.href,app_base:location.origin+BASE,user_agent:navigator.userAgent,csp:"default-src 'self' data: blob: 'unsafe-inline'; connect-src 'self'",tests:[],manual_limits:['DOM focus checks do not replace a physical keyboard walkthrough.','CSS/reflow checks do not replace desktop/mobile screenshot inspection.','External requests blocked with CSP; operating-system network adapter was not disabled.','No real-user study was conducted.']};
+  try {
+    await check('AC01/AC10 · Carga real en subruta, recursos locales y primera vista',async()=>{
+      const response=await fetch(BASE+'index.html',{cache:'no-store'});assert(response.ok,'index HTTP '+response.status);
+      [sourceMission,sourceComparison,sourceMedia]=await Promise.all(['data/mission.json','data/comparison.json','media-manifest.json'].map(async p=>{const r=await fetch(BASE+p);assert(r.ok,p+' HTTP '+r.status);return r.json();}));
+      const loaded=await load($('app'));appWindow=loaded.win;appDocument=loaded.doc;
+      assert(appDocument.documentElement.dataset.ready==='true',text('load-status'));
+      await delay(120);
+      const mark=appWindow.performance.getEntriesByName('mission-ready')[0];
+      const resources=appWindow.performance.getEntriesByType('resource').map(r=>({url:r.name,bytes:r.transferSize,decoded_bytes:r.decodedBodySize,duration_ms:+r.duration.toFixed(2)}));
+      const firstUsefulMs=mark.startTime-appWindow.__qa.started;
+      report.first_view={useful_ms:+firstUsefulMs.toFixed(2),transfer_bytes:resources.reduce((n,r)=>n+r.bytes,0),decoded_bytes:resources.reduce((n,r)=>n+r.decoded_bytes,0),resources};
+      assert(firstUsefulMs<5000,'Primera vista >=5s: '+firstUsefulMs);
+      assert(!resources.some(r=>/\.mp4(?:\?|$)/.test(r.url)),'Se descargó video antes de reproducción');
+      assert(resources.every(r=>new URL(r.url).origin===location.origin),'Recurso externo inesperado');
+      assert(appDocument.querySelectorAll('video').length===3,'No hay tres videos');
+      assert([...appDocument.querySelectorAll('video')].every(v=>v.preload==='none'&&v.paused&&v.controls&&v.playsInline),'Precarga/controles/autoplay incorrectos');
+      return report.first_view;
+    });
+    if (!appDocument) throw new Error('No se pudo iniciar la aplicación; se conserva la evidencia del error.');
+    await check('AC02 · Portada, siete pasos guiados y enlace al comparador',async()=>{
+      assert(appDocument.querySelector('a[href="#explorador"]'),'Falta acceso al explorador');
+      assert(appDocument.querySelector('a[href="#videoteca"]'),'Falta acceso a videoteca');
+      click('start-demo');
+      for(let i=0;i<sourceMission.milestones.length;i++) {
+        assert(visible(control('guide')),'Demo oculta');
+        assert(Number(control('seek').value)===sourceMission.milestones[i].time_s,'Hito fuera de registro '+i);
+        assert(text('guide-title')===sourceMission.milestones[i].label,'Título distinto del registro');
+        click('guide-next');
+      }
+      assert(appWindow.location.hash==='#comparador','Último paso no abre comparador');
+      click('reset');return {milestones:sourceMission.milestones.map(m=>m.time_s)};
+    });
+    await check('AC03 · Seis agentes, detección 80/85 s, inspección y final',async()=>{
+      assert(IDS.every(id=>control('agent-'+id)),'IDs incompletos');
+      const checked=[];
+      for(const t of [0,80,85,525,1930]) {
+        seek(t);
+        const events=sourceMission.events.filter(e=>e.time_s<=t);
+        const sites=[...new Set(events.filter(e=>e.event==='site_detected').map(e=>e.site))];
+        const samples=events.filter(e=>e.event==='completed'&&e.kind==='sample').length;
+        assert(Number(control('seek').value)===t,'Seek no coincide');
+        assert(text('time').includes(String(t).padStart(4,'0')),'Reloj incorrecto');
+        assert(text('discovered')===`${sites.length} / 4`,'Objetivos anticipados o ausentes en '+t);
+        assert(text('samples')===`${samples} / 4`,'Muestreos fuera de tiempo');
+        assert(control('targets').querySelectorAll('button').length===sites.length,'Marcadores no coherentes');
+        checked.push({time_s:t,sites,samples});
+      }
+      assert(text('play-state')==='Finalizado','Falta estado final');
+      assert(text('context-detail').includes('6/6 regresos'),'Final no acredita seis regresos');
+      seek(85);control('targets').querySelector('button').click();
+      assert(text('context-detail').includes('asignada'),'Inspección no asignada a85');
+      assert(text('context-detail').includes('todavía no habilitada'),'Muestreo anticipado');
+      seek(525);assert(text('context-detail').includes('completada'),'Inspección no terminada a525');
+      seek(80);assert(!text('context-detail').includes('Objetivo S2'),'Selección futura no se limpia');
+      return checked;
+    });
+    await check('AC03/AC09 · Capas, selección, foco y vista general',async()=>{
+      click('reset');assert(control('layer').value==='mean','Referencia activa por defecto');
+      for(const layer of ['prior','sigma','reference','mean']){control('layer').value=layer;event(control('layer'));assert(text('layer-note').length>35,'Falta explicación de capa');}
+      control('layer').value='reference';event(control('layer'));assert(text('layer-note').includes('EVALUACIÓN'),'HiRISE sin rótulo evaluación');
+      for(const id of IDS){click('agent-'+id);assert(text('context-detail').includes(id),'Selección errónea '+id);control('agent-'+id).focus();assert(appDocument.activeElement===control('agent-'+id),'No recibe foco '+id);}
+      click('overview');assert(IDS.every(id=>control('agent-'+id).getAttribute('aria-pressed')==='false'),'Vista general no limpia selección');
+      click('reset');assert(control('layer').value==='mean','Reinicio no restaura capa');
+      return {focus:'DOM focus() for six agents; manual keyboard still required'};
+    });
+    await check('AC04 · Play/pausa, doble clic, reinicio y reproducción al final',async()=>{
+      click('reset');click('play');await delay(300);assert(text('play-state').includes('Reproduciendo'),'Play no inicia');
+      click('play');const paused=Number(control('seek').value);await delay(200);assert(Number(control('seek').value)===paused,'Pausa no detiene');
+      click('reset');click('play');click('play');await delay(100);assert(text('play-state')==='Listo','Doble clic deja reproducción activa');
+      click('agent-human_1');click('play');click('reset');await delay(160);
+      assert(Number(control('seek').value)===0&&text('play-state')==='Listo','Reinicio deja temporizador activo');
+      assert(IDS.every(id=>control('agent-'+id).getAttribute('aria-pressed')==='false'),'Reinicio conserva selección');
+      seek(1930);click('play');assert(Number(control('seek').value)===0,'Play desde final no vuelve al inicio');click('play');
+      seek(1925);click('play');await until(()=>text('play-state')==='Finalizado','final de reproducción');assert(Number(control('seek').value)===1930,'Final fuera de duración');click('reset');
+      return {paused_at_s:paused,final_s:1930};
+    });
+    await check('AC04 · Cambio de ejecución limpia estados y no fabrica proximidad',async()=>{
+      seek(525);click('agent-rover_2');click('play');runSelection('nearest_greedy');await delay(100);
+      assert(control('replay-ui').hidden&&!control('unavailable').hidden,'Proximidad muestra animación');
+      assert(Number(control('seek').value)===0,'Cambio conserva tiempo');
+      runSelection('information_hungarian');assert(!control('replay-ui').hidden&&control('unavailable').hidden,'No recupera misión');
+      assert(text('play-state')==='Listo'&&IDS.every(id=>control('agent-'+id).getAttribute('aria-pressed')==='false'),'Estados mezclados');
+    });
+    await check('AC05 · Valores visibles iguales al JSON comparativo',async()=>{
+      const values=[];
+      for(const policy of ['information_hungarian','nearest_greedy'])for(const metric of ['t80_s','duration_s','drone_distance_m']){
+        const value=sourceComparison.policies[policy][metric].mean;
+        const decimals=metric==='drone_distance_m'?1:0;
+        const expected=value.toLocaleString('es-CO',{maximumFractionDigits:decimals,minimumFractionDigits:decimals});
+        const node=appDocument.querySelector(`[data-policy="${policy}"][data-metric="${metric}"] .bar-label`);
+        assert(node?.textContent.startsWith(expected),`${policy}/${metric} UI != fuente`);values.push({policy,metric,value,visible:node.textContent});
+      }
+      assert(text('tradeoff').includes('120')&&text('tradeoff').includes('270'),'Beneficio o costo ausente');return values;
+    });
+    await check('AC08/AC10 · Enlaces locales, informes, documentos y recursos sin 404',async()=>{
+      const urls=new Set([...appDocument.querySelectorAll('a[href]')].map(a=>a.href).filter(h=>h.startsWith(location.origin+BASE)&&!h.includes('#')));
+      for(const url of urls){const response=await fetch(url,{method:'HEAD'});assert(response.ok,`${response.status}: ${url}`);}
+      assert([...urls].some(u=>u.endsWith('Manual_interactivo_Space_Apps.html')),'Falta manual');
+      assert([...urls].filter(u=>u.endsWith('.md')).length>=2,'Faltan Markdown');
+      const qa=appWindow.__qa;assert(!qa.errors.length&&!qa.rejections.length&&!qa.consoleErrors.length,'Errores JS de página: '+JSON.stringify(qa));
+      assert(qa.fetches.every(r=>r.status>=200&&r.status<400),'Solicitud esencial no satisfactoria');
+      assert(!qa.cspViolations.length,'Intento de conexión externa/CSP');return {links_checked:urls.size,fetches:qa.fetches,errors:qa.errors,rejections:qa.rejections};
+    });
+    await check('AC09 · Reflow de escritorio y móvil sin desbordamiento horizontal',async()=>{
+      const sizes=[];
+      for(const [width,height] of [[1366,768],[1920,1080],[390,844],[910,512]]){
+        $('app').style.width=width+'px';$('app').style.height=height+'px';await delay(100);
+        const root=appDocument.documentElement;const overflow=root.scrollWidth-root.clientWidth;
+        assert(overflow<=1,`Desbordamiento ${overflow}px a ${width}×${height}`);sizes.push({width,height,clientWidth:root.clientWidth,scrollWidth:root.scrollWidth});
+      }
+      $('app').style.width='1366px';$('app').style.height='768px';
+      const css=await (await fetch(BASE+'style.css')).text();assert(css.includes('prefers-reduced-motion'),'Sin regla de movimiento reducido');
+      return {sizes,last_size_note:'910px approximates reflow width at150%; manual zoom required',reduced_motion_rule:true};
+    });
+    for(let index=0;index<3;index++)await check(`AC06 · Video ${index+1}: metadata, reproducción y seek nativos`,async()=>{
+      const video=appDocument.querySelectorAll('video')[index];const meta=sourceMedia.videos[index];
+      video.muted=true;await videoEvent(video,'loadedmetadata',()=>video.load());
+      assert(Math.abs(video.duration-meta.duration_s)<.15,'Duración navegador != FFprobe');
+      assert(video.videoWidth>0&&video.videoHeight>0,'Video sin imagen decodificada');
+      await video.play();await until(()=>video.currentTime>.1,'avance de video '+index);video.pause();
+      const target=Math.min(video.duration*.55,video.duration-.3);
+      await videoEvent(video,'seeked',()=>{video.currentTime=target;});
+      assert(Math.abs(video.currentTime-target)<.15,'Seek fuera de destino');
+      assert(!video.error,'Error al decodificar');
+      const card=video.closest('article');assert(card.querySelector('.badge')?.textContent===meta.fidelity_label,'Etiqueta de fidelidad ausente');
+      assert(card.querySelector(`a[href="${meta.report}"]`),'Informe no enlazado');
+      return {id:meta.id,duration_s:video.duration,width:video.videoWidth,height:video.videoHeight,seek_s:video.currentTime,ready_state:video.readyState,report:meta.report};
+    });
+    await check('AC08 · Registro ausente e incompatible muestran recuperación gestionada',async()=>{
+      const results=[];
+      for(const mode of ['missing','incompatible']){
+        const {win,doc}=await load($('aux'),mode);assert(doc.documentElement.dataset.ready==='error',mode+' aceptado');
+        assert(doc.getElementById('replay-ui').hidden,'Muestra datos ante error');
+        assert(doc.getElementById('load-status').textContent.includes('Registro no disponible'),'Falta salida legible');
+        assert(!win.__qa.rejections.length,'Rechazo no gestionado');results.push({mode,message:doc.getElementById('load-status').textContent});
+      }
+      return results;
+    });
+    await check('AC06/AC08 · Video ausente presenta tarjeta explicativa',async()=>{
+      const {win,doc}=await load($('aux'),'missing-video');const video=doc.querySelector('video');video.muted=true;video.load();
+      await until(()=>video.hidden,'fallback de video faltante');
+      assert(video.closest('article').textContent.includes('Recurso no disponible'),'Falta explicación');
+      assert(!win.__qa.rejections.length,'Rechazo no gestionado');return {network_status_expected:404,fallback:video.closest('article').querySelector('.notice').textContent};
+    });
+    await check('AC07 · Checklist: filtros, persistencia, exportación e importación aisladas',async()=>{
+      const previous=localStorage.getItem(PREP_KEY);
+      try {
+        localStorage.removeItem(PREP_KEY);
+        const response=await fetch(BASE+'preparacion/Manual_interactivo_Space_Apps.html');assert(response.ok,'Manual ausente');
+        const original=await response.text();assert(original.includes("const KEY='space-apps-preparation-v1'"),'Clave de preparación desconocida');
+        async function prepLoad(){ await navigateFrame($('aux'),'/__tests__/preparation.html?visit='+Date.now());await until(()=>$('aux').contentDocument?.querySelector('#note-A01'),'manual listo');return {w:$('aux').contentWindow,d:$('aux').contentDocument}; }
+        let {w,d}=await prepLoad();let input=d.getElementById('search');input.value='ZZZ_NO_MATCH_QA';event(input,'input',w);assert(d.querySelector('.empty'),'Filtro no aplica');
+        input.value='';event(input,'input',w);assert(d.querySelectorAll('.item').length===42,'No hay42 criterios');
+        const note=d.getElementById('note-A01');note.value='QA aislada: prueba local de persistencia';event(note,'input',w);
+        const cb=d.getElementById('check-A01');cb.checked=true;event(cb,'change',w);
+        assert(JSON.parse(localStorage.getItem(PREP_KEY)).A01.done,'No persiste marca');
+        ({w,d}=await prepLoad());assert(d.getElementById('note-A01').value.includes('QA aislada')&&d.getElementById('check-A01').checked,'Recarga pierde estado');
+        let exported;const nativeURL=w.URL.createObjectURL.bind(w.URL),nativeClick=w.HTMLAnchorElement.prototype.click;
+        w.URL.createObjectURL=blob=>{exported=blob;return nativeURL(blob);};
+        w.HTMLAnchorElement.prototype.click=function(){if(!this.download)nativeClick.call(this);};
+        d.getElementById('export').click();assert(exported,'Exportación no crea archivo');
+        const payload=JSON.parse(await exported.text());assert(payload.schema_version===1&&payload.items.A01.done,'Exportación inválida');
+        w.URL.createObjectURL=nativeURL;w.HTMLAnchorElement.prototype.click=nativeClick;
+        payload.items.A01.note='QA importada';payload.items.A01.done=false;
+        w.confirm=()=>true;
+        const transfer=new w.DataTransfer();transfer.items.add(new w.File([JSON.stringify(payload)],'qa.json',{type:'application/json'}));
+        const file=d.getElementById('importfile');file.files=transfer.files;event(file,'change',w);
+        await until(()=>d.getElementById('status').textContent.includes('importado correctamente'),'importación');
+        assert(d.getElementById('note-A01').value==='QA importada'&&!d.getElementById('check-A01').checked,'Importación no reemplaza estado aislado');
+        return {criteria:42,filter:true,persistence:true,export:true,import:true,isolated_storage_key:PREP_KEY,original_storage:'untouched'};
+      } finally {if(previous===null)localStorage.removeItem(PREP_KEY);else localStorage.setItem(PREP_KEY,previous);}
+    });
+    await check('AC08 · Consola y promesas sin errores después del recorrido',async()=>{
+      const qa=appWindow.__qa;assert(!qa.errors.length&&!qa.rejections.length&&!qa.consoleErrors.length,'Errores no gestionados: '+JSON.stringify(qa));
+      assert(!qa.cspViolations.length,'Conexión externa intentada');return {errors:qa.errors,rejections:qa.rejections,consoleErrors:qa.consoleErrors,cspViolations:qa.cspViolations};
+    });
+  } catch (error) {report.fatal_error=error.message;}
+  finally {
+    report.completed_at=new Date().toISOString();report.passed=report.tests.filter(t=>t.status==='pass').length;report.failed=report.tests.filter(t=>t.status==='fail').length+(report.fatal_error?1:0);
+    $('status').textContent=`Finalizado: ${report.passed} pruebas aprobadas · ${report.failed} fallos.`;
+    $('status').className=report.failed?'fail':'pass';$('run').disabled=false;publish();document.documentElement.dataset.testComplete=report.failed?'failed':'passed';
+  }
+}
+$('run').addEventListener('click',run);
+</script>
+</body>
+</html>

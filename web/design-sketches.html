@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission Control · dos composiciones de estudio</title>
+<style>
+:root { font: 16px/1.5 system-ui, sans-serif; color: #e8edf2; background: #0b1118; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 40px clamp(20px, 4vw, 72px); }
+h1 { max-width: 750px; font-size: clamp(30px, 4vw, 52px); line-height: 1.08; }
+h2 { font-size: 23px; }
+p { max-width: 780px; color: #b7c3cb; }
+.eyebrow { color: #e3ac7e; letter-spacing: .15em; font-size: 12px; text-transform: uppercase; }
+.sketches { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 36px; }
+article { min-width: 0; }
+.screen { border: 1px solid #42505c; border-radius: 8px; overflow: hidden; background: #101923; }
+.bar { padding: 14px 18px; border-bottom: 1px solid #42505c; color: #d7b399; font-size: 12px; letter-spacing: .06em; }
+.primary { padding: 24px; }
+.primary strong { display: block; font-size: 28px; line-height: 1.15; max-width: 370px; }
+.buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.button { border: 1px solid #8c9da7; padding: 9px 13px; border-radius: 3px; font-size: 13px; }
+.button:first-child { background: #e6b088; color: #14202a; border-color: #e6b088; }
+.terrain { min-height: 250px; background: #493c32; position: relative; overflow: hidden; }
+.terrain svg { position: absolute; width: 100%; height: 100%; inset: 0; }
+.terrain span { position: absolute; top: 12px; left: 14px; background: #101923e8; padding: 7px 11px; font-size: 12px; }
+.context { padding: 18px; background: #14212a; border-top: 1px solid #42505c; }
+.timeline { padding: 16px; border-top: 1px solid #42505c; color: #89d7df; font-size: 13px; }
+.cockpit { display: grid; grid-template-columns: 1fr 1.5fr; }
+.cockpit aside { padding: 15px; border-right: 1px solid #42505c; font-size: 13px; }
+.cockpit aside div { padding: 12px 0; border-bottom: 1px solid #42505c; }
+.metrics { display: flex; justify-content: space-around; gap: 8px; padding: 17px 10px; font-size: 12px; }
+.rows { padding: 8px 16px; font-size: 12px; color: #a9b5bf; }
+.rows div { padding: 11px 0; border-bottom: 1px solid #42505c; }
+.chosen { color: #8ce0d9; }
+@media(max-width: 850px) { .sketches { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<p class="eyebrow">Laboratorio independiente · estudio de composición</p>
+<h1>Una misión, dos maneras de entrar.</h1>
+<p>Estos son esquemas de distribución hechos con HTML, CSS y SVG. Las curvas dibujadas son formas de composición: <strong>no representan terreno ni resultados científicos</strong>.</p>
+<div class="sketches">
+  <article>
+    <h2>A · Terreno protagonista <span class="chosen">✓ elegida</span></h2>
+    <div class="screen">
+      <div class="bar">MISSION CONTROL / JEZERO — Explorador · Comparar · Videos · Evidencia</div>
+      <div class="primary"><strong>Del mapa orbital a las decisiones de campo.</strong><div class="buttons"><span class="button">Explorar la misión</span><span class="button">Ver demostración</span></div></div>
+      <div class="terrain"><svg viewBox="0 0 500 260" aria-hidden="true"><g fill="none" stroke="#ba967b" stroke-width="2"><path d="M-20 60Q70-15 140 45T300 80T540-20"/><path d="M-20 90Q70 15 140 75T300 110T540 10"/><path d="M-20 120Q70 45 140 105T300 140T540 40"/><path d="M-20 150Q70 75 140 135T300 170T540 70"/><path d="M-20 180Q70 105 140 165T300 200T540 100"/><path d="M-20 210Q70 135 140 195T300 230T540 130"/></g><path d="M70 205L110 140L210 130L310 75" fill="none" stroke="#8ce0d9" stroke-width="3" stroke-dasharray="7 5"/></svg><span>MAPA + SEIS AGENTES / esquema</span></div>
+      <div class="context">Observación → información nueva → tarea → agente asignado</div>
+      <div class="timeline">Pausa · Tiempo registrado ──────●──────── Hitos</div>
+    </div>
+    <p>La primera mirada explica el propósito. El mapa ocupa el espacio principal; el detalle de un evento aparece al seleccionarlo. Conserva continuidad en móvil.</p>
+  </article>
+  <article>
+    <h2>B · Consola analítica</h2>
+    <div class="screen">
+      <div class="bar">MISSION CONTROL / JEZERO — consola de registros</div>
+      <div class="metrics"><span>Cobertura [unidad]</span><span>Tiempo [s]</span><span>Muestras [n]</span></div>
+      <div class="cockpit"><aside><div>Escenario y política</div><div>Selector de agente</div><div>Capas y leyenda</div><div>Registro de tareas</div><div>Fuentes</div></aside><div class="terrain"><svg viewBox="0 0 300 260" aria-hidden="true"><g stroke="#ba967b" stroke-width="2" fill="none"><ellipse cx="170" cy="130" rx="120" ry="60"/><ellipse cx="170" cy="130" rx="100" ry="43"/><ellipse cx="170" cy="130" rx="80" ry="27"/><path d="M0 25Q100 80 300 5M0 235Q100 185 300 250"/></g></svg><span>MAPA / esquema</span></div></div>
+      <div class="rows"><div>Hora registrada · evento · agente · tarea</div><div>Hora registrada · evento · agente · tarea</div><div>Hora registrada · evento · agente · tarea</div></div>
+      <div class="timeline">Pausa · Tiempo ──●───── · Exportar registro</div>
+    </div>
+    <p>Hace más eficiente la lectura repetida para un analista, pero demanda conocer los controles antes de entender la misión. Se conserva como referencia para vistas de detalle posteriores.</p>
+  </article>
+</div>
+</body>
+</html>

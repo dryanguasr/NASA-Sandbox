@@ -1,0 +1,9 @@
+dist/
+public/
+node_modules/
+*.zip
+*.tar.gz
+test-results/
+.sites-workflow/
+portable/
+portable-check/

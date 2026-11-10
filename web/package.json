@@ -1,0 +1,5 @@
+{
+  "name": "jezero-mission-control", "version": "1.0.0", "private": true, "type": "module",
+  "scripts": {"build": "node build.mjs", "start": "node serve.mjs", "test": "node --test tests/*.test.mjs"},
+  "engines": {"node": ">=22"}
+}
