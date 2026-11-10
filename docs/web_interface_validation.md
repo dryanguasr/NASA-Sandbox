@@ -20,7 +20,13 @@ este registro; el reflow a 910 px y la presencia de una regla CSS no se
 presentan como sustitutos de esas verificaciones.
 Los atajos enviados por la extensión no cambiaron el zoom del navegador;
 el acceso al control nativo de Chrome agotó su espera de autorización.
-No se declara cerrado AC09 ni el conjunto completo de AC01–AC12.
+En la revisión posterior, el navegador rechazó también abrir su página
+de configuración de apariencia: la política de la herramienta admite solo
+HTTP/HTTPS y prohíbe eludir ese bloqueo mediante otras superficies o
+comandos. No se intentó hacerlo. Tampoco se ha ejecutado el paquete con
+Internet efectivamente desconectado: el aislamiento por CSP comprueba
+independencia de recursos externos, pero no sustituye esa prueba literal.
+No se declaran cerrados AC09, AC10 ni el conjunto completo de AC01–AC12.
 
 ## Criterios AC01–AC12
 
@@ -35,11 +41,44 @@ No se declara cerrado AC09 ni el conjunto completo de AC01–AC12.
 | AC07 | Verificado: fuentes, límites, licencia y los tres documentos de preparación son accesibles. | Auditoría estática de enlaces y 17 enlaces principales comprobados por HTTP. Manual original con 42 criterios: filtros, persistencia, exportación e importación probados con una clave de almacenamiento aislada. Las notas del usuario no se tocaron. |
 | AC08 | Verificado en el recorrido probado: cero errores JS, promesas rechazadas o errores de consola sin gestionar. | JSON de navegador: recursos normales con HTTP 200, `errors`, `rejections`, `consoleErrors` y `cspViolations` vacíos. Casos deliberados de JSON ausente/incompatible y MP4 ausente muestran recuperación explicativa. Sus 404 esperados no son fallos ocultos. |
 | AC09 | Parcial: disposiciones 1366×768, 1920×1080 y 390×844 inspeccionadas; foco de teclado comprobado. | Capturas reales y pruebas sin desbordamiento horizontal. Enter sobre objetivo conserva selección/foco. Reflow adicional 910×512 aprobado; equivale solo a una aproximación del ancho al 150 %. Zoom real al 150 % y emulación de `prefers-reduced-motion` pendientes; la regla CSS existe. No se hizo auditoría con lector de pantalla. |
-| AC10 | Verificado para subruta y dependencia local; alcance de desconexión explícito. | Aplicación servida bajo `/NASA-Sandbox/`, enlaces relativos y navegación hash. El arnés bloquea conexiones externas con CSP `connect-src 'self'`. No se deshabilitó físicamente el adaptador de red del sistema. Los tres MP4, datos y preparación pertenecen al build; las fuentes externas del archivo requieren red si se abren. |
+| AC10 | Parcial: subruta, copia portable e independencia de recursos externos verificadas; desconexión real pendiente. | Aplicación servida bajo `/NASA-Sandbox/`, enlaces relativos y navegación hash. El arnés bloquea conexiones externas con CSP `connect-src 'self'`. Esto no acredita una ejecución con Internet desconectado, exigida literalmente por la especificación. Los tres MP4, datos y preparación pertenecen al build; las fuentes externas del archivo requieren red si se abren. |
 | AC11 | Verificado dentro del alcance documentado: pilotos, algoritmos, modelos, datos y evidencia científica no se modificaron por el trabajo web. | [Regresiones](../evidence/ui_draft/regression.txt), pruebas de preservación y [checkpoint de originales](../evidence/ui_draft/original-preservation.json). Los seis archivos Jezero previamente modificados y seis archivos replay previamente no versionados permanecen separados. El checkpoint de hashes fue tomado durante el trabajo, no antes; no prueba por sí solo la historia previa. |
-| AC12 | Publicación privada verificada por resultado nativo; acceso público bloqueado. | [Sitio privado](https://jezero-mission-control-lab.davidyr.chatgpt.site). La visita sin autenticación redirigió al inicio de sesión de OpenAI. No se afirma acceso anónimo. El cambio de audiencia pública requiere la autorización explícita pendiente, según la revisión automática. |
+| AC12 | Atendido por la alternativa de bloqueo administrativo documentado y artefacto local probado. | [Sitio privado](https://jezero-mission-control-lab.davidyr.chatgpt.site): despliegue confirmado por Sites; la visita sin autenticación redirigió al inicio de sesión de OpenAI. No se afirma acceso anónimo ni validación funcional del contenido alojado. Cambiar la audiencia requiere autorización explícita, según la revisión automática. El ZIP, su prueba independiente y el paso administrativo pendiente están documentados abajo. |
 
 ## Entorno y comandos ejecutados
+
+### Verificaciones pendientes para cerrar AC09 y AC10
+
+Estas comprobaciones requieren intervención manual o una herramienta que
+permita realizarlas; no están incluidas entre los resultados aprobados.
+El paquete local ya está preparado y no necesita publicar el sitio.
+
+1. Descomprimir `web/mission-control-portable.zip` en una carpeta vacía y
+   ejecutar `node serve.mjs dist` desde ella. Mantener esa terminal abierta
+   y abrir `http://127.0.0.1:4173/NASA-Sandbox/`.
+2. Usar el zoom real del navegador al **150 %**, recorrer portada,
+   explorador, comparador y videos con teclado, y comprobar que los textos,
+   controles y foco siguen visibles y utilizables. Registrar navegador,
+   resolución, zoom y una captura; restaurar luego el zoom inicial.
+3. Activar la preferencia **movimiento reducido** del sistema o su emulación
+   en las herramientas de desarrollo. Recargar la página y comprobar la
+   navegación por secciones sin desplazamiento suave, ausencia de
+   animaciones decorativas, reproducción inicialmente pausada y controles
+   de reproducción utilizables. Registrar cómo se activó la preferencia y
+   restaurar después el ajuste original.
+4. Con el servidor local abierto, desconectar Internet manualmente cuando
+   no interrumpa otro trabajo. Recargar sin caché la URL local; recorrer la
+   demo, las capas y el comparador, abrir los tres documentos de preparación
+   y reproducir y hacer seek en los tres videos. Los enlaces a fuentes
+   externas requieren Internet y no son parte del funcionamiento local.
+   Registrar el resultado y restablecer la conexión.
+
+Añadir los resultados reales a este informe antes de cerrar esos criterios.
+La autorización de audiencia pública es independiente: AC12 admite el
+bloqueo administrativo descrito y no obliga a cambiar la audiencia para
+terminar las verificaciones locales.
+
+### Ejecución registrada
 
 - Windows, Node `v24.18.0`.
 - Navegador Chromium/Chrome `156.0.0.0`, según el user-agent del arnés.
