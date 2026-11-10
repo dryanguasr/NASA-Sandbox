@@ -1,0 +1,466 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-11-10T20:08:27.115Z",
+  "url": "http://127.0.0.1:4173/__tests__/browser.html",
+  "app_base": "http://127.0.0.1:4173/NASA-Sandbox/",
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+  "csp": "default-src 'self' data: blob: 'unsafe-inline'; connect-src 'self'",
+  "tests": [
+    {
+      "name": "AC01/AC10 · Carga real en subruta, recursos locales y primera vista",
+      "status": "pass",
+      "duration_ms": 641.9,
+      "details": {
+        "useful_ms": 434.3,
+        "transfer_bytes": 2406871,
+        "decoded_bytes": 2403271,
+        "resources": [
+          {
+            "url": "http://127.0.0.1:4173/__tests__/probe.js",
+            "bytes": 2330,
+            "decoded_bytes": 2030,
+            "duration_ms": 5.2
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/style.css",
+            "bytes": 17381,
+            "decoded_bytes": 17081,
+            "duration_ms": 6.6
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/app.js",
+            "bytes": 18282,
+            "decoded_bytes": 17982,
+            "duration_ms": 7.8
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/replay.js",
+            "bytes": 3266,
+            "decoded_bytes": 2966,
+            "duration_ms": 11.4
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/copy.js",
+            "bytes": 1411,
+            "decoded_bytes": 1111,
+            "duration_ms": 7.8
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/data/mission.json",
+            "bytes": 1926742,
+            "decoded_bytes": 1926442,
+            "duration_ms": 17.5
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/data/comparison.json",
+            "bytes": 1999,
+            "decoded_bytes": 1699,
+            "duration_ms": 7.2
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/data/belva.json",
+            "bytes": 12823,
+            "decoded_bytes": 12523,
+            "duration_ms": 23.5
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/media-manifest.json",
+            "bytes": 87688,
+            "decoded_bytes": 87388,
+            "duration_ms": 30.8
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/media/belva.jpg",
+            "bytes": 82572,
+            "decoded_bytes": 82272,
+            "duration_ms": 6.8
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/media/piloto_marciano.jpg",
+            "bytes": 56731,
+            "decoded_bytes": 56431,
+            "duration_ms": 7
+          },
+          {
+            "url": "http://127.0.0.1:4173/NASA-Sandbox/media/jezero_multivista.jpg",
+            "bytes": 195646,
+            "decoded_bytes": 195346,
+            "duration_ms": 8.7
+          }
+        ]
+      }
+    },
+    {
+      "name": "AC02 · Portada, siete pasos guiados y enlace al comparador",
+      "status": "pass",
+      "duration_ms": 82.6,
+      "details": {
+        "milestones": [
+          0,
+          40,
+          85,
+          525,
+          920,
+          1335,
+          1930
+        ]
+      }
+    },
+    {
+      "name": "AC03 · Seis agentes, detección 80/85 s, inspección y final",
+      "status": "pass",
+      "duration_ms": 24.9,
+      "details": [
+        {
+          "time_s": 0,
+          "sites": [],
+          "samples": 0
+        },
+        {
+          "time_s": 80,
+          "sites": [],
+          "samples": 0
+        },
+        {
+          "time_s": 85,
+          "sites": [
+            "S2"
+          ],
+          "samples": 0
+        },
+        {
+          "time_s": 525,
+          "sites": [
+            "S2",
+            "S3",
+            "S4",
+            "S1"
+          ],
+          "samples": 0
+        },
+        {
+          "time_s": 1930,
+          "sites": [
+            "S2",
+            "S3",
+            "S4",
+            "S1"
+          ],
+          "samples": 4
+        }
+      ]
+    },
+    {
+      "name": "AC03/AC09 · Capas, selección, foco y vista general",
+      "status": "pass",
+      "duration_ms": 50.4,
+      "details": {
+        "focus": "DOM focus() for six agents; manual keyboard still required"
+      }
+    },
+    {
+      "name": "AC04 · Play/pausa, doble clic, reinicio y reproducción al final",
+      "status": "pass",
+      "duration_ms": 1602.8,
+      "details": {
+        "paused_at_s": 0,
+        "final_s": 1930
+      }
+    },
+    {
+      "name": "AC04 · Cambio de ejecución limpia estados y no fabrica proximidad",
+      "status": "pass",
+      "duration_ms": 118,
+      "details": null
+    },
+    {
+      "name": "AC05 · Valores visibles iguales al JSON comparativo",
+      "status": "pass",
+      "duration_ms": 0.8,
+      "details": [
+        {
+          "policy": "information_hungarian",
+          "metric": "t80_s",
+          "value": 320,
+          "visible": "320 s"
+        },
+        {
+          "policy": "information_hungarian",
+          "metric": "duration_s",
+          "value": 1930,
+          "visible": "1.930 s"
+        },
+        {
+          "policy": "information_hungarian",
+          "metric": "drone_distance_m",
+          "value": 5270.5461,
+          "visible": "5.270,5 m"
+        },
+        {
+          "policy": "nearest_greedy",
+          "metric": "t80_s",
+          "value": 440,
+          "visible": "440 s"
+        },
+        {
+          "policy": "nearest_greedy",
+          "metric": "duration_s",
+          "value": 1660,
+          "visible": "1.660 s"
+        },
+        {
+          "policy": "nearest_greedy",
+          "metric": "drone_distance_m",
+          "value": 4364.061900000001,
+          "visible": "4.364,1 m"
+        }
+      ]
+    },
+    {
+      "name": "AC08/AC10 · Enlaces locales, informes, documentos y recursos sin 404",
+      "status": "pass",
+      "duration_ms": 65.2,
+      "details": {
+        "links_checked": 17,
+        "fetches": [
+          {
+            "url": "/NASA-Sandbox/data/mission.json",
+            "status": 200,
+            "duration_ms": 26.90000009536743
+          },
+          {
+            "url": "/NASA-Sandbox/data/comparison.json",
+            "status": 200,
+            "duration_ms": 26.199999809265137
+          },
+          {
+            "url": "/NASA-Sandbox/data/belva.json",
+            "status": 200,
+            "duration_ms": 48.40000009536743
+          },
+          {
+            "url": "/NASA-Sandbox/media-manifest.json",
+            "status": 200,
+            "duration_ms": 48.59999990463257
+          }
+        ],
+        "errors": [],
+        "rejections": []
+      }
+    },
+    {
+      "name": "AC09 · Reflow de escritorio y móvil sin desbordamiento horizontal",
+      "status": "pass",
+      "duration_ms": 498.1,
+      "details": {
+        "sizes": [
+          {
+            "width": 1366,
+            "height": 768,
+            "clientWidth": 1351,
+            "scrollWidth": 1351
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "clientWidth": 1905,
+            "scrollWidth": 1905
+          },
+          {
+            "width": 390,
+            "height": 844,
+            "clientWidth": 375,
+            "scrollWidth": 375
+          },
+          {
+            "width": 910,
+            "height": 512,
+            "clientWidth": 895,
+            "scrollWidth": 895
+          }
+        ],
+        "last_size_note": "910px approximates reflow width at150%; manual zoom required",
+        "reduced_motion_rule": true
+      }
+    },
+    {
+      "name": "AC06 · Video 1: metadata, reproducción y seek nativos",
+      "status": "pass",
+      "duration_ms": 247.4,
+      "details": {
+        "id": "belva",
+        "duration_s": 14.733333,
+        "width": 1176,
+        "height": 600,
+        "seek_s": 8.103332,
+        "ready_state": 4,
+        "report": "evidence/jezero_belva/report.html"
+      }
+    },
+    {
+      "name": "AC06 · Video 2: metadata, reproducción y seek nativos",
+      "status": "pass",
+      "duration_ms": 328.1,
+      "details": {
+        "id": "replay",
+        "duration_s": 52.2,
+        "width": 1920,
+        "height": 1080,
+        "seek_s": 28.71,
+        "ready_state": 4,
+        "report": "docs/jezero_diagnostico.html"
+      }
+    },
+    {
+      "name": "AC06 · Video 3: metadata, reproducción y seek nativos",
+      "status": "pass",
+      "duration_ms": 251.8,
+      "details": {
+        "id": "base",
+        "duration_s": 40.3,
+        "width": 1280,
+        "height": 720,
+        "seek_s": 22.165,
+        "ready_state": 4,
+        "report": "docs/pilot_results.html"
+      }
+    },
+    {
+      "name": "AC08 · Registro ausente e incompatible muestran recuperación gestionada",
+      "status": "pass",
+      "duration_ms": 270.9,
+      "details": [
+        {
+          "mode": "missing",
+          "message": "Registro no disponible: data/mission.json: HTTP 404. Recarga la página o restaura el build local completo."
+        },
+        {
+          "mode": "incompatible",
+          "message": "Registro no disponible: Registro ausente o incompatible (contrato v1).. Recarga la página o restaura el build local completo."
+        }
+      ]
+    },
+    {
+      "name": "AC06/AC08 · Video ausente presenta tarjeta explicativa",
+      "status": "pass",
+      "duration_ms": 212.5,
+      "details": {
+        "network_status_expected": 404,
+        "fallback": "Recurso no disponible. Consulta el informe o restaura el MP4 del respaldo."
+      }
+    },
+    {
+      "name": "AC07 · Checklist: filtros, persistencia, exportación e importación aisladas",
+      "status": "pass",
+      "duration_ms": 314.8,
+      "details": {
+        "criteria": 42,
+        "filter": true,
+        "persistence": true,
+        "export": true,
+        "import": true,
+        "isolated_storage_key": "space-apps-preparation-qa-harness-v1",
+        "original_storage": "untouched"
+      }
+    },
+    {
+      "name": "AC08 · Consola y promesas sin errores después del recorrido",
+      "status": "pass",
+      "duration_ms": 0.4,
+      "details": {
+        "errors": [],
+        "rejections": [],
+        "consoleErrors": [],
+        "cspViolations": []
+      }
+    }
+  ],
+  "manual_limits": [
+    "DOM focus checks do not replace a physical keyboard walkthrough.",
+    "CSS/reflow checks do not replace desktop/mobile screenshot inspection.",
+    "External requests blocked with CSP; operating-system network adapter was not disabled.",
+    "No real-user study was conducted."
+  ],
+  "first_view": {
+    "useful_ms": 434.3,
+    "transfer_bytes": 2406871,
+    "decoded_bytes": 2403271,
+    "resources": [
+      {
+        "url": "http://127.0.0.1:4173/__tests__/probe.js",
+        "bytes": 2330,
+        "decoded_bytes": 2030,
+        "duration_ms": 5.2
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/style.css",
+        "bytes": 17381,
+        "decoded_bytes": 17081,
+        "duration_ms": 6.6
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/app.js",
+        "bytes": 18282,
+        "decoded_bytes": 17982,
+        "duration_ms": 7.8
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/replay.js",
+        "bytes": 3266,
+        "decoded_bytes": 2966,
+        "duration_ms": 11.4
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/copy.js",
+        "bytes": 1411,
+        "decoded_bytes": 1111,
+        "duration_ms": 7.8
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/data/mission.json",
+        "bytes": 1926742,
+        "decoded_bytes": 1926442,
+        "duration_ms": 17.5
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/data/comparison.json",
+        "bytes": 1999,
+        "decoded_bytes": 1699,
+        "duration_ms": 7.2
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/data/belva.json",
+        "bytes": 12823,
+        "decoded_bytes": 12523,
+        "duration_ms": 23.5
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/media-manifest.json",
+        "bytes": 87688,
+        "decoded_bytes": 87388,
+        "duration_ms": 30.8
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/media/belva.jpg",
+        "bytes": 82572,
+        "decoded_bytes": 82272,
+        "duration_ms": 6.8
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/media/piloto_marciano.jpg",
+        "bytes": 56731,
+        "decoded_bytes": 56431,
+        "duration_ms": 7
+      },
+      {
+        "url": "http://127.0.0.1:4173/NASA-Sandbox/media/jezero_multivista.jpg",
+        "bytes": 195646,
+        "decoded_bytes": 195346,
+        "duration_ms": 8.7
+      }
+    ]
+  },
+  "completed_at": "2026-11-10T20:08:31.861Z",
+  "passed": 16,
+  "failed": 0
+}

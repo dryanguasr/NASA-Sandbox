@@ -1,0 +1,13 @@
+{
+  "project_id": "appgprj_6af369f65b408191866f612b6b3a4e23",
+  "deployment_id": "appgdep_6af37af0e9308191b727b715ffd94abd",
+  "version_id": "appgprj_6af369f65b408191866f612b6b3a4e23~appgver_4d0180a631848191b67e1272b2283b15",
+  "source_commit": "0eb551d472d44677ec6687ade7be25b082c3b045",
+  "status": "succeeded",
+  "url": "https://jezero-mission-control-lab.davidyr.chatgpt.site",
+  "access": "owner-private",
+  "verified_at_utc": "2026-11-10T20:13:46.665696+00:00",
+  "unauthenticated_browser": "Redirected to auth.openai.com/log-in/password; no authentication interaction attempted.",
+  "public_access": "Automatic approval review rejected expansion to public without explicit user authorization. A concrete deployed site is ready; user approval requested asynchronously.",
+  "authoring_commit": "e953ae49cc89535e3af5c677feefd6b4a40d8499"
+}

@@ -1,0 +1,28 @@
+Original read-only regression checks — Mission Control presentation work
+Recorded: 2026-11-10T19:16:18.728Z
+Environment: Windows host → WSL; /usr/bin/python3 reports Python 3.12.3
+Initial sandbox-only WSL discovery returned Wsl/E_ACCESSDENIED.
+Read-only commands succeeded with approved sandbox elevation. No auto-review rejection.
+
+Command:
+wsl --exec /usr/bin/python3 '/mnt/c/Users/User/Documents/ChatGPT/NASA Sandbox 2/NASA-Sandbox/scripts/generate_terrain.py' --check
+Exit: 0
+Output: OK: terrain OBJ and CSV match generator
+
+Command:
+wsl --exec /usr/bin/python3 '/mnt/c/Users/User/Documents/ChatGPT/NASA Sandbox 2/NASA-Sandbox/scripts/validate_scene.py'
+Exit: 0
+Output: OK: 2 humans, 2 drones, 2 rovers; valid XML and mesh
+
+Scope: static checks only. No Gazebo server, pilot, planner or new simulation was executed.
+The --check option reads and compares terrain; it does not regenerate the mesh or CSV.
+
+Original evidence inspection:
+- Git diff --numstat still shows only report.md (1/1), summary.json (2/2), viewer.html (1/1).
+- summary.json and embedded viewer payload differ from 450fa0c57b4073e0d96060a2a28c5c50d6393dd9 only at runtime_wall_s and Python version.
+- report.md differs only by Python 3.11.18 → 3.12.3: true.
+- benchmark_summary.json, tasks.json are semantically identical; events.jsonl is identical after newline normalization.
+- Non-payload viewer HTML is unchanged after newline normalization.
+- These differences match the initial read-only audit; they are pre-existing and must remain unstaged.
+- original-preservation.json records current raw SHA-256 for six dirty evidence files and six pre-existing untracked replay files.
+- The hashes were captured mid-task, not before task commencement. Final comparison can establish preservation from this checkpoint only.

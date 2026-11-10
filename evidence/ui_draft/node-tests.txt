@@ -1,0 +1,25 @@
+✔ AC07/AC08/AC10: every local HTML asset and download resolves beneath the project base path (27.909ms)
+✔ AC06: required video manifests match packaged immutable bytes, posters, readable reports and decode evidence (177.8568ms)
+✔ AC07/AC11: raw downloads and preparation documents are exact immutable originals (2345.0987ms)
+✔ AC01/AC11: web scope leaves algorithms, pilots, worlds and scientific data unchanged from the inspected revision (411.3101ms)
+✔ AC03: recorded positions, events, grids and six IDs survive extraction without recomputation (9.943ms)
+✔ AC03: target detection boundaries and task precedence derive from actual events (0.6524ms)
+✔ AC02: seven guided milestones reference existing ordered events (0.1111ms)
+✔ AC03: task timestamps and final assignments match their own recorded event chain (0.4535ms)
+✔ AC05: compared metrics are pinned source values with compatible conditions and explicit missing trajectory (0.1307ms)
+✔ Belva closed-loop video run stays distinct from 2.5D and consistency repetitions (0.2345ms)
+✔ AC08: missing payload and incompatible agent/grid inputs fail closed (16.0637ms)
+✔ AC01/AC11: deterministic output and download hashes equal immutable Git bytes (1548.2983ms)
+✔ registered snapshots preserve six exact positions and never reveal future targets (2.3269ms)
+✔ sample is absent before completion of its inspection (0.1827ms)
+✔ final playback, double toggle, seek, reset and run switch cannot retain playback (0.1608ms)
+✔ incompatible, missing and future engine paths fail explicitly (0.6922ms)
+✔ final state derives sample and return counts from events (0.1703ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3044.5886

@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-11-10T19:15:54.182Z",
+  "source_commit": "450fa0c57b4073e0d96060a2a28c5c50d6393dd9",
+  "note": "Mid-task preservation checkpoint. Initial hashes were not captured; initial git diff inspection already showed the same Python/runtime metadata changes. Do not misrepresent this as a pre-task byte snapshot.",
+  "files": [
+    {
+      "path": "evidence/jezero/benchmark_summary.json",
+      "bytes": 1661,
+      "sha256": "8e2b65e0f95a3ab1f021e6304f10e8164725389378916056e5a56313fff73d03"
+    },
+    {
+      "path": "evidence/jezero/events.jsonl",
+      "bytes": 12207,
+      "sha256": "66909043041ec4a9558e67e008d4fc0e7e321aefd4132abe91a608478e221235"
+    },
+    {
+      "path": "evidence/jezero/report.md",
+      "bytes": 4993,
+      "sha256": "a8aa54a73f7f89ce60755881fadc2a74514cf97ef6576e7e222ca9b74007f4df"
+    },
+    {
+      "path": "evidence/jezero/summary.json",
+      "bytes": 3700,
+      "sha256": "26b86314f2168e7d220d02caec7fca390f1eca2dab76b06db66e1378af901f43"
+    },
+    {
+      "path": "evidence/jezero/tasks.json",
+      "bytes": 12074,
+      "sha256": "c274f8f01fb538dd2ee401b9bd9a3c000a81ed03de00d3ab06b325559f92aace"
+    },
+    {
+      "path": "evidence/jezero/viewer.html",
+      "bytes": 1931617,
+      "sha256": "224dbf67a594abce660df2c0a6ed50f3796048ff01d3781749eb0c691d1b79f7"
+    },
+    {
+      "path": "evidence/jezero_replay/cli-gazebo.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/jezero_replay/initial.png",
+      "bytes": 162877,
+      "sha256": "e0c9d8ac8eddad830d87bda9b0fbafa37b7685eee4ec4529e84939f6df26f5cc"
+    },
+    {
+      "path": "evidence/jezero_replay/multivista-console.log",
+      "bytes": 621,
+      "sha256": "f0ba0254fc24c2c94e39bd78198ea2de98d416d38a2716928c7702b5b5a25fdf"
+    },
+    {
+      "path": "evidence/jezero_replay/record-console.log",
+      "bytes": 462,
+      "sha256": "7325552793dd9e1b20be2fb64517d42eb4d60aa3f31d7a67402d757fe5a07ff9"
+    },
+    {
+      "path": "evidence/jezero_replay/service-probe.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/jezero_replay/viewer-check.png",
+      "bytes": 259706,
+      "sha256": "2251e52b7c1a7dd5f3bc2dbfa740ca9238d733ae56ba9483e6d64014a5eb1283"
+    }
+  ],
+  "normalized_semantic_diff": {
+    "benchmark_summary.json": [],
+    "summary.json": [
+      {
+        "path": "runtime_wall_s",
+        "original": 4.268266256000004,
+        "current": 2.679828432999898
+      },
+      {
+        "path": "versions.python",
+        "original": "3.11.18",
+        "current": "3.12.3"
+      }
+    ],
+    "tasks.json": [],
+    "viewer.html.payload": [
+      {
+        "path": "summary.runtime_wall_s",
+        "original": 4.268266256000004,
+        "current": 2.679828432999898
+      },
+      {
+        "path": "summary.versions.python",
+        "original": "3.11.18",
+        "current": "3.12.3"
+      }
+    ],
+    "viewer.html.other_content_equal": true,
+    "events.jsonl.normalized_equal": true,
+    "report.md.only_python_version_changed": true
+  }
+}

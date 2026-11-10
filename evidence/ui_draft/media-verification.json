@@ -1,0 +1,368 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-11-10T20:11:04.703Z",
+  "source_commit": "450fa0c57b4073e0d96060a2a28c5c50d6393dd9",
+  "node": "v24.18.0",
+  "ffprobe": "ffprobe version N-125875-g5d4d3bdc61-20260731 Copyright (c) 2007-2026 the FFmpeg developers",
+  "ffmpeg": "ffmpeg version N-125875-g5d4d3bdc61-20260731 Copyright (c) 2000-2026 the FFmpeg developers",
+  "commands": [
+    "ffprobe -v error -show_entries stream=codec_type,codec_name,width,height,nb_frames,r_frame_rate:format=duration -of json <video>",
+    "ffmpeg -v error -i <video> -f null -",
+    "ffmpeg -v error -y -ss <verified timestamp> -i <video> -frames:v 1 -q:v 2 <poster.jpg>"
+  ],
+  "videos": [
+    {
+      "source_path": "evidence/jezero_belva/belva.mp4",
+      "packaged_path": "media/belva.mp4",
+      "sha256": "9c86caea75d86b625ba641436b69eb1e2c2898e6e54ff468d3244d6f739a5749",
+      "bytes": 346785,
+      "duration_s": 14.733333,
+      "codec": "h264",
+      "width": 1176,
+      "height": 600,
+      "frames": 221,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": [],
+      "poster": "media/belva.jpg",
+      "poster_time_s": 7,
+      "poster_sha256": "b86449c26ffd4dec74a919cb5d2af87a48757de980ab8cee03240d1cbdcb39be"
+    },
+    {
+      "source_path": "evidence/jezero_replay/jezero_multivista.mp4",
+      "packaged_path": "media/jezero_multivista.mp4",
+      "sha256": "7246b0b38ff9325b0a45d86629a6a9c3bb045a7304fc1583a54590ec119c6ec2",
+      "bytes": 6315438,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": [],
+      "poster": "media/jezero_multivista.jpg",
+      "poster_time_s": 18,
+      "poster_sha256": "70e2a603f2eb997f273500a9374880c96d11e572d89b5448a48fb917db57d40a"
+    },
+    {
+      "source_path": "evidence/piloto_marciano.mp4",
+      "packaged_path": "media/piloto_marciano.mp4",
+      "sha256": "1df03094d545ea3594d3f4891be562254b437ddfd0bda1506bc706bbe37985dd",
+      "bytes": 479846,
+      "duration_s": 40.3,
+      "codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "frames": 403,
+      "frame_rate": "10/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": [],
+      "poster": "media/piloto_marciano.jpg",
+      "poster_time_s": 18,
+      "poster_sha256": "1bd5750b0433aa6a3b9c0d035223a72a5c31ba1ce1480b158912c395fa49c063"
+    },
+    {
+      "source_path": "evidence/jezero_56/piloto_5.mp4",
+      "packaged_path": null,
+      "sha256": "92a26a743c516b76757e1525e614b85a8765c2506b1a85d85d79a5c15ed508c6",
+      "bytes": 791336,
+      "duration_s": 25.266667,
+      "codec": "h264",
+      "width": 1176,
+      "height": 600,
+      "frames": 379,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_56/piloto_6.mp4",
+      "packaged_path": null,
+      "sha256": "23944bb30ef4972a8b1265d14319a191334c26554c368e2f5ce3265a802f0e0e",
+      "bytes": 1711389,
+      "duration_s": 39.866667,
+      "codec": "h264",
+      "width": 1176,
+      "height": 600,
+      "frames": 598,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_live/videos/east_retry.mp4",
+      "packaged_path": null,
+      "sha256": "9699d138a3d759e2727ab1c1765b373a6d1a3b2a2a3901ab1c0f12ee61951084",
+      "bytes": 559245,
+      "duration_s": 12.533333,
+      "codec": "h264",
+      "width": 1176,
+      "height": 600,
+      "frames": 188,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_live/videos/piloto_1.mp4",
+      "packaged_path": null,
+      "sha256": "a008c5d64428bbb6e57da69537494c87a0055613ecc35a268f3e19186f7892cb",
+      "bytes": 173260,
+      "duration_s": 8.6,
+      "codec": "h264",
+      "width": 1176,
+      "height": 600,
+      "frames": 129,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_live/videos/piloto_2.mp4",
+      "packaged_path": null,
+      "sha256": "c9cc502168200d84d2ee6eae295bf1cb727bb7a3bc875938f45c56517649c3ae",
+      "bytes": 534053,
+      "duration_s": 12.6,
+      "codec": "h264",
+      "width": 1176,
+      "height": 600,
+      "frames": 189,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_live/videos/piloto_3.mp4",
+      "packaged_path": null,
+      "sha256": "a8723c3ea60d37f9323764265cbfe88e1527bc16afbabcb50825b054d65b8c64",
+      "bytes": 1080378,
+      "duration_s": 24.4,
+      "codec": "h264",
+      "width": 1176,
+      "height": 600,
+      "frames": 366,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_live/videos/piloto_4.mp4",
+      "packaged_path": null,
+      "sha256": "e79663a33d40fad65442f9818115332f7a53fc650aa706f754ee8b6ce500703e",
+      "bytes": 1137081,
+      "duration_s": 27.266667,
+      "codec": "h264",
+      "width": 1176,
+      "height": 600,
+      "frames": 409,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_replay/jezero_drone_1.mp4",
+      "packaged_path": null,
+      "sha256": "1ca8e47d10ab8d924f7c9f79a2bb0648e9021d7c3b382f933676e537c58a6aac",
+      "bytes": 1299703,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 456,
+      "height": 336,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_replay/jezero_drone_2.mp4",
+      "packaged_path": null,
+      "sha256": "dd5d4df0d235d18e715e4dba2a7ddc16d97c8fc8828e2e9d67c798fcd8c5b24e",
+      "bytes": 1253449,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 456,
+      "height": 336,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_replay/jezero_human_1.mp4",
+      "packaged_path": null,
+      "sha256": "ccdea50319b5ff644cf77ee25c92eadebf439f2239e6c3b49518da5d50c31287",
+      "bytes": 843303,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 456,
+      "height": 336,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_replay/jezero_human_2.mp4",
+      "packaged_path": null,
+      "sha256": "2ec3eb6e103f06f778de42c797ff3bfc50cabdb5ddeb1760be6634c5049ff8ed",
+      "bytes": 770018,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 456,
+      "height": 336,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_replay/jezero_overview.mp4",
+      "packaged_path": null,
+      "sha256": "9a9648b718c47acce70a5db117de8819f6065948ca832fecf682f0e7ce947fa2",
+      "bytes": 864065,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 960,
+      "height": 1080,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_replay/jezero_rover_1.mp4",
+      "packaged_path": null,
+      "sha256": "5a38f1eacc30fd0caa21103c37c2a6d4fabcbb8c10113abd9eccce378a2dcc97",
+      "bytes": 983797,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 456,
+      "height": 336,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_replay/jezero_rover_2.mp4",
+      "packaged_path": null,
+      "sha256": "33fc48fa9a6f6c4b8353f569b990f92ef3187c4b2fcaa87e3fb75b05e676ac0c",
+      "bytes": 1163016,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 456,
+      "height": 336,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    },
+    {
+      "source_path": "evidence/jezero_replay/piloto_jezero.mp4",
+      "packaged_path": null,
+      "sha256": "9f477d71b0d7150c9ba93032877a8c42b64c9a514f40467a5f396358facef23a",
+      "bytes": 761154,
+      "duration_s": 52.2,
+      "codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "frames": 783,
+      "frame_rate": "15/1",
+      "audio": {
+        "present": false,
+        "codecs": []
+      },
+      "narration": "no_audio_track",
+      "decode_exit_code": 0,
+      "decode_errors": []
+    }
+  ],
+  "browser_playback_and_seek": "Verified separately in browser validation; decoding alone is insufficient.",
+  "original_files_modified": false
+}
