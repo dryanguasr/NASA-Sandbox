@@ -1,27 +1,50 @@
-# NASA-Sandbox — exploración marciana heterogénea
+<div align="center">
 
-Laboratorio con **2 humanos, 2 drones y 2 rovers**. Hay dos pilotos independientes; no confundir la fidelidad ni el estado de ejecución de cada uno.
+# NASA-Sandbox · Exploración heterogénea en Marte
+### Del conocimiento orbital parcial a las tareas emergentes de un equipo humano–robótico
 
-| Piloto | Terreno | Ejecución comprobada | Límites principales |
-|---|---|---|---|
-| Base / piloto 0 | Sintético, 90 × 90 m | Gazebo Harmonic: carga, sensores, movimientos y parada; video y logs | Humanos y drones cinemáticos; sin biomecánica ni aerodinámica |
-| **Jezero / misión** | **USGS/MRO real, 512 × 512 m, CTX + HiRISE** | **Misión 2.5D, 16 pruebas, seis ejecuciones comparativas, visor y reproducción en Gazebo Harmonic** | Sensores ideales simulados y reproducción cinemática por poses |
+**Gazebo Harmonic · ROS 2 · Python · USGS/MRO · Multi-agent planning**
 
-## Empezar por el piloto Jezero
+[Ver piloto Belva](evidence/jezero_belva/belva.mp4) · [Reporte Belva](evidence/jezero_belva/report.md) · [Misión Jezero y visor](evidence/jezero/viewer.html) · [Manual de ejecución](pilots/jezero/README.md) · [Referencia técnica](README_TECHNICAL.md)
 
-La extensión de Jezero en lazo cerrado ejecuta cuatro pilotos con percepción simulada de Gazebo, control por velocidad y comparaciones de terreno y comunicación. Consulta la [guía de reproducción](pilots/jezero/LIVE.md) y el [informe con los videos y la telemetría](evidence/jezero_live/report.md).
+</div>
 
-Los pilotos 5 y 6 prueban el acceso terrestre no convexo y la creación de tareas a partir de observaciones aéreas y terrestres. [Resultados y videos](evidence/jezero_56/report.md).
+[![Mapa y seis agentes del piloto Belva](evidence/jezero_belva/belva.gif)](evidence/jezero_belva/belva.mp4)
 
-### Piloto 7 · Cráter Belva
+## La pregunta
 
-Los drones descubren los objetivos a partir de imágenes de Gazebo. El relieve de HiRISE condiciona las rutas del rover y del astronauta. El ensayo actualizado verifica los seis regresos con el controlador bidireccional del rover. El video muestra el mapa cenital al centro y las seis vistas de seguimiento con cuadrícula de 4 m.
+¿Cómo coordinar **dos astronautas, dos drones y dos rovers** cuando el mapa inicial es aproximado y nuevas observaciones revelan tareas? El sistema ensaya reconocimiento aéreo, actualización progresiva del mapa, inspección robótica, muestreo humano y retorno.
 
-[![Piloto Belva en Gazebo: mapa central y seis vistas de los agentes](evidence/jezero_belva/belva.gif)](evidence/jezero_belva/belva.mp4)
+## Rutas de demostración
 
-[Video MP4](evidence/jezero_belva/belva.mp4) · [Informe, telemetría y reproducción](evidence/jezero_belva/report.md).
+| Escenario | Qué muestra | Nivel de fidelidad |
+| --- | --- | --- |
+| [Piloto base](docs/pilot_results.md) | Seis entidades, sensores y movimientos | Terreno sintético, proxies cinemáticos |
+| [Jezero 2.5D](evidence/jezero/report.md) | Datos CTX + HiRISE y asignación húngara con valor informativo | Simulación de misión, observaciones ideales |
+| [Jezero en Gazebo](evidence/jezero_live/report.md) | Percepción/cinemática cerradas en simulador | Sensores Gazebo y control simulado |
+| [Belva](evidence/jezero_belva/report.md) | Rutas no convexas, tarea inaccesible y seis regresos | Gazebo Harmonic en entorno hipotético con relieve orbital |
 
-[Guía técnica](pilots/jezero/README.md) · [Reporte de resultados](evidence/jezero/report.md) · [Instrucciones para Codex](docs/jezero_pilot_codex.md).
+### Resultado reproducible del caso Belva
+
+En la serie documentada de **cinco semillas**, los seis agentes regresaron en las **5/5 misiones**. El escenario distingue una tarea de inspección/muestreo factible de otra declarada inaccesible por tierra. Las estadísticas describen exclusivamente esos ruidos simulados, ese terreno y esa configuración. [Métricas por semilla y detalle de los fallos de desarrollo](evidence/jezero_belva/report.md).
+
+## Arquitectura conceptual
+
+```text
+Mapa inicial orbital (CTX) ──────────┐
+                                    ▼
+Percepción local (simulada) ──► Mapa compartido
+                                    │
+                          descubrimientos / tareas
+                                    ▼
+                          Asignación y planificación
+                                    ▼
+                Humanos · Drones · Rovers / retorno
+```
+
+Las capas orbitales CTX y HiRISE **pertenecen ambas a MRO**; no satisfacen por sí solas una posible exigencia de combinar varias misiones. Los objetivos del escenario son ficticios. No se afirma reconstrucción fotogramétrica real, vuelo aerodinámico validado ni seguridad de una EVA.
+
+## Reproducir
 
 ```bash
 python3 -m venv .venv-jezero
@@ -30,67 +53,6 @@ python -m pip install -r pilots/jezero/requirements.txt
 python pilots/jezero/run_all.py
 ```
 
-Abrir `evidence/jezero/viewer.html` en un navegador. El visor es autónomo: no necesita servidor ni conexión. Desde GitHub se debe descargar el archivo HTML para abrirlo localmente.
+[Comandos Gazebo y configuración](pilots/jezero/LIVE.md) · [Fuente y limitaciones](docs/data_provenance.md) · [Instrucciones Codex](docs/jezero_pilot_codex.md) · [README técnico anterior preservado](README_TECHNICAL.md).
 
-El recorte real y sus metadatos se conservan en `data/jezero/`. Si faltan, el importador solicita ventanas de los mosaicos originales; **no los reemplaza por terreno sintético**. Para repetir la importación: `python pilots/jezero/run_all.py --refresh-data`.
-
-La misión comienza con el mapa CTX aproximado. Los drones revelan progresivamente información del DEM de referencia HiRISE y descubren objetivos **ficticios** del escenario. Eso genera inspecciones de rovers y después muestreos humanos. El asignador húngaro y A* usan únicamente el mapa estimado y las tareas descubiertas. La comunicación es global, instantánea y sin pérdidas.
-
-La política informativa se compara con una estrategia de proximidad. En este escenario logra cobertura temprana más rápida, pero tarda más en completar la misión. No se afirma optimalidad global ni reproducción completa de Heterogeneous DisCoverage.
-
-**Datos reales no significa sensores reales:** las observaciones son alturas simuladas bajo una huella ideal, no reconstrucción fotogramétrica. CTX y HiRISE pertenecen ambos a MRO; todavía no se incorporan varias misiones. Los detalles, licencias/fuentes y límites están documentados en la guía y los metadatos.
-
-### Exportación Gazebo del piloto Jezero
-
-`run_all.py` genera `generated/jezero/jezero_mission.sdf`, su malla de terreno y seis agentes. La variante usa agentes estáticos desplazados por poses; es una **reproducción visual de la misión**, no control cerrado ni validación dinámica.
-
-Terminal 1:
-
-```bash
-export GZ_PARTITION=jezero_mission
-export GZ_SIM_RESOURCE_PATH="$PWD/generated/jezero/models:${GZ_SIM_RESOURCE_PATH:-}"
-gz sim -r generated/jezero/jezero_mission.sdf
-```
-
-Terminal 2:
-
-```bash
-export GZ_PARTITION=jezero_mission
-/usr/bin/python3 pilots/jezero/replay_gazebo.py --speed 40
-```
-
-Requiere Gazebo Harmonic y bindings `python3-gz-transport13`, `python3-gz-msgs10`.
-La ejecución local y la grabación se documentan en el [diagnóstico de Jezero](docs/jezero_diagnostico.md).
-
-[Ver o descargar el montaje con mapa cenital y seis vistas isométricas](evidence/jezero_replay/jezero_multivista.mp4).
-
-[![Vista general y seis cámaras de Jezero](evidence/jezero_replay/multivista-preview.png)](evidence/jezero_replay/jezero_multivista.mp4)
-
-## Conservar el piloto 0 como regresión
-
-El mundo canónico `worlds/mars_sandbox.sdf`, sus modelos y datos sintéticos permanecen separados del nuevo piloto.
-
-```bash
-python3 scripts/generate_terrain.py --check
-python3 scripts/validate_scene.py
-bash scripts/run_gazebo.sh
-# En otra terminal:
-bash scripts/smoke_commands.sh
-```
-
-Para captura reproducible, detener otros servidores del piloto y ejecutar:
-
-```bash
-python3 scripts/record_pilot.py
-python3 scripts/edit_pilot_video.py
-```
-
-[Resultado de la ejecución real](docs/pilot_results.md) · [Video del piloto 0](evidence/piloto_marciano.mp4).
-
-Con ROS 2 Jazzy disponible, `bash scripts/run_ros_bridge.sh` carga el puente de `/clock`, seis `cmd_vel` y seis `odom`. Los tópicos de cámaras deben verificarse antes de incorporarlos al puente. Los comandos de velocidad pueden mantenerse hasta recibir una orden de cero.
-
-## Evidencia y desarrollo
-
-GitHub Actions ejecuta la validación del escenario original y el flujo completo del piloto Jezero. Los resultados principales están en Git y los artefactos de cada ejecución conservan mapas, trayectorias, estados del estimador y exportación 3D durante 30 días. Leer `AGENTS.md` antes de modificar el proyecto.
-
-Este es un laboratorio de preparación independiente del entregable competitivo. Revisar las reglas del evento sobre trabajo previo, reutilización y atribución antes de incorporar material a la competencia.
+> **Importante para hackatones:** este es un laboratorio de preparación ya existente, no un entregable cuya reutilización en una competencia haya sido autorizada. Verificar reglas de trabajo previo y atribución antes de presentar código o assets.
